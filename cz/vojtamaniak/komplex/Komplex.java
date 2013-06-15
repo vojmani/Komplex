@@ -34,7 +34,7 @@ public class Komplex extends JavaPlugin {
 	}
 	
 	private void registerExecutors(){
-		//Future executors register
+		getCommand("break").setExecutor(new CommandBreak(this));
 	}
 	
 	private void registerListeners(){
