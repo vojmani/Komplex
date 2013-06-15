@@ -4,9 +4,9 @@ import cz.vojtamaniak.komplex.Komplex;
 import cz.vojtamaniak.komplex.MessageManager;
 
 abstract public class ICommand {
-  
-	private Komplex plg;
-	private MessageManager msgManager;
+	
+	protected Komplex plg;
+	protected MessageManager msgManager;
 	
 	public ICommand(Komplex plg){
 		this.plg = plg;
