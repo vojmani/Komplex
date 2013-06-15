@@ -4,6 +4,8 @@ import java.util.logging.Logger;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import cz.vojtamaniak.komplex.commands.CommandBreak;
+
 public class Komplex extends JavaPlugin {
 	
 	private Logger log;
@@ -16,6 +18,9 @@ public class Komplex extends JavaPlugin {
 		
 		log.info("is enabled.");
 		
+		registerExecutors();
+		registerListeners();
+		
 		msgManager.init();
 	}
 	
@@ -26,5 +31,13 @@ public class Komplex extends JavaPlugin {
 	
 	public MessageManager getMessageManager(){
 		return msgManager;
+	}
+	
+	private void registerExecutors(){
+		//Future executors register
+	}
+	
+	private void registerListeners(){
+		//Future listeners register
 	}
 }
