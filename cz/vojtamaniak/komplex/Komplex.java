@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import cz.vojtamaniak.komplex.commands.CommandBreak;
+import cz.vojtamaniak.komplex.commands.CommandFeed;
 
 public class Komplex extends JavaPlugin {
 	
@@ -35,6 +36,7 @@ public class Komplex extends JavaPlugin {
 	
 	private void registerExecutors(){
 		getCommand("break").setExecutor(new CommandBreak(this));
+		getCommand("feed").setExecutor(new CommandFeed(this));
 	}
 	
 	private void registerListeners(){
