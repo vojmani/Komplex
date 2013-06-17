@@ -47,6 +47,30 @@ public class MessageManager {
 			mess.set("PLAYER_OFFLINE", "&dTento hrac neni pripojen.");
 			allOk = false;
 		}
+		if(!mess.contains("FLY_SELF_ON")){
+			mess.set("FLY_SELF_ON", "&7Zapnul jsi si mod letani.");
+			allOk = false;
+		}
+		if(!mess.contains("FLY_SELF_OFF")){
+			mess.set("FLY_SELF_OFF", "&7Vypnul jsi si mod letani.");
+			allOk = false;
+		}
+		if(!mess.contains("FLY_OTHER_ON")){
+			mess.set("FLY_OTHER_ON", "&7Zapnul jsi mod letani hraci %NICK%");
+			allOk = false;
+		}
+		if(!mess.contains("FLY_OTHER_OFF")){
+			mess.set("FLY_OTHER_OFF", "&7Vypnul jsi mod letani hraci %NICK%");
+			allOk = false;
+		}
+		if(!mess.contains("FLY_WHISPER_ON")){
+			mess.set("FLY_WHISPER_ON", "&7Admin %NICK% ti zapnul mod letani.");
+			allOk = false;
+		}
+		if(!mess.contains("FLY_WHISPER_OFF")){
+			mess.set("FLY_WHISPER_OFF", "&7Admin %NICK% ti vypnul mod letani.");
+			allOk = false;
+		}
 			//There it will be filled with another messages.
 		if(!allOk){
 			log.info("repairing or creating new messages.yml file.");
@@ -59,7 +83,7 @@ public class MessageManager {
 	}
 	
 	private String format(String message){
-		//Change & character with §
+		//Change & char with §
 		return message.replaceAll("&", "§");
 	}
 }
