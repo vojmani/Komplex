@@ -1,0 +1,13 @@
+name: Komplex
+main: cz.vojtamaniak.komplex.Komplex
+version: 0.1
+commands:
+  break:
+    usage: /break
+    description: Breaks the block there you looking at.
+  feed:
+    usage: /feed [nick]
+    description: Set as full the player's hunger bar.
+  fly:
+    usage: /fly [nick]
+    description: Changes the player's fly mode.
