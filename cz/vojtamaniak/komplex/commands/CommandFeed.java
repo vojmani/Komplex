@@ -11,17 +11,17 @@ import cz.vojtamaniak.komplex.Komplex;
 
 public class CommandFeed extends ICommand implements CommandExecutor {
 
-  public CommandFeed(Komplex plg) {
+	public CommandFeed(Komplex plg) {
 		super(plg);
 	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] arg) {
-		if(cmd.toString().equalsIgnoreCase("feed")){
-			if(arg[0].isEmpty()){
-				feedSelf(sender);
-			}else{
+		if(cmd.getName().equalsIgnoreCase("feed")){
+			if(arg.length > 0){
 				feedOther(sender, arg);
+			}else{
+				feedSelf(sender);
 			}
 			return true;
 		}
