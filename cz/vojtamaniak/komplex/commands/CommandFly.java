@@ -11,17 +11,17 @@ import cz.vojtamaniak.komplex.Komplex;
 
 public class CommandFly extends ICommand implements CommandExecutor {
 
-  public CommandFly(Komplex plg) {
+	public CommandFly(Komplex plg) {
 		super(plg);
 	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] arg){
-		if(cmd.toString().equalsIgnoreCase("fly")){
-			if(arg[0].isEmpty()){
-				flySelf(sender);
-			}else{
+		if(cmd.getName().equalsIgnoreCase("fly")){
+			if(arg.length > 0){
 				flyOther(sender, arg);
+			}else{
+				flySelf(sender);
 			}
 			return true;
 		}
