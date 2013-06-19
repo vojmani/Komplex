@@ -28,7 +28,7 @@ public class MessageManager {
 	public void init(){
 		boolean allOk = true;
 		if(!mess.contains("NO_PERMISSION")){
-			mess.set("NO_PERMISSION", "&dNemas prava.");
+			mess.set("NO_PERMISSION", "&4Nemas prava.");
 			allOk = false;
 		}
 		if(!mess.contains("FEED_SELF")){
@@ -44,7 +44,7 @@ public class MessageManager {
 			allOk = false;
 		}
 		if(!mess.contains("PLAYER_OFFLINE")){
-			mess.set("PLAYER_OFFLINE", "&dTento hrac neni pripojen.");
+			mess.set("PLAYER_OFFLINE", "&4Tento hrac neni pripojen.");
 			allOk = false;
 		}
 		if(!mess.contains("FLY_SELF_ON")){
@@ -69,6 +69,10 @@ public class MessageManager {
 		}
 		if(!mess.contains("FLY_WHISPER_OFF")){
 			mess.set("FLY_WHISPER_OFF", "&7Admin %NICK% ti vypnul mod letani.");
+			allOk = false;
+		}
+		if(!mess.contains("NO_PERMISSION_BEDROCK")){
+			mess.set("NO_PERMISSION_BEDROCK", "&4Nemas prava na zniceni bedrocku.");
 			allOk = false;
 		}
 			//There it will be filled with another messages.
