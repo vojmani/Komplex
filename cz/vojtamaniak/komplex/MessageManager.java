@@ -9,13 +9,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class MessageManager {
 	
-	private Komplex plg;
 	private File messFile;
 	private FileConfiguration mess;
 	private Logger log;
 	
 	public MessageManager(Komplex plg){
-		this.plg = plg;
 		this.messFile = new File(plg.getDataFolder(), "messages.yml");
 		this.mess = YamlConfiguration.loadConfiguration(messFile);
 		this.log = plg.getLogger();
@@ -73,6 +71,10 @@ public class MessageManager {
 		}
 		if(!mess.contains("NO_PERMISSION_BEDROCK")){
 			mess.set("NO_PERMISSION_BEDROCK", "&4Nemas prava na zniceni bedrocku.");
+			allOk = false;
+		}
+		if(!mess.contains("CHAT_CLEARED")){
+			mess.set("CHAT_CLEARED", "&bChat promazan adminem %NICK%");
 			allOk = false;
 		}
 			//There it will be filled with another messages.
