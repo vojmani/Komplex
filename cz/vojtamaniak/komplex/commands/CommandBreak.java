@@ -36,6 +36,7 @@ public class CommandBreak extends ICommand implements CommandExecutor {
 	private void breakOtherBlocks(Player player, Block target){
 		if(player.isOp() || player.hasPermission("komplex.break")){
 			BlockBreakEvent e = new BlockBreakEvent(target, player);
+			Bukkit.getPluginManager().callEvent(e);
 			if(!e.isCancelled()){
 				target.setType(Material.AIR);
 			}
@@ -48,6 +49,7 @@ public class CommandBreak extends ICommand implements CommandExecutor {
 	private void breakBedrock(Player player, Block target){
 		if(player.isOp() || player.hasPermission("komplex.break.bedrock")){
 			BlockBreakEvent e = new BlockBreakEvent(target, player);
+			Bukkit.getPluginManager().callEvent(e);
 			if(!e.isCancelled()){
 				target.setType(Material.AIR);
 			}
