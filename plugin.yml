@@ -11,3 +11,6 @@ commands:
   fly:
     usage: /fly [nick]
     description: Changes the player's fly mode.
+  clearchat:
+    usage: /clearchat
+    description: Clear the chat.
