@@ -10,7 +10,7 @@ import cz.vojtamaniak.komplex.Komplex;
 
 public class CommandClearChat extends ICommand implements CommandExecutor {
 
-  public CommandClearChat(Komplex plg) {
+	public CommandClearChat(Komplex plg) {
 		super(plg);
 	}
 
@@ -24,7 +24,7 @@ public class CommandClearChat extends ICommand implements CommandExecutor {
 					}
 				}
 				for(Player p : Bukkit.getOnlinePlayers()){
-					Bukkit.broadcastMessage(msgManager.getMessage("CHAT_CLEARED").replaceAll("%NICK%", sender.getName()));
+					p.sendMessage(msgManager.getMessage("CHAT_CLEARED").replaceAll("%NICK%", sender.getName()));
 				}
 			}else{
 				sender.sendMessage(msgManager.getMessage("NO_PERMISSION"));
