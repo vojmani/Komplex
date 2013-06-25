@@ -11,7 +11,7 @@ import cz.vojtamaniak.komplex.Komplex;
 
 public class CommandGod extends ICommand implements CommandExecutor {
 
-  public CommandGod(Komplex plg) {
+	public CommandGod(Komplex plg) {
 		super(plg);
 	}
 
@@ -36,12 +36,12 @@ public class CommandGod extends ICommand implements CommandExecutor {
 			if(sender.isOp() || sender.hasPermission("komplex.god.other")){
 				if(plg.getUser(player.getName()).getGodMode()){
 					plg.getUser(player.getName()).setGodMode(false);
-					player.sendMessage(msgManager.getMessage("GOD_WHISPER_OFF"));
-					sender.sendMessage(msgManager.getMessage("GOD_OTHER_OFF"));
+					player.sendMessage(msgManager.getMessage("GOD_WHISPER_OFF").replaceAll("%NICK%", sender.getName()));
+					sender.sendMessage(msgManager.getMessage("GOD_OTHER_OFF").replaceAll("%NICK%", player.getName()));
 				}else{
 					plg.getUser(player.getName()).setGodMode(true);
-					player.sendMessage(msgManager.getMessage("GOD_WHISPER_ON"));
-					sender.sendMessage(msgManager.getMessage("GOD_OTHER_ON"));
+					player.sendMessage(msgManager.getMessage("GOD_WHISPER_ON").replaceAll("%NICK%", sender.getName()));
+					sender.sendMessage(msgManager.getMessage("GOD_OTHER_ON").replaceAll("%NICK%", player.getName()));
 				}
 			}else{
 				sender.sendMessage(msgManager.getMessage("NO_PERMISSION"));
