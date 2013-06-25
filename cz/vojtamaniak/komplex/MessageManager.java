@@ -77,6 +77,34 @@ public class MessageManager {
 			mess.set("CHAT_CLEARED", "&bChat promazan adminem %NICK%");
 			allOk = false;
 		}
+		if(!mess.contains("MESSAGE_JOIN")){
+			mess.set("MESSAGE_JOIN", "&f%NICK% &esepripojil.");
+			allOk = false;
+		}
+		if(!mess.contains("GOD_SELF_ON")){
+			mess.set("GOD_SELF_OFF", "&7Zapnul jsi si nesmrtelnost.");
+			allOk = false;
+		}
+		if(!mess.contains("GOD_SELF_OFF")){
+			mess.set("GOD_SELF_OFF", "&7Vypnul jsi si nesmrtelnost.");
+			allOk = false;
+		}
+		if(!mess.contains("GOD_OTHER_ON")){
+			mess.set("GOD_OTHER_ON", "&7Zapnul jsi nesmrtelnost hraci %NICK%");
+			allOk = false;
+		}
+		if(!mess.contains("GOD_OTHER_OFF")){
+			mess.set("GOD_OTHER_OFF", "&7Vypnul jsi nesmrtelnost hraci %NICK%");
+			allOk = false;
+		}
+		if(!mess.contains("GOD_WHISPER_ON")){
+			mess.set("GOD_WHISPER_ON", "&7Admin %NICK% ti zapnul nesmrtelnost.");
+			allOk = false;
+		}
+		if(!mess.contains("GOD_WHISPER_OFF")){
+			mess.set("GOD_WHISPER_OFF", "&7Admin %NICK% ti vypnul nesmrtelnost.");
+			allOk = false;
+		}
 			//There it will be filled with another messages.
 		if(!allOk){
 			log.info("repairing or creating new messages.yml file.");
