@@ -11,8 +11,9 @@ import cz.vojtamaniak.komplex.commands.CommandClearChat;
 import cz.vojtamaniak.komplex.commands.CommandFeed;
 import cz.vojtamaniak.komplex.commands.CommandFly;
 import cz.vojtamaniak.komplex.commands.CommandGod;
-import cz.vojtamaniak.komplex.listeners.onEntityDamageEvent;
+import cz.vojtamaniak.komplex.listeners.onEntityDamage;
 import cz.vojtamaniak.komplex.listeners.onJoin;
+import cz.vojtamaniak.komplex.listeners.onQuit;
 
 public class Komplex extends JavaPlugin {
 	
@@ -55,7 +56,8 @@ public class Komplex extends JavaPlugin {
 	
 	private void registerListeners(){
 		Bukkit.getPluginManager().registerEvents(new onJoin(this), this);
-		Bukkit.getPluginManager().registerEvents(new onEntityDamageEvent(this), this);
+		Bukkit.getPluginManager().registerEvents(new onEntityDamage(this), this);
+		Bukkit.getPluginManager().registerEvents(new onQuit(this), this);
 	}
 	
 	public void addUser(User user){
@@ -66,5 +68,9 @@ public class Komplex extends JavaPlugin {
 	
 	public User getUser(String name){
 		return users.get(name);
+	}
+	
+	public void removeUser(String name){
+		users.remove(name);
 	}
 }
