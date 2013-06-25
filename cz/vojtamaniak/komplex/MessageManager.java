@@ -78,7 +78,11 @@ public class MessageManager {
 			allOk = false;
 		}
 		if(!mess.contains("MESSAGE_JOIN")){
-			mess.set("MESSAGE_JOIN", "&f%NICK% &esepripojil.");
+			mess.set("MESSAGE_JOIN", "&f%NICK% &ese pripojil.");
+			allOk = false;
+		}
+		if(!mess.contains("MESSAGE_QUIT")){
+			mess.set("MESSAGE_JOIN", "&f%NICK% &ese odpojil.");
 			allOk = false;
 		}
 		if(!mess.contains("GOD_SELF_ON")){
