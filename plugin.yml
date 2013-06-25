@@ -14,3 +14,6 @@ commands:
   clearchat:
     usage: /clearchat
     description: Clear the chat.
+  god:
+    usage: /god [nick]
+    description: Set a God mode.
