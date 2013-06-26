@@ -9,9 +9,9 @@ import org.bukkit.event.EventHandler;
 
 import cz.vojtamaniak.komplex.Komplex;
 
-public class onEntityDamageEvent extends IListener {
+public class onEntityDamage extends IListener {
 
-  public onEntityDamageEvent(Komplex plg) {
+	public onEntityDamage(Komplex plg) {
 		super(plg);
 	}
 	
@@ -20,6 +20,10 @@ public class onEntityDamageEvent extends IListener {
 		if(e.getEntityType() == EntityType.PLAYER){
 			Player player = (Player)e.getEntity();
 			if(plg.getUser(player.getName()).getGodMode() && e.getCause() != DamageCause.VOID){
+				player.setFireTicks(0);
+				if(player.getRemainingAir() != player.getMaximumAir()){
+					player.setRemainingAir(player.getMaximumAir());
+				}
 				e.setCancelled(true);
 			}
 		}
