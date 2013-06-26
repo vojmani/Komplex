@@ -19,7 +19,7 @@ public class onEntityDamageEvent extends IListener {
 	public void onEntityDamageEvent(EntityDamageEvent e){
 		if(e.getEntityType() == EntityType.PLAYER){
 			Player player = (Player)e.getEntity();
-			if(plg.getUser(player.getName()).getGodMode() && e.getCause() == DamageCause.VOID){
+			if(plg.getUser(player.getName()).getGodMode() && e.getCause() != DamageCause.VOID){
 				e.setCancelled(true);
 			}
 		}
