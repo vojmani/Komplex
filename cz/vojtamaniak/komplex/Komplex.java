@@ -11,6 +11,8 @@ import cz.vojtamaniak.komplex.commands.CommandClearChat;
 import cz.vojtamaniak.komplex.commands.CommandFeed;
 import cz.vojtamaniak.komplex.commands.CommandFly;
 import cz.vojtamaniak.komplex.commands.CommandGod;
+import cz.vojtamaniak.komplex.commands.CommandHat;
+import cz.vojtamaniak.komplex.commands.CommandHeal;
 import cz.vojtamaniak.komplex.listeners.onEntityDamage;
 import cz.vojtamaniak.komplex.listeners.onJoin;
 import cz.vojtamaniak.komplex.listeners.onQuit;
@@ -52,6 +54,7 @@ public class Komplex extends JavaPlugin {
 		getCommand("fly").setExecutor(new CommandFly(this));
 		getCommand("clearchat").setExecutor(new CommandClearChat(this));
 		getCommand("god").setExecutor(new CommandGod(this));
+		getCommand("hat").setExecutor(new CommandHat(this));
 	}
 	
 	private void registerListeners(){
