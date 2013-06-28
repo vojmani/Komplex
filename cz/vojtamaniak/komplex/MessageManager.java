@@ -82,11 +82,11 @@ public class MessageManager {
 			allOk = false;
 		}
 		if(!mess.contains("MESSAGE_QUIT")){
-			mess.set("MESSAGE_JOIN", "&f%NICK% &ese odpojil.");
+			mess.set("MESSAGE_QUIT", "&f%NICK% &ese odpojil.");
 			allOk = false;
 		}
 		if(!mess.contains("GOD_SELF_ON")){
-			mess.set("GOD_SELF_OFF", "&7Zapnul jsi si nesmrtelnost.");
+			mess.set("GOD_SELF_ON", "&7Zapnul jsi si nesmrtelnost.");
 			allOk = false;
 		}
 		if(!mess.contains("GOD_SELF_OFF")){
@@ -107,6 +107,10 @@ public class MessageManager {
 		}
 		if(!mess.contains("GOD_WHISPER_OFF")){
 			mess.set("GOD_WHISPER_OFF", "&7Admin %NICK% ti vypnul nesmrtelnost.");
+			allOk = false;
+		}
+		if(!mess.contains("HAT_SUCCESS")){
+			mess.set("HAT_SUCCESS", "&7Hlava zmenena.");
 			allOk = false;
 		}
 			//There it will be filled with another messages.
