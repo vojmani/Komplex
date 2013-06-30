@@ -55,6 +55,7 @@ public class Komplex extends JavaPlugin {
 		getCommand("clearchat").setExecutor(new CommandClearChat(this));
 		getCommand("god").setExecutor(new CommandGod(this));
 		getCommand("hat").setExecutor(new CommandHat(this));
+		getCommand("heal").setExecutor(new CommandHeal(this));
 	}
 	
 	private void registerListeners(){
