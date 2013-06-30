@@ -11,7 +11,7 @@ import cz.vojtamaniak.komplex.Komplex;
 
 public class CommandHat extends ICommand implements CommandExecutor {
 
-  public CommandHat(Komplex plg) {
+	public CommandHat(Komplex plg) {
 		super(plg);
 	}
 	
