@@ -113,6 +113,18 @@ public class MessageManager {
 			mess.set("HAT_SUCCESS", "&7Hlava zmenena.");
 			allOk = false;
 		}
+		if(!mess.contains("HEAL_SELF")){
+			mess.set("HEAL_SELF", "&7Doplnil jsis zdravi.");
+			allOk = false;
+		}
+		if(!mess.contains("HEAL_OTHER")){
+			mess.set("HEAL_OTHER", "&7Doplnil jsi zdravi hraci %NICK%");
+			allOk = false;
+		}
+		if(!mess.contains("HEAL_WHISPER")){
+			mess.set("HEAL_WHISPER", "&7Admin %NICK% ti doplnil zdraví.");
+			allOk = false;
+		}
 			//There it will be filled with another messages.
 		if(!allOk){
 			log.info("repairing or creating new messages.yml file.");
