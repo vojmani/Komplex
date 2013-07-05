@@ -6,7 +6,7 @@ import cz.vojtamaniak.komplex.Komplex;
 import cz.vojtamaniak.komplex.MessageManager;
 
 abstract public class IListener implements Listener {
-  
+	
 	protected MessageManager msgManager;
 	protected Komplex plg;
 	

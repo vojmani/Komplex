@@ -1,9 +1,12 @@
 package cz.vojtamaniak.komplex;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import cz.vojtamaniak.komplex.commands.CommandBreak;
@@ -13,6 +16,8 @@ import cz.vojtamaniak.komplex.commands.CommandFly;
 import cz.vojtamaniak.komplex.commands.CommandGod;
 import cz.vojtamaniak.komplex.commands.CommandHat;
 import cz.vojtamaniak.komplex.commands.CommandHeal;
+import cz.vojtamaniak.komplex.commands.CommandPtime;
+import cz.vojtamaniak.komplex.commands.CommandWorkbench;
 import cz.vojtamaniak.komplex.listeners.onEntityDamage;
 import cz.vojtamaniak.komplex.listeners.onJoin;
 import cz.vojtamaniak.komplex.listeners.onQuit;
@@ -36,6 +41,8 @@ public class Komplex extends JavaPlugin {
 		registerExecutors();
 		registerListeners();
 		
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Scheduler(this), 20*5, 20);
+		
 		msgManager.init();
 	}
 	
@@ -56,6 +63,8 @@ public class Komplex extends JavaPlugin {
 		getCommand("god").setExecutor(new CommandGod(this));
 		getCommand("hat").setExecutor(new CommandHat(this));
 		getCommand("heal").setExecutor(new CommandHeal(this));
+		getCommand("ptime").setExecutor(new CommandPtime(this));
+		getCommand("workbench").setExecutor(new CommandWorkbench(this));
 	}
 	
 	private void registerListeners(){

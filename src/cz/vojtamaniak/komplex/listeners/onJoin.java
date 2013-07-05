@@ -10,7 +10,7 @@ import cz.vojtamaniak.komplex.Komplex;
 import cz.vojtamaniak.komplex.User;
 
 public class onJoin extends IListener {
-  
+	
 	public onJoin(Komplex plg){
 		super(plg);
 	}

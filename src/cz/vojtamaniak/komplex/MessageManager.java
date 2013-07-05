@@ -122,7 +122,43 @@ public class MessageManager {
 			allOk = false;
 		}
 		if(!mess.contains("HEAL_WHISPER")){
-			mess.set("HEAL_WHISPER", "&7Admin %NICK% ti doplnil zdravÃ­.");
+			mess.set("HEAL_WHISPER", "&7Admin %NICK% ti doplnil zdraví.");
+			allOk = false;
+		}
+		if(!mess.contains("WRONG_USAGE")){
+			mess.set("WRONG_USAGE", "&4Spatny format prikazu. Spravny format: %USAGE%");
+			allOk = false;
+		}
+		if(!mess.contains("PTIME_GET_SELF")){
+			mess.set("PTIME_GET_SELF", "&7Tvuj cas je %TIME% ticku.");
+			allOk = false;
+		}
+		if(!mess.contains("PTIME_GET_OTHER")){
+			mess.set("PTIME_GET_OTHER", "&7Cas hrace %NICK% je %TIME% ticku.");
+			allOk = false;
+		}
+		if(!mess.contains("PTIME_RESET_SELF")){
+			mess.set("PTIME_RESET_SELF", "&7Tvuj cas je nyni stejny jako na serveru.");
+			allOk = false;
+		}
+		if(!mess.contains("PTIME_RESET_OTHER")){
+			mess.set("PTIME_RESET_OTHER", "&7Cas hrace %NICK% je nyni stejny jako na serveru.");
+			allOk = false;
+		}
+		if(!mess.contains("PTIME_RESET_WHISPER")){
+			mess.set("PTIME_RESET_WHISPER", "&7Admin %NICK% ti nastavil cas stejny, jako je na serveru.");
+			allOk = false;
+		}
+		if(!mess.contains("PTIME_SET_SELF")){
+			mess.set("PTIME_SET_SELF", "&7Nastavil jsi svuj cas na %TIME% ticku.");
+			allOk = false;
+		}
+		if(!mess.contains("PTIME_SET_OTHER")){
+			mess.set("PTIME_SET_OTHER", "&7Nastavil jsi cas hrace %NICK% na %TIME% ticku.");
+			allOk = false;
+		}
+		if(!mess.contains("PTIME_SET_WHISPER")){
+			mess.set("PTIME_SET_WHISPER", "&7Admin %NICK% ti nastavil cas na %TIME% ticku.");
 			allOk = false;
 		}
 			//There it will be filled with another messages.
@@ -137,7 +173,7 @@ public class MessageManager {
 	}
 	
 	private String format(String message){
-		//Change & char with Â§
-		return message.replaceAll("&", "Â§");
+		//Change & char with §
+		return message.replaceAll("&", "§");
 	}
 }

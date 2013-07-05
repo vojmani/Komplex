@@ -1,0 +1,26 @@
+###################################
+#Configuration of Plugin Komplex ##
+#Author: vojtamaniak             ##
+###################################
+storage:
+  #Set to MySQL for MySQL support.
+  #Set to File for File support.
+  type: File
+  
+  #MySQL host
+  mysql-host: localhost
+  
+  #MySQL port, standart 3306.
+  mysql-port: 3306
+  
+  #MySQL username
+  mysql-user: root
+  
+  #MySQL password
+  mysql-pass: topsecretpassword
+  
+  #MySQL database name
+  mysql-data: minecraft
+  
+  #MySQL table prefix -> every table in mysql start's with this.
+  mysql-table-prefix: k_

@@ -11,7 +11,7 @@ import cz.vojtamaniak.komplex.Komplex;
 
 public class CommandHeal extends ICommand implements CommandExecutor {
 
-  public CommandHeal(Komplex plg) {
+	public CommandHeal(Komplex plg) {
 		super(plg);
 	}
 
@@ -33,6 +33,8 @@ public class CommandHeal extends ICommand implements CommandExecutor {
 			Player player = (Player)sender;
 			if(sender.isOp() || sender.hasPermission("komplex.heal")){
 				player.setHealth(player.getMaxHealth());
+				player.setFoodLevel(20);
+				player.setFireTicks(0);
 				player.sendMessage(msgManager.getMessage("HEAL_SELF"));
 			}else{
 				player.sendMessage(msgManager.getMessage("NO_PERMISSION"));
@@ -46,6 +48,8 @@ public class CommandHeal extends ICommand implements CommandExecutor {
 			Player player = (Player)offP;
 			if(sender.isOp() || sender.hasPermission("komplex.heal.other")){
 				player.setHealth(player.getMaxHealth());
+				player.setFoodLevel(20);
+				player.setFireTicks(0);
 				player.sendMessage(msgManager.getMessage("HEAL_WHISPER").replaceAll("%NICK%", sender.getName()));
 				sender.sendMessage(msgManager.getMessage("HEAL_OTHER").replaceAll("%NICK%", player.getName()));
 			}else{
