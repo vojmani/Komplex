@@ -4,14 +4,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import cz.vojtamaniak.komplex.Komplex;
 
-public class CommandBreak extends ICommand implements CommandExecutor {
+public class CommandBreak extends ICommand {
 
 	public CommandBreak(Komplex plg) {
 		super(plg);

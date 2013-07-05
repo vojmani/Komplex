@@ -1,13 +1,12 @@
 package cz.vojtamaniak.komplex.commands;
 
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import cz.vojtamaniak.komplex.Komplex;
 
-public class CommandWorkbench extends ICommand implements CommandExecutor {
+public class CommandWorkbench extends ICommand {
 
 	public CommandWorkbench(Komplex plg) {
 		super(plg);
