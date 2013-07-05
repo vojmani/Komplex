@@ -1,0 +1,46 @@
+package cz.vojtamaniak.komplex.listeners;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+
+import cz.vojtamaniak.komplex.Komplex;
+import cz.vojtamaniak.komplex.User;
+
+public class PlayerListener extends IListener {
+
+	public PlayerListener(Komplex plg) {
+		super(plg);
+	}
+	
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerJoin(PlayerJoinEvent e){
+		e.setJoinMessage(null);
+		for(Player p : Bukkit.getOnlinePlayers()){
+			if(p.hasPermission("komplex.messages.onjoin.receive")){
+				p.sendMessage(msgManager.getMessage("MESSAGE_JOIN").replaceAll("%NICK%", e.getPlayer().getName()));
+			}
+		}
+		User user = new User(e.getPlayer());
+		plg.addUser(user);
+	}
+	
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerQuit(PlayerQuitEvent e){
+		for(Player p : Bukkit.getOnlinePlayers()){
+			if(p.hasPermission("komplex.messages.onquit.receive")){
+				p.sendMessage(msgManager.getMessage("MESSAGE_QUIT"));				
+			}
+		}
+		plg.removeUser(e.getPlayer().getName());
+	}
+	
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerMove(PlayerMoveEvent e){
+		
+	}
+}

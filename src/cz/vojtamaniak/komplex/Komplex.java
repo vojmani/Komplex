@@ -1,12 +1,9 @@
 package cz.vojtamaniak.komplex;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Server;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import cz.vojtamaniak.komplex.commands.CommandBreak;
@@ -18,9 +15,8 @@ import cz.vojtamaniak.komplex.commands.CommandHat;
 import cz.vojtamaniak.komplex.commands.CommandHeal;
 import cz.vojtamaniak.komplex.commands.CommandPtime;
 import cz.vojtamaniak.komplex.commands.CommandWorkbench;
-import cz.vojtamaniak.komplex.listeners.onEntityDamage;
-import cz.vojtamaniak.komplex.listeners.onJoin;
-import cz.vojtamaniak.komplex.listeners.onQuit;
+import cz.vojtamaniak.komplex.listeners.EntityListener;
+import cz.vojtamaniak.komplex.listeners.PlayerListener;
 
 public class Komplex extends JavaPlugin {
 	
@@ -68,9 +64,8 @@ public class Komplex extends JavaPlugin {
 	}
 	
 	private void registerListeners(){
-		Bukkit.getPluginManager().registerEvents(new onJoin(this), this);
-		Bukkit.getPluginManager().registerEvents(new onEntityDamage(this), this);
-		Bukkit.getPluginManager().registerEvents(new onQuit(this), this);
+		Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
+		Bukkit.getPluginManager().registerEvents(new EntityListener(this), this);
 	}
 	
 	public void addUser(User user){
