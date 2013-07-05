@@ -17,6 +17,10 @@ public class PlayerListener extends IListener {
 		super(plg);
 	}
 	
+	/**
+	 * @param e - PlayerJoinEvent
+	 * @return
+	 */
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerJoin(PlayerJoinEvent e){
 		e.setJoinMessage(null);
@@ -29,6 +33,10 @@ public class PlayerListener extends IListener {
 		plg.addUser(user);
 	}
 	
+	/**
+	 * @param e - PlayerQuitEvent
+	 * @return
+	 */
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerQuit(PlayerQuitEvent e){
 		for(Player p : Bukkit.getOnlinePlayers()){
@@ -39,6 +47,10 @@ public class PlayerListener extends IListener {
 		plg.removeUser(e.getPlayer().getName());
 	}
 	
+	/**
+	 * @param e - PlayerMoveEvent
+	 * @return
+	 */
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerMove(PlayerMoveEvent e){
 		
