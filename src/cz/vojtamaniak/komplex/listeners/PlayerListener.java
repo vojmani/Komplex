@@ -41,7 +41,7 @@ public class PlayerListener extends IListener {
 	public void onPlayerQuit(PlayerQuitEvent e){
 		for(Player p : Bukkit.getOnlinePlayers()){
 			if(p.hasPermission("komplex.messages.onquit.receive")){
-				p.sendMessage(msgManager.getMessage("MESSAGE_QUIT"));				
+				p.sendMessage(msgManager.getMessage("MESSAGE_QUIT").replaceAll("%NICK%", e.getPlayer().getName()));				
 			}
 		}
 		plg.removeUser(e.getPlayer().getName());
