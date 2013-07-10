@@ -161,6 +161,22 @@ public class MessageManager {
 			mess.set("PTIME_SET_WHISPER", "&7Admin %NICK% ti nastavil cas na %TIME% ticku.");
 			allOk = false;
 		}
+		if(!mess.contains("AFK_KICK_WHISPER")){
+			mess.set("AFK_KICK_WHISPER", "Byl jsi vyhozen za neaktivitu delsi nez 3 minuty");
+			allOk = false;
+		}
+		if(!mess.contains("AFK_KICK_BROADCAST")){
+			mess.set("AFK_KICK_BROADCAST", "&f%NICK% &ebyl vyhozen za neaktivitu delsi nez 3 minuty.");
+			allOk = false;
+		}
+		if(!mess.contains("AFK_ENTER")){
+			mess.set("AFK_ENTER", "&f%NICK% je nyni AFK.");
+			allOk = false;
+		}
+		if(!mess.contains("AFK_LEAVE")){
+			mess.set("AFK_LEAVE", "&f%NICK% uz neni AFK.");
+			allOk = false;
+		}
 			//There it will be filled with another messages.
 		if(!allOk){
 			log.info("repairing or creating new messages.yml file.");

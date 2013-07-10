@@ -5,11 +5,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import cz.vojtamaniak.komplex.Komplex;
 import cz.vojtamaniak.komplex.User;
+import cz.vojtamaniak.komplex.Utils;
 
 public class PlayerListener extends IListener {
 
@@ -48,11 +50,11 @@ public class PlayerListener extends IListener {
 	}
 	
 	/**
-	 * @param e - PlayerMoveEvent
-	 * @return
-	 */
+	 *  @param e - PlayerKickEvent
+	 *  @return
+	 *  */
 	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerMove(PlayerMoveEvent e){
-		
+	public void onPlayerKick(PlayerKickEvent e){
+		plg.removeUser(e.getPlayer().getName());
 	}
 }

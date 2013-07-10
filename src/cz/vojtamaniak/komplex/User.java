@@ -6,12 +6,12 @@ public class User {
 	
 	private Player p;
 	private boolean godMode;
-	private long afkStart;
+	private boolean isAfk;
 	
 	public User(Player p){
 		this.p = p;
 		this.godMode = false;
-		this.afkStart = 0;
+		this.isAfk = false;
 	}
 	
 	public Player getPlayer(){
@@ -24,5 +24,13 @@ public class User {
 	
 	public void setGodMode(boolean godmode){
 		this.godMode = godmode;
+	}
+	
+	public boolean isAfk() {
+		return isAfk;
+	}
+
+	public void setAfk(boolean isAfk) {
+		this.isAfk = isAfk;
 	}
 }

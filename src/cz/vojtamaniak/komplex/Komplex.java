@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import cz.vojtamaniak.komplex.commands.CommandAfk;
 import cz.vojtamaniak.komplex.commands.CommandBreak;
 import cz.vojtamaniak.komplex.commands.CommandClearChat;
 import cz.vojtamaniak.komplex.commands.CommandFeed;
@@ -37,14 +38,14 @@ public class Komplex extends JavaPlugin {
 		registerExecutors();
 		registerListeners();
 		
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Scheduler(this), 20*5, 20);
-		
 		msgManager.init();
+		confManager.init();
 	}
 	
 	@Override
 	public void onDisable(){
 		log.info("is disabled.");
+		users.clear();
 	}
 	
 	public MessageManager getMessageManager(){
@@ -52,6 +53,7 @@ public class Komplex extends JavaPlugin {
 	}
 	
 	private void registerExecutors(){
+		getCommand("afk").setExecutor(new CommandAfk(this));
 		getCommand("break").setExecutor(new CommandBreak(this));
 		getCommand("feed").setExecutor(new CommandFeed(this));
 		getCommand("fly").setExecutor(new CommandFly(this));
@@ -74,11 +76,15 @@ public class Komplex extends JavaPlugin {
 		}
 	}
 	
-	public User getUser(String name){
+	public User getUser(String name) {
 		return users.get(name);
 	}
 	
 	public void removeUser(String name){
 		users.remove(name);
+	}
+	
+	public ConfigManager getConfigManager(){
+		return confManager;
 	}
 }
