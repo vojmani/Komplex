@@ -28,4 +28,7 @@ commands:
     description: Modify player's time.
   workbench:
     usage: /workbench
-    description: Opens a crafting table to a player.
+    description: Opens a crafting table to a player
+  afk:
+    usage: /afk
+    description: Changes players afk.

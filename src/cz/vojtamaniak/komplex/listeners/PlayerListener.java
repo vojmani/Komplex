@@ -57,4 +57,17 @@ public class PlayerListener extends IListener {
 	public void onPlayerKick(PlayerKickEvent e){
 		plg.removeUser(e.getPlayer().getName());
 	}
+	
+	/**
+	 *  @param e - PlayerMoveEvent
+	 *  @return
+	 *  */
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerMove(PlayerMoveEvent e){
+		User user = plg.getUser(e.getPlayer().getName());
+		if(user.isAfk()){
+			user.setAfk(false);
+			Utils.broadcast(msgManager.getMessage("AFK_LEAVE").replaceAll("%NICK%", e.getPlayer().getName()), "komplex.messages.onafkleave");
+		}
+	}
 }
