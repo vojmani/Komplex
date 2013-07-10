@@ -35,3 +35,6 @@ commands:
   helpop:
     usage: /helpop [message]
     description: Sends a message to online admins.
+  list:
+    usage: /list
+    descriprion: Lists an online players.

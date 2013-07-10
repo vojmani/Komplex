@@ -15,6 +15,7 @@ import cz.vojtamaniak.komplex.commands.CommandGod;
 import cz.vojtamaniak.komplex.commands.CommandHat;
 import cz.vojtamaniak.komplex.commands.CommandHeal;
 import cz.vojtamaniak.komplex.commands.CommandHelpOp;
+import cz.vojtamaniak.komplex.commands.CommandList;
 import cz.vojtamaniak.komplex.commands.CommandPtime;
 import cz.vojtamaniak.komplex.commands.CommandWorkbench;
 import cz.vojtamaniak.komplex.listeners.EntityListener;
@@ -65,6 +66,7 @@ public class Komplex extends JavaPlugin {
 		getCommand("ptime").setExecutor(new CommandPtime(this));
 		getCommand("workbench").setExecutor(new CommandWorkbench(this));
 		getCommand("helpop").setExecutor(new CommandHelpOp(this));
+		getCommand("list").setExecutor(new CommandList(this));
 	}
 	
 	private void registerListeners(){

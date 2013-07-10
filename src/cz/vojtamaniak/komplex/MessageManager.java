@@ -179,6 +179,15 @@ public class MessageManager {
 		}
 		if(!mess.contains("HELPOP_MESSAGE")){
 			mess.set("HELPOP_MESSAGE", "&6[HelpOp] &f%NICK%: %MESSAGE%");
+			allOk = false;
+		}
+		if(!mess.contains("LIST")){
+			mess.set("LIST", "&9Prave je pripojeno &b%NUMBEROFPLAYERS% &9z &b%MAXPLAYERS% &9hracu: &b%PLAYERS%");
+			allOk = false;
+		}
+		if(!mess.contains("HIDDEN_PREFIX")){
+			mess.set("HIDDEN_PREFIX", "&7[NEVIDITELNY]&b");
+			allOk = false;
 		}
 			//There it will be filled with another messages.
 		if(!allOk){
