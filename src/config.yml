@@ -24,3 +24,11 @@ storage:
   
   #MySQL table prefix -> every table in mysql start's with this.
   mysql-table-prefix: k_
+
+afkTimer:
+  #Enable afk timer?
+  enable: false
+  #Time (in sec) to set player to AFK.
+  timeAfk: 60
+  #Time (in sec) to kick player for AFK.
+  timeKick: 180
