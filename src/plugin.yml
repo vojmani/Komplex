@@ -32,3 +32,6 @@ commands:
   afk:
     usage: /afk
     description: Changes players afk.
+  helpop:
+    usage: /helpop [message]
+    description: Sends a message to online admins.

@@ -177,6 +177,9 @@ public class MessageManager {
 			mess.set("AFK_LEAVE", "&f%NICK% uz neni AFK.");
 			allOk = false;
 		}
+		if(!mess.contains("HELPOP_MESSAGE")){
+			mess.set("HELPOP_MESSAGE", "&6[HelpOp] &f%NICK%: %MESSAGE%");
+		}
 			//There it will be filled with another messages.
 		if(!allOk){
 			log.info("repairing or creating new messages.yml file.");
