@@ -24,6 +24,10 @@ public class ConfigManager {
 		this.conf = YamlConfiguration.loadConfiguration(confFile);
 	}
 	
+	public FileConfiguration getConfig(){
+		return conf;
+	}
+	
 	public void init(){
 		if(confFile.exists()){
 			
@@ -84,10 +88,4 @@ public class ConfigManager {
 			}
 		}
 	}
-	
-	public Object[] getMySQLData(){
-		Object[] array = {conf.getString("storage.mysql-host"), conf.getInt("storage.mysql-port"), conf.getString("storage.mysql-user"), conf.getString("storage.mysql-pass"), conf.getString("storage.mysql-data"), conf.getString("storage.mysql-table-prefix")};
-		return array;
-	}
-	
 }
