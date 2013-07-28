@@ -29,8 +29,6 @@ public class ConfigManager {
 	}
 	
 	public void init(){
-		if(confFile.exists()){
-			
 			boolean allOk = true;
 			
 			if(!conf.contains("storage.type")){
@@ -39,10 +37,6 @@ public class ConfigManager {
 			}
 			if(!conf.contains("storage.mysql-host")){
 				conf.set("storage.mysql-host", "localhost");
-				allOk = false;
-			}
-			if(!conf.contains("storage.mysql-port")){
-				conf.set("storage.mysql-port", "3306");
 				allOk = false;
 			}
 			if(!conf.contains("storage.mysql-user")){
@@ -57,35 +51,14 @@ public class ConfigManager {
 				conf.set("storage.mysql-data", "minecraft");
 				allOk = false;
 			}
-			if(!conf.contains("storage.mysql-table-prefix")){
-				conf.set("storage.mysql-table-prefix", "k_");
-				allOk = false;
-			}
 			
 			if(!allOk){
-				log.info("Repairing config.yml file.");
+				log.info("Repairing or creating config.yml file.");
 				try{
 					conf.save(confFile);
 				}catch(IOException e){
 					e.printStackTrace();
 				}
 			}
-		}else{
-			log.info("Creating new config.yml file.");
-			InputStream inStream = Komplex.class.getClassLoader().getResourceAsStream("config.yml");
-			File dest = new File(plg.getDataFolder(), "config.yml");
-			try {
-				OutputStream outStream = new FileOutputStream(dest);
-				int readBytes;
-				byte[] buffer = new byte[4096];
-				while((readBytes = inStream.read(buffer)) > 0){
-					outStream.write(buffer, 0, readBytes);
-				}
-				inStream.close();
-				outStream.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
 	}
 }
