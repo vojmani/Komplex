@@ -186,7 +186,27 @@ public class MessageManager {
 			allOk = false;
 		}
 		if(!mess.contains("HIDDEN_PREFIX")){
-			mess.set("HIDDEN_PREFIX", "&7[NEVIDITELNY]&b");
+			mess.set("HIDDEN_PREFIX", "&7[NEVIDITELNY]");
+			allOk = false;
+		}
+		if(!mess.contains("MAIL_FORMAT")){
+			mess.set("MAIL_FORMAT", "&f%SENDER%: %MESSAGE%");
+			allOk = false;
+		}
+		if(!mess.contains("MAIL_CLEARED")){
+			mess.set("MAIL_CLEARED", "&7Mail(y) vymazany!");
+			allOk = false;
+		}
+		if(!mess.contains("MAIL_SEND")){
+			mess.set("MAIL_SEND", "&7Mail odeslan!");
+			allOk = false;
+		}
+		if(!mess.contains("MAIL_EMPTY")){
+			mess.set("MAIL_EMPTY", "&7Nemas zadne nove maily.");
+			allOk = false;
+		}
+		if(!mess.contains("MAIL_CLEAR")){
+			mess.set("MAIL_CLEAR", "&4Pokud chces vymazat mail, napis &7/mail clear&4.");
 			allOk = false;
 		}
 			//There it will be filled with another messages.

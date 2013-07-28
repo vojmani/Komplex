@@ -16,6 +16,7 @@ import cz.vojtamaniak.komplex.commands.CommandHat;
 import cz.vojtamaniak.komplex.commands.CommandHeal;
 import cz.vojtamaniak.komplex.commands.CommandHelpOp;
 import cz.vojtamaniak.komplex.commands.CommandList;
+import cz.vojtamaniak.komplex.commands.CommandMail;
 import cz.vojtamaniak.komplex.commands.CommandPtime;
 import cz.vojtamaniak.komplex.commands.CommandWorkbench;
 import cz.vojtamaniak.komplex.listeners.EntityListener;
@@ -27,6 +28,7 @@ public class Komplex extends JavaPlugin {
 	private MessageManager msgManager;
 	private ConfigManager confManager;
 	private HashMap<String, User> users;
+	private StorageManager storManager;
 	
 	@Override
 	public void onEnable(){
@@ -34,20 +36,21 @@ public class Komplex extends JavaPlugin {
 		msgManager = new MessageManager(this);
 		confManager = new ConfigManager(this);
 		users = new HashMap<String, User>();
-		
-		log.info("is enabled.");
+		storManager = new StorageManager(this);
 		
 		registerExecutors();
 		registerListeners();
 		
 		msgManager.init();
 		confManager.init();
+		storManager.init();
+		
+		log.info("is enabled.");
 	}
 	
 	@Override
 	public void onDisable(){
 		log.info("is disabled.");
-		users.clear();
 	}
 	
 	public MessageManager getMessageManager(){
@@ -67,6 +70,7 @@ public class Komplex extends JavaPlugin {
 		getCommand("workbench").setExecutor(new CommandWorkbench(this));
 		getCommand("helpop").setExecutor(new CommandHelpOp(this));
 		getCommand("list").setExecutor(new CommandList(this));
+		getCommand("mail").setExecutor(new CommandMail(this));
 	}
 	
 	private void registerListeners(){
@@ -90,5 +94,9 @@ public class Komplex extends JavaPlugin {
 	
 	public ConfigManager getConfigManager(){
 		return confManager;
+	}
+	
+	public StorageManager getStorageManager(){
+		return storManager;
 	}
 }

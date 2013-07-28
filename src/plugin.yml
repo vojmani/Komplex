@@ -6,22 +6,22 @@ commands:
     usage: /break
     description: Breaks the block there you looking at.
   feed:
-    usage: /feed {nick}
+    usage: /feed <nick>
     description: Sets as full the player's hunger bar.
   fly:
-    usage: /fly {nick}
+    usage: /fly <nick>
     description: Changes the player's fly mode.
   clearchat:
     usage: /clearchat
     description: Clears the chat.
   god:
-    usage: /god {nick}
+    usage: /god <nick>
     description: Sets a God mode.
   hat:
     usage: /hat
     description: Sets item in player's hand as his helmet.
   heal:
-    usage: /heal {nick}
+    usage: /heal <nick>
     description: Heal the player.
   ptime:
     usage: /ptime set/reset/{nick} {ticks} {nick}
@@ -37,4 +37,7 @@ commands:
     description: Sends a message to online admins.
   list:
     usage: /list
-    descriprion: Lists an online players.
+    description: Lists an online players.
+  mail:
+    usage: /mail read/send/clear <nick> <message>
+    description: Mail.
