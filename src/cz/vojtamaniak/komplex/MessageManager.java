@@ -209,7 +209,24 @@ public class MessageManager {
 			mess.set("MAIL_CLEAR", "&4Pokud chces vymazat mail, napis &7/mail clear&4.");
 			allOk = false;
 		}
+		if(!mess.contains("TELL_FORMAT_WHISPER")){
+			mess.set("TELL_FORMAT_WHISPER", "&7[%SENDER% -> ty] &f%MESSAGE%");
+			allOk = false;
+		}
+		if(!mess.contains("TELL_FORMAT_SELF")){
+			mess.set("TELL_FORMAT_SELF", "&7[ty -> %RECEIVER%] &f%MESSAGE%");
+			allOk = false;
+		}
+		if(!mess.contains("TELL_NO_RECIPIENT")){
+			mess.set("TELL_NO_RECIPIENT", "&4Jeste jsi neobdrzel zadnou soukromou zpravu.");
+			allOk = false;
+		}
+		if(!mess.contains("TELL_PLAYER_OFFLINE")){
+			mess.set("TELL_PLAYER_OFFLINE", "&4Hrac, na jehoz zpravu chces odpovedet, neni pripojen.");
+			allOk = false;
+		}
 			//There it will be filled with another messages.
+		
 		if(!allOk){
 			log.info("repairing or creating new messages.yml file.");
 			try {

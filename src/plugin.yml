@@ -24,7 +24,7 @@ commands:
     usage: /heal <nick>
     description: Heal the player.
   ptime:
-    usage: /ptime set/reset/{nick} {ticks} {nick}
+    usage: /ptime set/reset/<nick> <ticks> <nick>
     description: Modify player's time.
   workbench:
     usage: /workbench
@@ -41,3 +41,10 @@ commands:
   mail:
     usage: /mail read/send/clear <nick> <message>
     description: Mail.
+  tell:
+    usage: /tell [nick] [message]
+    description: Send PM to a player.
+  reply:
+    usage: /reply [message]
+    description: Reply to last received/send message.
+    aliases: [r]

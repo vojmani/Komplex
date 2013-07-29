@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import cz.vojtamaniak.komplex.commands.CommandAfk;
@@ -18,6 +19,8 @@ import cz.vojtamaniak.komplex.commands.CommandHelpOp;
 import cz.vojtamaniak.komplex.commands.CommandList;
 import cz.vojtamaniak.komplex.commands.CommandMail;
 import cz.vojtamaniak.komplex.commands.CommandPtime;
+import cz.vojtamaniak.komplex.commands.CommandReply;
+import cz.vojtamaniak.komplex.commands.CommandTell;
 import cz.vojtamaniak.komplex.commands.CommandWorkbench;
 import cz.vojtamaniak.komplex.listeners.EntityListener;
 import cz.vojtamaniak.komplex.listeners.PlayerListener;
@@ -29,6 +32,7 @@ public class Komplex extends JavaPlugin {
 	private ConfigManager confManager;
 	private HashMap<String, User> users;
 	private StorageManager storManager;
+	private CommandSender lastPMSender;
 	
 	@Override
 	public void onEnable(){
@@ -37,6 +41,7 @@ public class Komplex extends JavaPlugin {
 		confManager = new ConfigManager(this);
 		users = new HashMap<String, User>();
 		storManager = new StorageManager(this);
+		lastPMSender = null;
 		
 		registerExecutors();
 		registerListeners();
@@ -71,6 +76,8 @@ public class Komplex extends JavaPlugin {
 		getCommand("helpop").setExecutor(new CommandHelpOp(this));
 		getCommand("list").setExecutor(new CommandList(this));
 		getCommand("mail").setExecutor(new CommandMail(this));
+		getCommand("tell").setExecutor(new CommandTell(this));
+		getCommand("reply").setExecutor(new CommandReply(this));
 	}
 	
 	private void registerListeners(){
@@ -98,5 +105,13 @@ public class Komplex extends JavaPlugin {
 	
 	public StorageManager getStorageManager(){
 		return storManager;
+	}
+	
+	public void setLastConsolePM(CommandSender sender){
+		this.lastPMSender = sender;
+	}
+	
+	public CommandSender getLastConsolePMSender(){
+		return lastPMSender;
 	}
 }
