@@ -4,47 +4,50 @@ version: 0.1
 commands:
   break:
     usage: /break
-    description: Breaks the block there you looking at.
+    description: Znici blok, na ktery se divas
   feed:
     usage: /feed <nick>
-    description: Sets as full the player's hunger bar.
+    description: Doplni ti hlad.
   fly:
     usage: /fly <nick>
-    description: Changes the player's fly mode.
+    description: Zapne/vypne letani.
   clearchat:
     usage: /clearchat
-    description: Clears the chat.
+    description: Promaze chat.
   god:
     usage: /god <nick>
-    description: Sets a God mode.
+    description: Zapne/Vypne nesmrtelnost.
   hat:
     usage: /hat
-    description: Sets item in player's hand as his helmet.
+    description: Da ti na hlavu blok, ktery drzis v ruce.
   heal:
     usage: /heal <nick>
-    description: Heal the player.
+    description: Vyleci hrace.
   ptime:
     usage: /ptime set/reset/<nick> <ticks> <nick>
-    description: Modify player's time.
+    description: Zmeni hracuv cas.
   workbench:
     usage: /workbench
-    description: Opens a crafting table to a player
+    description: Otevre crafting table.
   afk:
     usage: /afk
-    description: Changes players afk.
+    description: Zapne/Vypne nepritomnost.
   helpop:
     usage: /helpop [message]
-    description: Sends a message to online admins.
+    description: Posle zpravu adminum.
   list:
     usage: /list
-    description: Lists an online players.
+    description: Napise seznam online hracu.
   mail:
     usage: /mail read/send/clear <nick> <message>
-    description: Mail.
+    description: Maily.
   tell:
     usage: /tell [nick] [message]
-    description: Send PM to a player.
+    description: Posle soukromou zpravu hraci.
   reply:
     usage: /reply [message]
-    description: Reply to last received/send message.
+    description: Odpovi na posledni soukromou zpravu.
     aliases: [r]
+  near:
+    usage: /near <nick>
+    description: Vypise hrace v okoli a vzdalenost.

@@ -18,6 +18,7 @@ import cz.vojtamaniak.komplex.commands.CommandHeal;
 import cz.vojtamaniak.komplex.commands.CommandHelpOp;
 import cz.vojtamaniak.komplex.commands.CommandList;
 import cz.vojtamaniak.komplex.commands.CommandMail;
+import cz.vojtamaniak.komplex.commands.CommandNear;
 import cz.vojtamaniak.komplex.commands.CommandPtime;
 import cz.vojtamaniak.komplex.commands.CommandReply;
 import cz.vojtamaniak.komplex.commands.CommandTell;
@@ -78,6 +79,7 @@ public class Komplex extends JavaPlugin {
 		getCommand("mail").setExecutor(new CommandMail(this));
 		getCommand("tell").setExecutor(new CommandTell(this));
 		getCommand("reply").setExecutor(new CommandReply(this));
+		getCommand("near").setExecutor(new CommandNear(this));
 	}
 	
 	private void registerListeners(){

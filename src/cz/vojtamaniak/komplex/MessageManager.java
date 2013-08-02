@@ -12,11 +12,13 @@ public class MessageManager {
 	private File messFile;
 	private FileConfiguration mess;
 	private Logger log;
+	private boolean allOk;
 	
 	public MessageManager(Komplex plg){
 		this.messFile = new File(plg.getDataFolder(), "messages.yml");
 		this.mess = YamlConfiguration.loadConfiguration(messFile);
 		this.log = plg.getLogger();
+		this.allOk = true;
 	}
 	
 	public String getMessage(String message){
@@ -24,7 +26,6 @@ public class MessageManager {
 	}
 	
 	public void init(){
-		boolean allOk = true;
 		if(!mess.contains("NO_PERMISSION")){
 			mess.set("NO_PERMISSION", "&4Nemas prava.");
 			allOk = false;
@@ -225,6 +226,11 @@ public class MessageManager {
 			mess.set("TELL_PLAYER_OFFLINE", "&4Hrac, na jehoz zpravu chces odpovedet, neni pripojen.");
 			allOk = false;
 		}
+		check("NEAR_NOBODY", "&4nikdo");
+		check("NEAR", "&7Hraci v tve blizkosti: %PLAYERS%");
+		check("NEAR_PLAYER", "&f%NICK%(&4%DISTANCE%&f)");
+		check("NEAR_OTHER", "&7Hraci v blizkosti hrace %NICK%: %PLAYERS%");
+		
 			//There it will be filled with another messages.
 		
 		if(!allOk){
@@ -240,5 +246,11 @@ public class MessageManager {
 	private String format(String message){
 		//Change & char with §
 		return message.replaceAll("&", "§");
+	}
+	
+	private void check(String key, String message){
+		if(!mess.contains(key)){
+			mess.set(key, message);
+		}
 	}
 }
