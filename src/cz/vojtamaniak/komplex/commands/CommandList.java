@@ -21,8 +21,10 @@ public class CommandList extends ICommand {
 				int playersOnline = 0;
 				for(Player p : Bukkit.getOnlinePlayers()){
 					playersOnline++;
-					players += p.getName() + " ";
+					players += p.getName() + ", ";
 				}
+				players += "/*";
+				players.replaceAll(", /*", "");
 				sender.sendMessage(msgManager.getMessage("LIST").replaceAll("%NUMBEROFPLAYERS%", Integer.toString(playersOnline)).replaceAll("%MAXPLAYERS%", Integer.toString(Bukkit.getMaxPlayers())).replaceAll("%PLAYERS%", players));
 			}
 			else{
