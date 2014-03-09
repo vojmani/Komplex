@@ -1,5 +1,6 @@
 package cz.vojtamaniak.komplex.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -17,7 +18,7 @@ public class CommandHelpOp extends ICommand {
 		if(cmd.getName().equalsIgnoreCase("helpop")){
 			if(sender.isOp() || sender.hasPermission("komplex.helpop")){
 				if(arg.length > 0){
-					Utils.broadcast(msgManager.getMessage("HELPOP_MESSAGE").replaceAll("%NICK%", sender.getName()).replaceAll("%MESSAGE%", Utils.buildMessage(arg, 0)), "komplex.helpop.receive");
+					Bukkit.broadcast(msgManager.getMessage("HELPOP_MESSAGE").replaceAll("%NICK%", sender.getName()).replaceAll("%MESSAGE%", Utils.buildMessage(arg, 0)), "komplex.helpop.receive");
 					sender.sendMessage(msgManager.getMessage("HELPOP_MESSAGE").replaceAll("%NICK%", sender.getName()).replaceAll("%MESSAGE%", Utils.buildMessage(arg, 0)));
 				}else{
 					sender.sendMessage(msgManager.getMessage("WRONG_USAGE").replaceAll("%USAGE%", cmd.getUsage()));

@@ -1,12 +1,12 @@
 package cz.vojtamaniak.komplex.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import cz.vojtamaniak.komplex.Komplex;
 import cz.vojtamaniak.komplex.User;
-import cz.vojtamaniak.komplex.Utils;
 
 public class CommandAfk extends ICommand {
 
@@ -21,10 +21,10 @@ public class CommandAfk extends ICommand {
 				User user = plg.getUser(sender.getName());
 				if(sender.isOp() || sender.hasPermission("komplex.afk")){
 					if(user.isAfk()){
-						Utils.broadcast(msgManager.getMessage("AFK_LEAVE").replaceAll("%NICK%", sender.getName()), "komplex.messages.onafkleave.receive");
+						Bukkit.broadcast(msgManager.getMessage("AFK_LEAVE").replaceAll("%NICK%", sender.getName()), "komplex.messages.onafkleave.receive");
 						user.setAfk(false);
 					}else{
-						Utils.broadcast(msgManager.getMessage("AFK_ENTER").replaceAll("%NICK%", sender.getName()), "komplex.messages.onafkenter.receive");
+						Bukkit.broadcast(msgManager.getMessage("AFK_ENTER").replaceAll("%NICK%", sender.getName()), "komplex.messages.onafkenter.receive");
 						user.setAfk(true);
 					}
 				}else{

@@ -26,11 +26,7 @@ public class PlayerListener extends IListener {
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerJoin(PlayerJoinEvent e){
 		e.setJoinMessage(null);
-		for(Player p : Bukkit.getOnlinePlayers()){
-			if(p.hasPermission("komplex.messages.onjoin.receive")){
-				p.sendMessage(msgManager.getMessage("MESSAGE_JOIN").replaceAll("%NICK%", e.getPlayer().getName()));
-			}
-		}
+		Bukkit.broadcast(msgManager.getMessage("MESSAGE_JOIN").replaceAll("%NICK%", e.getPlayer().getName()), "komplex.messages.onjoin");
 		User user = new User(e.getPlayer());
 		plg.addUser(user);
 	}
@@ -41,11 +37,8 @@ public class PlayerListener extends IListener {
 	 */
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerQuit(PlayerQuitEvent e){
-		for(Player p : Bukkit.getOnlinePlayers()){
-			if(p.hasPermission("komplex.messages.onquit.receive")){
-				p.sendMessage(msgManager.getMessage("MESSAGE_QUIT").replaceAll("%NICK%", e.getPlayer().getName()));				
-			}
-		}
+		e.setQuitMessage(null);
+		Bukkit.broadcast(msgManager.getMessage("MESSAGE_QUIT").replaceAll("%NICK%", e.getPlayer().getName()), "komplex.messages.onquit");				
 		plg.removeUser(e.getPlayer().getName());
 	}
 	
@@ -67,7 +60,7 @@ public class PlayerListener extends IListener {
 		User user = plg.getUser(e.getPlayer().getName());
 		if(user.isAfk()){
 			user.setAfk(false);
-			Utils.broadcast(msgManager.getMessage("AFK_LEAVE").replaceAll("%NICK%", e.getPlayer().getName()), "komplex.messages.onafkleave");
+			Bukkit.broadcast(msgManager.getMessage("AFK_LEAVE").replaceAll("%NICK%", e.getPlayer().getName()), "komplex.messages.onafkleave");
 		}
 	}
 }
