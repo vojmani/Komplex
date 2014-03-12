@@ -16,7 +16,7 @@ public class CommandHelpOp extends ICommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] arg) {
 		if(cmd.getName().equalsIgnoreCase("helpop")){
-			if(sender.isOp() || sender.hasPermission("komplex.helpop")){
+			if(sender.hasPermission("komplex.helpop")){
 				if(arg.length > 0){
 					Bukkit.broadcast(msgManager.getMessage("HELPOP_MESSAGE").replaceAll("%NICK%", sender.getName()).replaceAll("%MESSAGE%", Utils.buildMessage(arg, 0)), "komplex.helpop.receive");
 					sender.sendMessage(msgManager.getMessage("HELPOP_MESSAGE").replaceAll("%NICK%", sender.getName()).replaceAll("%MESSAGE%", Utils.buildMessage(arg, 0)));

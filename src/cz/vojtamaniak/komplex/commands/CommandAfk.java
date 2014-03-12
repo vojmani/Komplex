@@ -19,12 +19,12 @@ public class CommandAfk extends ICommand {
 		if(cmd.getName().equalsIgnoreCase("afk")){
 			if(sender instanceof Player){
 				User user = plg.getUser(sender.getName());
-				if(sender.isOp() || sender.hasPermission("komplex.afk")){
+				if(sender.hasPermission("komplex.afk")){
 					if(user.isAfk()){
-						Bukkit.broadcast(msgManager.getMessage("AFK_LEAVE").replaceAll("%NICK%", sender.getName()), "komplex.messages.onafkleave.receive");
+						Bukkit.broadcast(msgManager.getMessage("AFK_LEAVE").replaceAll("%NICK%", sender.getName()), "komplex.messages.afk");
 						user.setAfk(false);
 					}else{
-						Bukkit.broadcast(msgManager.getMessage("AFK_ENTER").replaceAll("%NICK%", sender.getName()), "komplex.messages.onafkenter.receive");
+						Bukkit.broadcast(msgManager.getMessage("AFK_ENTER").replaceAll("%NICK%", sender.getName()), "komplex.messages.afk");
 						user.setAfk(true);
 					}
 				}else{

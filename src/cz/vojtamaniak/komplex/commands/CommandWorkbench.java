@@ -17,7 +17,7 @@ public class CommandWorkbench extends ICommand {
 		if(cmd.getName().equalsIgnoreCase("workbench")){
 			if(sender instanceof Player){
 				Player player = (Player)sender;
-				if(player.isOp() || player.hasPermission("komplex.workbench")){
+				if(player.hasPermission("komplex.workbench")){
 					player.openWorkbench(null, true);
 				}else{
 					sender.sendMessage(msgManager.getMessage("NO_PERMISSION"));

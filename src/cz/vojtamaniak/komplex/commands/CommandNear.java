@@ -20,7 +20,7 @@ public class CommandNear extends ICommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args) {
 		if(cmd.getName().equalsIgnoreCase("near")){
-			if(sender.isOp() || sender.hasPermission("komplex.near")){
+			if(sender.hasPermission("komplex.near")){
 				if(args.length > 0){
 					OfflinePlayer offP = Bukkit.getOfflinePlayer(args[0]);
 					if(offP.isOnline()){

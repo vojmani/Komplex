@@ -1,39 +1,38 @@
 name: Komplex
 main: cz.vojtamaniak.komplex.Komplex
-version: 0.1
+version: 0.2
 commands:
+  afk:
+    usage: /afk {nick}
   break:
     usage: /break
     description: Znici blok, na ktery se divas
   feed:
-    usage: /feed <nick>
+    usage: /feed {nick}
     description: Doplni ti hlad.
   fly:
-    usage: /fly <nick>
+    usage: /fly {nick}
     description: Zapne/vypne letani.
   clearchat:
     usage: /clearchat
     description: Promaze chat.
   god:
-    usage: /god <nick>
+    usage: /god {nick}
     description: Zapne/Vypne nesmrtelnost.
   hat:
     usage: /hat
     description: Da ti na hlavu blok, ktery drzis v ruce.
   heal:
-    usage: /heal <nick>
+    usage: /heal {nick}
     description: Vyleci hrace.
   ptime:
-    usage: /ptime set/reset/<nick> <ticks> <nick>
+    usage: /ptime set/reset/{nick} {ticks} {nick}
     description: Zmeni hracuv cas.
   workbench:
     usage: /workbench
     description: Otevre crafting table.
-  afk:
-    usage: /afk
-    description: Zapne/Vypne nepritomnost.
   helpop:
-    usage: /helpop [message]
+    usage: /helpop <message>
     description: Posle zpravu adminum.
   list:
     usage: /list
@@ -42,12 +41,141 @@ commands:
     usage: /mail read/send/clear <nick> <message>
     description: Maily.
   tell:
-    usage: /tell [nick] [message]
+    usage: /tell <nick> <message>
     description: Posle soukromou zpravu hraci.
+    aliases: [t, w]
   reply:
-    usage: /reply [message]
+    usage: /reply <message>
     description: Odpovi na posledni soukromou zpravu.
     aliases: [r]
   near:
     usage: /near <nick>
     description: Vypise hrace v okoli a vzdalenost.
+permissions:
+  komplex.*:
+    description: Prava na vsechny prikazy pluginu Komplex
+    children:
+      komplex.messages.*: true
+      komplex.afk: true
+      komplex.break: true
+      komplex.break.bedrock: true
+      komplex.clearchat: true
+      komplex.feed: true
+      komplex.feed.other: true
+      komplex.fly: true
+      komplex.fly.other: true
+      komplex.god: true
+      komplex.god.other: true
+      komplex.hat: true
+      komplex.heal: true
+      komplex.heal.other: true
+      komplex.helpop: true
+      komplex.helpop.receive: true
+      komplex.list: true
+      komplex.mail: true
+      komplex.near: true
+      komplex.ptime.get: true
+      komplex.ptime.get.other: true
+      komplex.ptime.reset: true
+      komplex.ptime.reset.other: true
+      komplex.ptime.set: true
+      komplex.ptime.set.other: true
+      komplex.reply: true
+      komplex.tell: true
+      komplex.workbench: true
+  komplex.messages.*:
+    description: Ziskavani vsech zprav z pluginu Komplex
+    children:
+      komplex.messages.afk: true
+      komplex.messages.onjoin: true
+      komplex.messages.onquit: true
+  komplex.messages.afk:
+    description: Ziskavani zprav o AFK
+    default: true
+  komplex.messages.onjoin:
+    default: true
+    description: Ziskavani zprav o pripojeni hracu
+  komplex.messages.onquit:
+    default: true
+    description: Ziskavani zprav o odpojeni hracu
+  komplex.afk:
+    default: true
+    description: Prida prava na prikaz /afk
+  komplex.break:
+    default: op
+    description: Prida prava na prikaz /break
+  komplex.break.bedrock:
+    default: op
+    description: Prida prava na zniceni bedrocku prikazem /break
+  komplex.clearchat:
+    default: op
+    description: Prida prava na prikaz /clearchat
+  komplex.feed:
+    default: op
+    description: Prida prava na prikaz /feed
+  komplex.feed.other:
+    default: op
+    description: Prida prava na nasyceni ostatnich hracu
+  komplex.fly:
+    default: op
+    description: Prida prava na prikaz /fly
+  komplex.fly.other:
+    default: op
+    description: Prida prava na zapnuti letani ostatnich hracu
+  komplex.god:
+    default: op
+    description: Prida prava na prikaz /god
+  komplex.god.other:
+    default: op
+    description: Prida prava na zapnuti god ostatnich hracu
+  komplex.hat:
+    default: op
+    description: Prida prava na prikaz /hat
+  komplex.heal:
+    default: op
+    description: Prida prava na prikaz /heal
+  komplex.heal.other:
+    default: op
+    description: Prida prava na uzdraveni ostatnich hracu
+  komplex.helpop:
+    default: true
+    description: Prida prava na prikaz /helpop
+  komplex.helpop.receive:
+    default: op
+    description: Prida prava na cteni /helpop zprav
+  komplex.list:
+    default: true
+    description: Prida prava na prikaz /list
+  komplex.mail:
+    default: true
+    description: Prida prava na prikaz /mail
+  komplex.near:
+    default: true
+    description: Prida prava na prikaz /near
+  komplex.ptime.get:
+    default: true
+    description: Prida prava na ziskani vlastniho casu
+  komplex.ptime.get.other:
+    default: op
+    description: Prida prava na ziskani casu ostatnich hracu
+  komplex.ptime.reset:
+    default: op
+    description: Prida prava na resetovani vlastniho casu
+  komplex.ptime.reset.other:
+    default: op
+    description: Prida prava na resetovani casu ostatnich hracu
+  komplex.ptime.set:
+    default: op
+    description: Prida prava na nastaveni vlastniho casu
+  komplex.ptime.set.other:
+    default: op
+    description: Prida prava na nastaveni casu ostatnich hracu
+  komplex.reply:
+    default: true
+    description: Prida prava na prikaz /reply
+  komplex.tell:
+    default: true
+    description: Prida prava na prikaz /tell
+  komplex.workbench:
+    default: op
+    description: Prida prava na prikaz /workbench

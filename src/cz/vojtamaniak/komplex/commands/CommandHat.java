@@ -18,7 +18,7 @@ public class CommandHat extends ICommand {
 		if(cmd.getName().equalsIgnoreCase("hat")){
 			if(sender instanceof Player){
 				Player player = (Player)sender;
-				if(player.isOp() || player.hasPermission("komplex.hat")){
+				if(player.hasPermission("komplex.hat")){
 					PlayerInventory inv = player.getInventory();
 					ItemStack hat = player.getInventory().getHelmet();
 					ItemStack hand = player.getItemInHand();

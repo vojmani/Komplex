@@ -30,7 +30,7 @@ public class CommandFeed extends ICommand {
 	private void feedSelf(CommandSender sender){
 		if(sender instanceof Player){
 			Player player = (Player) sender;
-			if(player.isOp() || player.hasPermission("komplex.fly")){
+			if(player.hasPermission("komplex.feed")){
 				player.setFoodLevel(20);
 				player.sendMessage(msgManager.getMessage("FEED_SELF"));
 			}else{
@@ -43,7 +43,7 @@ public class CommandFeed extends ICommand {
 		OfflinePlayer offPlayer = Bukkit.getOfflinePlayer(arg[0]);
 		if(offPlayer.isOnline()){
 			Player player = (Player)offPlayer;
-			if(sender.isOp() || sender.hasPermission("komplex.fly.other")){
+			if(sender.hasPermission("komplex.feed.other")){
 				player.setFoodLevel(20);
 				player.sendMessage(msgManager.getMessage("FEED_OTHER_WHISPER").replaceAll("%NICK%", sender.getName()));
 				sender.sendMessage(msgManager.getMessage("FEED_OTHER").replaceAll("%NICK%", player.getName()));

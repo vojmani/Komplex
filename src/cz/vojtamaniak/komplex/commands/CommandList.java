@@ -16,7 +16,7 @@ public class CommandList extends ICommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] arg) {
 		if(cmd.getName().equalsIgnoreCase("list")){
-			if(sender.isOp() || sender.hasPermission("komplex.list")){
+			if(sender.hasPermission("komplex.list")){
 				String players = "";
 				int playersOnline = 0;
 				for(Player p : Bukkit.getOnlinePlayers()){

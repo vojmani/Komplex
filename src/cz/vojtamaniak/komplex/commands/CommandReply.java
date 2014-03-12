@@ -18,7 +18,7 @@ public class CommandReply extends ICommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args) {
 		if(cmd.getName().equalsIgnoreCase("reply")){
-			if(sender.isOp() || sender.hasPermission("komplex.reply")){
+			if(sender.hasPermission("komplex.reply")){
 				if(args.length > 0){
 					String message = Utils.buildMessage(args, 0);
 					if(sender instanceof Player){

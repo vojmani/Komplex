@@ -30,7 +30,7 @@ public class CommandFly extends ICommand {
 	private void flySelf(CommandSender sender){
 		if(sender instanceof Player){
 			Player player = (Player) sender;
-			if(player.isOp() || player.hasPermission("komplex.fly")){
+			if(player.hasPermission("komplex.fly")){
 				if(player.getAllowFlight()){
 					player.setAllowFlight(false);
 					player.sendMessage(msgManager.getMessage("FLY_SELF_OFF"));
@@ -48,7 +48,7 @@ public class CommandFly extends ICommand {
 		 OfflinePlayer offP = Bukkit.getOfflinePlayer(arg[0]);
 		 if(offP.isOnline()){
 			 Player player = (Player) offP;
-			 if(sender.isOp() || sender.hasPermission("komplex.fly.other")){
+			 if(sender.hasPermission("komplex.fly.other")){
 				 if(player.getAllowFlight()){
 					 player.setAllowFlight(false);
 					 sender.sendMessage(msgManager.getMessage("FLY_OTHER_OFF").replaceAll("%NICK%", player.getName()));

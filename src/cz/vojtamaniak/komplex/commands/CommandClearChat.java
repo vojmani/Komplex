@@ -16,7 +16,7 @@ public class CommandClearChat extends ICommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] arg) {
 		if(cmd.getName().equalsIgnoreCase("clearchat")){
-			if(sender.isOp() || sender.hasPermission("komplex.clearchat")){
+			if(sender.hasPermission("komplex.clearchat")){
 				for(int i=0; i<120; i++){
 					for(Player p : Bukkit.getOnlinePlayers()){
 						p.sendMessage("");

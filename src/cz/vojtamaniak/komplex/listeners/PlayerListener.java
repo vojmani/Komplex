@@ -60,7 +60,7 @@ public class PlayerListener extends IListener {
 		User user = plg.getUser(e.getPlayer().getName());
 		if(user.isAfk()){
 			user.setAfk(false);
-			Bukkit.broadcast(msgManager.getMessage("AFK_LEAVE").replaceAll("%NICK%", e.getPlayer().getName()), "komplex.messages.onafkleave");
+			Bukkit.broadcast(msgManager.getMessage("AFK_LEAVE").replaceAll("%NICK%", e.getPlayer().getName()), "komplex.messages.afk");
 		}
 	}
 }

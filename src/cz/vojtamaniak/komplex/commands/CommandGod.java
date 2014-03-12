@@ -32,7 +32,7 @@ public class CommandGod extends ICommand {
 		OfflinePlayer offP = Bukkit.getOfflinePlayer(arg[0]);
 		if(offP.isOnline()){
 			Player player = (Player)offP;
-			if(sender.isOp() || sender.hasPermission("komplex.god.other")){
+			if(sender.hasPermission("komplex.god.other")){
 				if(plg.getUser(player.getName()).getGodMode()){
 					plg.getUser(player.getName()).setGodMode(false);
 					player.sendMessage(msgManager.getMessage("GOD_WHISPER_OFF").replaceAll("%NICK%", sender.getName()));
@@ -53,7 +53,7 @@ public class CommandGod extends ICommand {
 	private void godSelf(CommandSender sender){
 		if(sender instanceof Player){
 			Player player = (Player)sender;
-			if(player.isOp() || player.hasPermission("komplex.god")){
+			if(player.hasPermission("komplex.god")){
 				if(plg.getUser(player.getName()).getGodMode()){
 					plg.getUser(player.getName()).setGodMode(false);
 					player.sendMessage(msgManager.getMessage("GOD_SELF_OFF"));

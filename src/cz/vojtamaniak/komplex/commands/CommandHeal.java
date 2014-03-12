@@ -30,7 +30,7 @@ public class CommandHeal extends ICommand {
 	private void healSelf(CommandSender sender) {
 		if(sender instanceof Player){
 			Player player = (Player)sender;
-			if(sender.isOp() || sender.hasPermission("komplex.heal")){
+			if(sender.hasPermission("komplex.heal")){
 				player.setHealth(player.getMaxHealth());
 				player.setFoodLevel(20);
 				player.setFireTicks(0);
@@ -45,7 +45,7 @@ public class CommandHeal extends ICommand {
 		OfflinePlayer offP = Bukkit.getOfflinePlayer(arg[0]);
 		if(offP.isOnline()){
 			Player player = (Player)offP;
-			if(sender.isOp() || sender.hasPermission("komplex.heal.other")){
+			if(sender.hasPermission("komplex.heal.other")){
 				player.setHealth(player.getMaxHealth());
 				player.setFoodLevel(20);
 				player.setFireTicks(0);

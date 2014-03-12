@@ -32,7 +32,7 @@ public class Komplex extends JavaPlugin {
 	private MessageManager msgManager;
 	private ConfigManager confManager;
 	private HashMap<String, User> users;
-	private StorageManager storManager;
+	private Database database;
 	private CommandSender lastPMSender;
 	
 	@Override
@@ -41,7 +41,7 @@ public class Komplex extends JavaPlugin {
 		msgManager = new MessageManager(this);
 		confManager = new ConfigManager(this);
 		users = new HashMap<String, User>();
-		storManager = new StorageManager(this);
+		database = new Database(this);
 		lastPMSender = null;
 		
 		registerExecutors();
@@ -49,7 +49,7 @@ public class Komplex extends JavaPlugin {
 		
 		msgManager.init();
 		confManager.init();
-		storManager.init();
+		database.load();
 		
 		log.info("is enabled.");
 	}
@@ -105,8 +105,8 @@ public class Komplex extends JavaPlugin {
 		return confManager;
 	}
 	
-	public StorageManager getStorageManager(){
-		return storManager;
+	public Database getDB(){
+		return database;
 	}
 	
 	public void setLastConsolePM(CommandSender sender){

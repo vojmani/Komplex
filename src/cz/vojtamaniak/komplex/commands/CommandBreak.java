@@ -34,20 +34,19 @@ public class CommandBreak extends ICommand {
 	}
 	
 	private void breakOtherBlocks(Player player, Block target){
-		if(player.isOp() || player.hasPermission("komplex.break")){
+		if(player.hasPermission("komplex.break")){
 			BlockBreakEvent e = new BlockBreakEvent(target, player);
 			Bukkit.getPluginManager().callEvent(e);
 			if(!e.isCancelled()){
 				target.setType(Material.AIR);
 			}
-			target.setType(Material.AIR);
 		}else{
 			player.sendMessage(msgManager.getMessage("NO_PERMISSION"));
 		}
 	}
 	
 	private void breakBedrock(Player player, Block target){
-		if(player.isOp() || player.hasPermission("komplex.break.bedrock")){
+		if(player.hasPermission("komplex.break.bedrock")){
 			BlockBreakEvent e = new BlockBreakEvent(target, player);
 			Bukkit.getPluginManager().callEvent(e);
 			if(!e.isCancelled()){

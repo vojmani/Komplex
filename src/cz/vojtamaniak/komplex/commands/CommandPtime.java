@@ -71,7 +71,7 @@ public class CommandPtime extends ICommand {
 		OfflinePlayer offP = Bukkit.getOfflinePlayer(arg[0]);
 		if(offP.isOnline()){
 			Player player = (Player)offP;
-			if(sender.isOp() || sender.hasPermission("komplex.ptime.get.other")){
+			if(sender.hasPermission("komplex.ptime.get.other")){
 				sender.sendMessage(msgManager.getMessage("PTIME_GET_OTHER").replaceAll("%NICK%", player.getName()).replaceAll("%TIME%", ""+player.getPlayerTime()));
 			}else{
 				sender.sendMessage(msgManager.getMessage("NO_PERMISSION"));
@@ -84,7 +84,7 @@ public class CommandPtime extends ICommand {
 	private void getSelfTime(CommandSender sender) {
 		if(sender instanceof Player){
 			Player player = (Player)sender;
-			if(player.isOp() || player.hasPermission("komplex.ptime.get")){
+			if(player.hasPermission("komplex.ptime.get")){
 				player.sendMessage(msgManager.getMessage("PTIME_GET_SELF").replaceAll("%TIME%", ""+player.getPlayerTime()));
 			}else{
 				player.sendMessage(msgManager.getMessage("NO_PERMISSION"));
@@ -95,7 +95,7 @@ public class CommandPtime extends ICommand {
 	private void resetSelf(CommandSender sender){
 		if(sender instanceof Player){
 			Player player = (Player)sender;
-			if(player.isOp() || player.hasPermission("komplex.ptime.reset")){
+			if(player.hasPermission("komplex.ptime.reset")){
 				player.setPlayerTime(player.getWorld().getTime(), true);
 				player.sendMessage(msgManager.getMessage("PTIME_RESET_SELF"));
 			}else{
@@ -108,7 +108,7 @@ public class CommandPtime extends ICommand {
 		OfflinePlayer offP = Bukkit.getOfflinePlayer(arg[1]);
 		if(offP.isOnline()){
 			Player player = (Player)offP;
-			if(sender.isOp() || sender.hasPermission("komplex.ptime.reset.other")){
+			if(sender.hasPermission("komplex.ptime.reset.other")){
 				player.setPlayerTime(player.getWorld().getTime(), true);
 				player.sendMessage(msgManager.getMessage("PTIME_RESET_WHISPER").replaceAll("%NICK%", sender.getName()));
 				sender.sendMessage(msgManager.getMessage("PTIME_RESET_OTHER").replaceAll("%NICK%", player.getName()));
@@ -121,7 +121,7 @@ public class CommandPtime extends ICommand {
 	private void setSelfTime(CommandSender sender, int ticks){
 		if(sender instanceof Player){
 			Player player = (Player)sender;
-			if(player.isOp() || player.hasPermission("komplex.ptime.set")){
+			if(player.hasPermission("komplex.ptime.set")){
 				player.setPlayerTime((long)ticks, false);
 				sender.sendMessage(msgManager.getMessage("PTIME_SET_SELF").replaceAll("%TIME%", ""+ticks));
 			}else{
@@ -134,7 +134,7 @@ public class CommandPtime extends ICommand {
 		OfflinePlayer offP = Bukkit.getOfflinePlayer(arg[2]);
 		if(offP.isOnline()){
 			Player player = (Player)offP;
-			if(sender.isOp() || sender.hasPermission("komplex.ptime.set.other")){
+			if(sender.hasPermission("komplex.ptime.set.other")){
 				player.setPlayerTime(ticks, false);
 				player.sendMessage(msgManager.getMessage("PTIME_SET_WHISPER").replaceAll("%NICK%", sender.getName()).replaceAll("%TIME%", ticks+""));
 				sender.sendMessage(msgManager.getMessage("PTIME_SET_OTHER").replaceAll("%NICK%", player.getName()).replaceAll("%TIME%", ticks+""));

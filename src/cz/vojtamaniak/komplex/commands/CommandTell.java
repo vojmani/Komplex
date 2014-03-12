@@ -19,7 +19,7 @@ public class CommandTell extends ICommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] arg) {
 		if(cmd.getName().equalsIgnoreCase("tell")){
-			if(sender.isOp() || sender.hasPermission("komplex.tell")){
+			if(sender.hasPermission("komplex.tell")){
 				if(arg.length > 1){
 					OfflinePlayer offP = Bukkit.getOfflinePlayer(arg[0]);
 					if(offP.isOnline()){
