@@ -6,7 +6,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import cz.vojtamaniak.komplex.Komplex;
-import cz.vojtamaniak.komplex.User;
 import cz.vojtamaniak.komplex.Utils;
 
 public class CommandReply extends ICommand {
@@ -17,54 +16,65 @@ public class CommandReply extends ICommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args) {
-		if(cmd.getName().equalsIgnoreCase("reply")){
-			if(sender.hasPermission("komplex.reply")){
-				if(args.length > 0){
-					String message = Utils.buildMessage(args, 0);
-					if(sender instanceof Player){
-						User user = plg.getUser(sender.getName());
-						if(user.getLastPMSender() != null){
-							if(user.getLastPMSender() instanceof Player){
-								Player PMSender = (Player)user.getLastPMSender();
-								if(PMSender.isOnline()){
-									PMSender.sendMessage(msgManager.getMessage("TELL_FORMAT_WHISPER").replaceAll("%SENDER%", sender.getName()).replaceAll("%MESSAGE%", message));
-									sender.sendMessage(msgManager.getMessage("TELL_FORMAT_SELF").replaceAll("%RECEIVER%", PMSender.getName()).replaceAll("%MESSAGE%", message));
-									plg.getUser(PMSender.getName()).setLastPM(sender);
-								}else{
-									sender.sendMessage(msgManager.getMessage("TELL_PLAYER_OFFLINE"));
-								}
-							}else if(user.getLastPMSender() instanceof ConsoleCommandSender){
-								ConsoleCommandSender ccs = (ConsoleCommandSender)user.getLastPMSender();
-								ccs.sendMessage(msgManager.getMessage("TELL_FORMAT_WHISPER").replaceAll("%SENDER%", sender.getName()).replaceAll("%MESSAGE%", message));
-								sender.sendMessage(msgManager.getMessage("TELL_FORMAT_SELF").replaceAll("%RECEIVER%", ccs.getName()).replaceAll("%MESSAGE%", message));
-								plg.setLastConsolePM(sender);
-							}
-						}else{
-							sender.sendMessage(msgManager.getMessage("TELL_NO_RECIPIENT"));
-						}
-					}else if(sender instanceof ConsoleCommandSender){
-						if(plg.getLastConsolePMSender() != null){
-							if(plg.getLastConsolePMSender() instanceof Player){
-								Player PMSender = (Player)plg.getLastConsolePMSender();
-								if(PMSender.isOnline()){
-									PMSender.sendMessage(msgManager.getMessage("TELL_FORMAT_WHISPER").replaceAll("%SENDER%", sender.getName()).replaceAll("%MESSAGE%", message));
-									sender.sendMessage(msgManager.getMessage("TELL_FORMAT_SELF").replaceAll("%RECEIVER%", PMSender.getName()).replaceAll("%MESSAGE%", message));
-									plg.getUser(PMSender.getName()).setLastPM(sender);
-								}else{
-									sender.sendMessage(msgManager.getMessage("TELL_PLAYER_OFFLINE"));
-								}
-							}
-						}else{
-							sender.sendMessage(msgManager.getMessage("TELL_NO_RECIPIENT"));
-						}
-					}
-				}
-			}else{
-				sender.sendMessage(msgManager.getMessage("NO_PERMISSION"));
-			}
+		if(!cmd.getName().equalsIgnoreCase("reply"))
+			return false;
+		
+		if(!sender.hasPermission("komplex.reply")){
+			sm(sender, "NO_PERMISSION");
 			return true;
 		}
-		return false;
+		
+		if(args.length == 0){
+			sm(sender, "WRONG_USAGE", "%USAGE%", cmd.getUsage());
+			return true;
+		}
+		
+		String message = Utils.buildMessage(args, 0);
+		if(sender instanceof Player){
+			CommandSender lastPMSender = plg.getUser(sender.getName()).getLastPMSender();
+			
+			if(lastPMSender == null){
+				sm(sender, "TELL_NO_RECIPIENT");
+				return true;
+			}
+			
+			if(lastPMSender instanceof Player){
+				Player lastPMPlayer = (Player)lastPMSender;
+				
+				if(!lastPMPlayer.isOnline()){
+					sm(sender, "TELL_PLAYER_OFFLINE");
+					return true;
+				}
+				
+				sm(lastPMPlayer, "TELL_FORMAT_WHISPER", "%SENDER%", sender.getName(), "%MESSAGE%", message);
+				sm(sender, "TELL_FORMAT_SELF", "%RECEIVER%", lastPMPlayer.getName(), "%MESSAGE%", message);
+				plg.getUser(lastPMPlayer.getName()).setLastPM(sender);
+			}else if(lastPMSender instanceof ConsoleCommandSender){
+				sm(lastPMSender, "TELL_FORMAT_WHISPER", "%SENDER%", sender.getName(), "%MESSAGE%", message);
+				sm(sender, "TELL_FORMAT_SELF", "%RECEIVER%", lastPMSender.getName(), "%MESSAGE%", message);
+				plg.setLastConsolePM(sender);
+			}
+		}else{
+			CommandSender lastPMSender = plg.getLastConsolePMSender();
+			
+			if(lastPMSender == null){
+				sm(sender, "TELL_NO_RECIPIENT");
+				return true;
+			}
+			
+			if(lastPMSender instanceof Player){
+				Player lastPMPlayer = (Player)lastPMSender;
+				if(!lastPMPlayer.isOnline()){
+					sm(sender, "TELL_PLAYER_OFFLINE");
+					return true;
+				}
+				
+				sm(lastPMPlayer, "TELL_FORMAT_WHISPER", "%SENDER%", "KONZOLE", "%MESSAGE%", message);
+				sm(sender, "TELL_FORMAT_SELF", "%RECEIVER%", lastPMSender.getName(), "%MESSAGE%", message);
+				plg.getUser(lastPMSender.getName()).setLastPM(sender);
+			}
+		}
+		return true;
 	}
 
 }

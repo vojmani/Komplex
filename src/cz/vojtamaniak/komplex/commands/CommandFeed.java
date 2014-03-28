@@ -1,7 +1,6 @@
 package cz.vojtamaniak.komplex.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,15 +15,15 @@ public class CommandFeed extends ICommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] arg) {
-		if(cmd.getName().equalsIgnoreCase("feed")){
-			if(arg.length > 0){
-				feedOther(sender, arg);
-			}else{
-				feedSelf(sender);
-			}
-			return true;
+		if(!cmd.getName().equalsIgnoreCase("feed"))
+			return false;
+		
+		if(arg.length > 0){
+			feedOther(sender, arg);
+		}else{
+			feedSelf(sender);
 		}
-		return false;
+		return true;
 	}
 	
 	private void feedSelf(CommandSender sender){
@@ -37,21 +36,37 @@ public class CommandFeed extends ICommand {
 				player.sendMessage(msgManager.getMessage("NO_PERMISSION"));
 			}
 		}
+		
+		if(!sender.hasPermission("komplex.feed")){
+			sm(sender, "NO_PERMISSION");
+			return;
+		}
+		
+		if(!(sender instanceof Player)){
+			sm(sender, "PLAYER_ONLY");
+			return;
+		}
+		
+		Player player = (Player) sender;
+		player.setFoodLevel(20);
+		sm(sender, "FEED_SELF");
 	}
 	
-	private void feedOther(CommandSender sender, String[] arg){
-		OfflinePlayer offPlayer = Bukkit.getOfflinePlayer(arg[0]);
-		if(offPlayer.isOnline()){
-			Player player = (Player)offPlayer;
-			if(sender.hasPermission("komplex.feed.other")){
-				player.setFoodLevel(20);
-				player.sendMessage(msgManager.getMessage("FEED_OTHER_WHISPER").replaceAll("%NICK%", sender.getName()));
-				sender.sendMessage(msgManager.getMessage("FEED_OTHER").replaceAll("%NICK%", player.getName()));
-			}else{
-				sender.sendMessage(msgManager.getMessage("NO_PERMISSION"));
-			}
-		}else{
-			sender.sendMessage(msgManager.getMessage("PLAYER_OFFLINE"));
+	private void feedOther(CommandSender sender, String[] arg){		
+		if(!sender.hasPermission("komplex.feed.other")){
+			sm(sender, "NO_PERMISSION");
+			return;
 		}
+		
+		Player player = Bukkit.getPlayer(arg[0]);
+		
+		if(player == null){
+			sm(sender, "PLAYER_OFFLINE");
+			return;
+		}
+		
+		player.setFoodLevel(20);
+		sm(player, "FEED_OTHER_WHISPER", "%NICK%", sender.getName());
+		sm(sender, "FEED_OTHER", "%NICK%", player.getName());
 	} 
 }

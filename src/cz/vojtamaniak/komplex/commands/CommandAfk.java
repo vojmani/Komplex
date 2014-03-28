@@ -1,6 +1,5 @@
 package cz.vojtamaniak.komplex.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,24 +15,28 @@ public class CommandAfk extends ICommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] arg) {
-		if(cmd.getName().equalsIgnoreCase("afk")){
-			if(sender instanceof Player){
-				User user = plg.getUser(sender.getName());
-				if(sender.hasPermission("komplex.afk")){
-					if(user.isAfk()){
-						Bukkit.broadcast(msgManager.getMessage("AFK_LEAVE").replaceAll("%NICK%", sender.getName()), "komplex.messages.afk");
-						user.setAfk(false);
-					}else{
-						Bukkit.broadcast(msgManager.getMessage("AFK_ENTER").replaceAll("%NICK%", sender.getName()), "komplex.messages.afk");
-						user.setAfk(true);
-					}
-				}else{
-					sender.sendMessage(msgManager.getMessage("NO_PERMISSION"));
-				}
-			}
+		if(!cmd.getName().equalsIgnoreCase("afk"))
+			return false;
+		
+		if(!sender.hasPermission("komplex.afk")){
+			sm(sender, "NO_PERMISSION");
 			return true;
 		}
-		return false;
+		
+		if(!(sender instanceof Player)){
+			sm(sender, "PLAYER_ONLY");
+			return true;
+		}
+		
+		User user = plg.getUser(sender.getName());
+		if(user.isAfk()){
+			bm("AFK_LEAVE", "komplex.message.afk", "%NICK%", sender.getName());
+			user.setAfk(false);
+		}else{
+			bm("AFK_ENTER", "komplex.message.afk", "%NICK%", sender.getName());
+			user.setAfk(true);
+		}
+		return true;
 	}
 
 }

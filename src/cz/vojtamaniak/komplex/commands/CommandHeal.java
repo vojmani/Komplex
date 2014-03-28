@@ -1,7 +1,6 @@
 package cz.vojtamaniak.komplex.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,47 +15,52 @@ public class CommandHeal extends ICommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] arg) {
-		if(cmd.getName().equalsIgnoreCase("heal")){
-			if(arg.length > 0){
-				healOther(sender, arg);
-			}else{
-				healSelf(sender);
-			}
-			return true;
+		if(!cmd.getName().equalsIgnoreCase("heal"))
+			return false;
+		
+		if(arg.length > 0){
+			healOther(sender, arg);
+		}else{
+			healSelf(sender);
 		}
-		return false;
+		return true;
 	}
 
 	private void healSelf(CommandSender sender) {
-		if(sender instanceof Player){
-			Player player = (Player)sender;
-			if(sender.hasPermission("komplex.heal")){
-				player.setHealth(player.getMaxHealth());
-				player.setFoodLevel(20);
-				player.setFireTicks(0);
-				player.sendMessage(msgManager.getMessage("HEAL_SELF"));
-			}else{
-				player.sendMessage(msgManager.getMessage("NO_PERMISSION"));
-			}
+		if(!sender.hasPermission("komplex.heal")){
+			sm(sender, "NO_PERMISSION");
+			return;
 		}
+		
+		if(!(sender instanceof Player)){
+			sm(sender, "PLAYER_ONLY");
+			return;
+		}
+		
+		Player player = (Player) sender;
+		player.setHealth(player.getMaxHealth());
+		player.setFoodLevel(20);
+		player.setFireTicks(0);
+		sm(player, "HEAL_SELF");
 	}
 
 	private void healOther(CommandSender sender, String[] arg) {
-		OfflinePlayer offP = Bukkit.getOfflinePlayer(arg[0]);
-		if(offP.isOnline()){
-			Player player = (Player)offP;
-			if(sender.hasPermission("komplex.heal.other")){
-				player.setHealth(player.getMaxHealth());
-				player.setFoodLevel(20);
-				player.setFireTicks(0);
-				player.sendMessage(msgManager.getMessage("HEAL_WHISPER").replaceAll("%NICK%", sender.getName()));
-				sender.sendMessage(msgManager.getMessage("HEAL_OTHER").replaceAll("%NICK%", player.getName()));
-			}else{
-				sender.sendMessage(msgManager.getMessage("NO_PERMISSION"));
-			}
-		}else{
-			sender.sendMessage(msgManager.getMessage("PLAYER_OFFLINE"));
+		if(!sender.hasPermission("komplex.heal.other")){
+			sm(sender, "NO_PERMISSION");
+			return;
 		}
+		
+		Player player = Bukkit.getPlayer(arg[0]);
+		if(player == null){
+			sm(sender, "PLAYER_OFFLINE");
+			return;
+		}
+		
+		player.setHealth(player.getMaxHealth());
+		player.setFoodLevel(20);
+		player.setFireTicks(0);
+		sm(sender, "HEAL_OTHER", "%NICK%", player.getName());
+		sm(player, "HEAL_WHISPER", "%NICK%", sender.getName());
 	}
 
 }

@@ -1,10 +1,7 @@
 package cz.vojtamaniak.komplex;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.logging.Logger;
 
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,10 +12,8 @@ public class ConfigManager {
 	private Logger log;
 	private File confFile;
 	private FileConfiguration conf;
-	private Komplex plg;
 	
 	public ConfigManager(Komplex plg){
-		this.plg = plg;
 		this.log = plg.getLogger();
 		this.confFile = new File(plg.getDataFolder(), "config.yml");
 		this.conf = YamlConfiguration.loadConfiguration(confFile);

@@ -1,7 +1,6 @@
 package cz.vojtamaniak.komplex.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,54 +15,57 @@ public class CommandGod extends ICommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] arg) {
-		if(cmd.getName().equalsIgnoreCase("god")){
-			if(arg.length > 0){
-				godOther(sender, arg);
-			}
-			else{
-				godSelf(sender);
-			}
-			return true;
+		if(!cmd.getName().equalsIgnoreCase("god"))
+			return false;
+		
+		if(arg.length > 0){
+			godOther(sender, arg);
+		}else{
+			godSelf(sender);
 		}
-		return false;
+		return true;
 	}
 	
 	private void godOther(CommandSender sender, String[] arg){
-		OfflinePlayer offP = Bukkit.getOfflinePlayer(arg[0]);
-		if(offP.isOnline()){
-			Player player = (Player)offP;
-			if(sender.hasPermission("komplex.god.other")){
-				if(plg.getUser(player.getName()).getGodMode()){
-					plg.getUser(player.getName()).setGodMode(false);
-					player.sendMessage(msgManager.getMessage("GOD_WHISPER_OFF").replaceAll("%NICK%", sender.getName()));
-					sender.sendMessage(msgManager.getMessage("GOD_OTHER_OFF").replaceAll("%NICK%", player.getName()));
-				}else{
-					plg.getUser(player.getName()).setGodMode(true);
-					player.sendMessage(msgManager.getMessage("GOD_WHISPER_ON").replaceAll("%NICK%", sender.getName()));
-					sender.sendMessage(msgManager.getMessage("GOD_OTHER_ON").replaceAll("%NICK%", player.getName()));
-				}
-			}else{
-				sender.sendMessage(msgManager.getMessage("NO_PERMISSION"));
-			}
+		if(!sender.hasPermission("komplex.god.other")){
+			sm(sender, "NO_PERMISSION");
+			return;
+		}
+		
+		Player player = Bukkit.getPlayer(arg[0]);
+		if(player == null){
+			sm(sender, "PLAYER_OFFLINE");
+			return;
+		}
+		
+		if(plg.getUser(player.getName()).getGodMode()){
+			plg.getUser(player.getName()).setGodMode(false);
+			sm(player, "GOD_WHISPER_OFF", "%NICK%", sender.getName());
+			sm(sender, "GOD_OTHER_OFF", "%NICK%", player.getName());
 		}else{
-			sender.sendMessage(msgManager.getMessage("PLAYER_OFFLINE"));
+			plg.getUser(player.getName()).setGodMode(true);
+			sm(player, "GOD_WHISPER_ON", "%NICK%", sender.getName());
+			sm(sender, "GOD_OTHER_ON", "%NICK%", player.getName());
 		}
 	}
 	
 	private void godSelf(CommandSender sender){
-		if(sender instanceof Player){
-			Player player = (Player)sender;
-			if(player.hasPermission("komplex.god")){
-				if(plg.getUser(player.getName()).getGodMode()){
-					plg.getUser(player.getName()).setGodMode(false);
-					player.sendMessage(msgManager.getMessage("GOD_SELF_OFF"));
-				}else{
-					plg.getUser(player.getName()).setGodMode(true);
-					player.sendMessage(msgManager.getMessage("GOD_SELF_ON"));
-				}
-			}else{
-				player.sendMessage(msgManager.getMessage("NO_PERMISSION"));
-			}
+		if(!sender.hasPermission("komplex.god")){
+			sm(sender, "NO_PERMISSION");
+			return;
+		}
+		
+		if(!(sender instanceof Player)){
+			sm(sender, "PLAYER_ONLY");
+			return;
+		}
+		
+		if(plg.getUser(sender.getName()).getGodMode()){
+			plg.getUser(sender.getName()).setGodMode(false);
+			sm(sender, "GOD_SELF_OFF");
+		}else{
+			plg.getUser(sender.getName()).setGodMode(true);
+			sm(sender, "GOD_SELF_ON");
 		}
 	}
 }

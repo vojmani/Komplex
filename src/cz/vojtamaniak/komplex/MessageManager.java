@@ -72,6 +72,7 @@ public class MessageManager {
 		check("MAIL_SEND", "&7Mail odeslan!");
 		check("MAIL_EMPTY", "&7Nemas zadne nove maily.");
 		check("MAIL_CLEAR", "&4Pokud chces vymazat vsechny maily, napis &7/mail clear&4.");
+		check("MAIL_INBOX", "&4Mas &7%COUNT%&4 novych mailu! Pro precteni napis &8/mail read&4");
 		check("TELL_FORMAT_WHISPER", "&7[%SENDER% -> ty] &f%MESSAGE%");
 		check("TELL_FORMAT_SELF", "&7[ty -> %RECEIVER%] &f%MESSAGE%.");
 		check("TELL_NO_RECIPIENT", "&4Jeste jsi neobdrzel zadnou soukromou zpravu.");
@@ -80,6 +81,16 @@ public class MessageManager {
 		check("NEAR", "&7Hraci v tve blizkosti: %PLAYERS%");
 		check("NEAR_PLAYER", "&f%NICK%(&4%DISTANCE%&f)");
 		check("NEAR_OTHER", "&7Hraci v blizkosti hrace %NICK%: %PLAYERS%");
+		check("IGNORE_LIST_EMPTY", "&4Nikoho neignorujes.");
+		check("IGNORE_LIST_FORMAT", "&fIgnorovani hraci: %PLAYERS%");
+		check("IGNORE_ADD_SUCCESS", "&7Hrac %PLAYER% byl uspesne pridan do tveho ignorelistu.");
+		check("IGNORE_REMOVE_NOTIGNORED", "&4Tohoto hrace neignorujes.");
+		check("IGNORE_REMOVE_SUCCESS", "&7Tento hrac byl uspesne smazan z tveho ignorelistu.");
+		check("IGNORE_ADD_SELF", "&4Nemuzes ignorovat sam sebe!");
+		check("IGNORE_ADD_ALREADY", "&4Tohoto hrace jiz ignorujes.");
+		check("IGNORE_ADD_BYPASS", "&4Nemuzes ignorovat hrace %PLAYER%");
+		check("ADMINCHAT_MESSAGE", "&4[AdminChat] &f%NICK%: %MESSAGE%");
+		check("PLAYER_ONLY", "&4Tento prikaz nemuzes spustit z konzole.");
 		
 			//There it will be filled with another messages.
 		
@@ -101,6 +112,7 @@ public class MessageManager {
 	private void check(String key, String message){
 		if(!mess.contains(key)){
 			mess.set(key, message);
+			allOk = false;
 		}
 	}
 }

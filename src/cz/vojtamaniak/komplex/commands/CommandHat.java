@@ -15,24 +15,28 @@ public class CommandHat extends ICommand {
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] arg){
-		if(cmd.getName().equalsIgnoreCase("hat")){
-			if(sender instanceof Player){
-				Player player = (Player)sender;
-				if(player.hasPermission("komplex.hat")){
-					PlayerInventory inv = player.getInventory();
-					ItemStack hat = player.getInventory().getHelmet();
-					ItemStack hand = player.getItemInHand();
-					hand.setAmount(1);
-					inv.remove(hand);
-					inv.setHelmet(hand);
-					inv.setItemInHand(hat);
-					player.sendMessage(msgManager.getMessage("HAT_SUCCESS"));
-				}else{
-					player.sendMessage(msgManager.getMessage("NO_PERMISSION"));
-				}
-			}
+		
+		if(!cmd.getName().equalsIgnoreCase("hat"))
+			return false;
+		
+		if(!sender.hasPermission("komplex.hat")){
+			sm(sender, "NO_PERMISSION");
 			return true;
 		}
-		return false;
+		
+		if(!(sender instanceof Player)){
+			sm(sender, "PLAYER_ONLY");
+			return true;
+		}
+		
+		Player player = (Player)sender;
+		ItemStack hat = player.getInventory().getHelmet();
+		ItemStack hand = player.getItemInHand();
+		hand.setAmount(1);
+		
+		PlayerInventory inv = player.getInventory();
+		inv.setHelmet(hand);
+		inv.setItemInHand(hat);
+		return true;
 	}
 }

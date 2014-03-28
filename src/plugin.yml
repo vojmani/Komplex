@@ -1,9 +1,10 @@
 name: Komplex
 main: cz.vojtamaniak.komplex.Komplex
-version: 0.2
+version: 0.3.1.1
 commands:
   afk:
-    usage: /afk {nick}
+    usage: /afk
+    description: Hodi hrace do AFK stavu.
   break:
     usage: /break
     description: Znici blok, na ktery se divas
@@ -49,8 +50,14 @@ commands:
     description: Odpovi na posledni soukromou zpravu.
     aliases: [r]
   near:
-    usage: /near <nick>
+    usage: /near {nick}
     description: Vypise hrace v okoli a vzdalenost.
+  ignore:
+    usage: /ignore add/remove/list {nick}
+    description: Ignorovani hrace/hracu
+  adminchat:
+    usage: /adminchat <zprava>
+    description: Posle zpravu ostatnim adminum
 permissions:
   komplex.*:
     description: Prava na vsechny prikazy pluginu Komplex
@@ -74,6 +81,7 @@ permissions:
       komplex.list: true
       komplex.mail: true
       komplex.near: true
+      komplex.near.other: true
       komplex.ptime.get: true
       komplex.ptime.get.other: true
       komplex.ptime.reset: true
@@ -83,6 +91,8 @@ permissions:
       komplex.reply: true
       komplex.tell: true
       komplex.workbench: true
+      komplex.ignore: true
+      komplex.ignore.bypass: true
   komplex.messages.*:
     description: Ziskavani vsech zprav z pluginu Komplex
     children:
@@ -150,8 +160,11 @@ permissions:
     default: true
     description: Prida prava na prikaz /mail
   komplex.near:
-    default: true
+    default: op
     description: Prida prava na prikaz /near
+  komplex.near.other:
+    default: op
+    description: Prida prava na prikaz /near nick
   komplex.ptime.get:
     default: true
     description: Prida prava na ziskani vlastniho casu
@@ -179,3 +192,12 @@ permissions:
   komplex.workbench:
     default: op
     description: Prida prava na prikaz /workbench
+  komplex.ignore:
+    default: true
+    description: Prida prava na prikaz /ignore
+  komplex.ignore.bypass:
+    default: op
+    description: Zamezi hraci byt ignorovan.
+  komplex.adminchat:
+    default: op
+    description: Prida prava na prikaz /adminchat a na prijmani adminchatovych zprav

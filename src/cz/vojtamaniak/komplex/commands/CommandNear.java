@@ -1,9 +1,6 @@
 package cz.vojtamaniak.komplex.commands;
 
-import java.util.List;
-
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
@@ -19,52 +16,68 @@ public class CommandNear extends ICommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args) {
-		if(cmd.getName().equalsIgnoreCase("near")){
-			if(sender.hasPermission("komplex.near")){
-				if(args.length > 0){
-					OfflinePlayer offP = Bukkit.getOfflinePlayer(args[0]);
-					if(offP.isOnline()){
-						Player player = (Player) offP;
-						List<Entity> entities = player.getNearbyEntities(300, 300, 300);
-						String message = "";
-						for(Entity e : entities){
-							if(e instanceof Player){
-								message += msgManager.getMessage("NEAR_PLAYER").replaceAll("%NICK%", ((Player) e).getName()).replaceAll("%DISTANCE%", (int)player.getLocation().distance(e.getLocation()) + "b") + ", ";
-							}
-						}
-						if(message == ""){
-							sender.sendMessage(msgManager.getMessage("NEAR_OTHER").replaceAll("%PLAYERS%", msgManager.getMessage("NEAR_NOBODY")));
-							return true;
-						}
-						message += "/*";
-						message.replaceAll(", /*", "");
-						
-						sender.sendMessage(msgManager.getMessage("NEAR_OTHER").replaceAll("%PLAYERS%", message));
-					}else{
-						sender.sendMessage(msgManager.getMessage("PLAYER_OFFLINE"));
-					}
-				}else if(sender instanceof Player){
-					Player player = (Player) sender;
-					List<Entity> entities = player.getNearbyEntities(300, 300, 300);
-					String message = "";
-					for(Entity e : entities){
-						if(e instanceof Player){
-							message += msgManager.getMessage("NEAR_PLAYER").replaceAll("%NICK%", ((Player) e).getName()).replaceAll("%DISTANCE%", (int)player.getLocation().distance(e.getLocation()) + "b") + ", ";
-						}
-					}
-					if(message == ""){
-						sender.sendMessage(msgManager.getMessage("NEAR").replaceAll("%PLAYERS%", msgManager.getMessage("NEAR_NOBODY")));
-						return true;
-					}
-					message += "/*";
-					message.replaceAll(", /*", "");
-					
-					player.sendMessage(msgManager.getMessage("NEAR").replaceAll("%PLAYERS%", message));
-				}
-			}
-			return true;
+		if(!cmd.getName().equalsIgnoreCase("near"))
+			return false;
+		
+		if(args.length == 0){
+			nearSelf(sender);
+		}else{
+			nearOther(sender, args);
 		}
-		return false;
+		return true;
 	}
-
+	
+	private void nearSelf(CommandSender sender){
+		if(!sender.hasPermission("komplex.near")){
+			sm(sender, "NO_PERMISSION");
+			return;
+		}
+		
+		if(!(sender instanceof Player)){
+			sm(sender, "PLAYER_ONLY");
+			return;
+		}
+		StringBuilder sb = new StringBuilder();
+		for(Entity e : ((Player) sender).getNearbyEntities(300, 300, 300)){
+			if(e instanceof Player){
+				sb.append(msgManager.getMessage("NEAR_PLAYER").replaceAll("%NICK%", ((Player) e).getName()).replaceAll("%DISTANCE%", (int)((Player)sender).getLocation().distance(e.getLocation()) + "b") + ", ");
+			}
+		}
+		
+		if(sb.toString() == ""){
+			sm(sender, "NEAR", "%PLAYERS%", msgManager.getMessage("NEAR_NOBODY"));
+			return;
+		}
+		
+		sb.replace(sb.length() - 2, sb.length(), "");
+		sm(sender, "NEAR", "%PLAYERS%", sb.toString());
+	}
+	
+	private void nearOther(CommandSender sender, String[] args){
+		if(!sender.hasPermission("komplex.near.other")){
+			sm(sender, "NO_PERMISSION");
+			return;
+		}
+		
+		Player player = Bukkit.getPlayer(args[0]);
+		if(player == null){
+			sm(sender, "PLAYER_OFFLINE");
+			return;
+		}
+		
+		StringBuilder sb = new StringBuilder();
+		for(Entity e : player.getNearbyEntities(300, 300, 300)){
+			if(e instanceof Player){
+				sb.append(msgManager.getMessage("NEAR_PLAYER").replaceAll("%NICK%", ((Player) e).getName()).replaceAll("%DISTANCE%", player.getLocation().distance(e.getLocation()) + "b") + ", ");
+			}
+		}
+		
+		if(sb.toString() == ""){
+			sm(sender, "NEAR", "%NICK%", player.getName(), "%PLAYERS%", msgManager.getMessage("NEAR_NOBODY"));
+			return;
+		}
+		
+		sb.replace(sb.length() - 2, sb.length(), "");
+		sm(sender, "NEAR_OTHER", "%NICK%", player.getName(), "%PLAYERS%", sb.toString());
+	}
 }

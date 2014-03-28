@@ -15,24 +15,21 @@ public class CommandList extends ICommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] arg) {
-		if(cmd.getName().equalsIgnoreCase("list")){
-			if(sender.hasPermission("komplex.list")){
-				String players = "";
-				int playersOnline = 0;
-				for(Player p : Bukkit.getOnlinePlayers()){
-					playersOnline++;
-					players += p.getName() + ", ";
-				}
-				players += "/*";
-				players.replaceAll(", /*", "");
-				sender.sendMessage(msgManager.getMessage("LIST").replaceAll("%NUMBEROFPLAYERS%", Integer.toString(playersOnline)).replaceAll("%MAXPLAYERS%", Integer.toString(Bukkit.getMaxPlayers())).replaceAll("%PLAYERS%", players));
-			}
-			else{
-				sender.sendMessage(msgManager.getMessage("NO_PERMISSION"));
-			}
+		if(!cmd.getName().equalsIgnoreCase("list"))
+			return false;
+		
+		if(!sender.hasPermission("komplex.list")){
+			sm(sender, "NO_PERMISSION");
 			return true;
 		}
-		return false;
+		
+		StringBuilder sb = new StringBuilder();
+		for(Player p : Bukkit.getOnlinePlayers()){
+			sb.append(p.getName() + ", ");
+		}
+		sb.replace(sb.length() - 2, sb.length(), "");
+		sm(sender, "LIST", "%NUMBEROFPLAYERS%", Integer.toString(Bukkit.getOnlinePlayers().length), "%MAXPLAYERS%", Integer.toString(Bukkit.getMaxPlayers()), "%PLAYERS%", sb.toString());
+		return true;
 	}
 
 }

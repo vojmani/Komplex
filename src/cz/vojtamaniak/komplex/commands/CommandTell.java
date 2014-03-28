@@ -1,10 +1,8 @@
 package cz.vojtamaniak.komplex.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import cz.vojtamaniak.komplex.Komplex;
@@ -18,33 +16,43 @@ public class CommandTell extends ICommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] arg) {
-		if(cmd.getName().equalsIgnoreCase("tell")){
-			if(sender.hasPermission("komplex.tell")){
-				if(arg.length > 1){
-					OfflinePlayer offP = Bukkit.getOfflinePlayer(arg[0]);
-					if(offP.isOnline()){
-						Player p = (Player)offP;
-						String message = Utils.buildMessage(arg, 1);
-						p.sendMessage(msgManager.getMessage("TELL_FORMAT_WHISPER").replaceAll("%SENDER%", sender.getName()).replaceAll("%MESSAGE%", message));
-						sender.sendMessage(msgManager.getMessage("TELL_FORMAT_SELF").replaceAll("%RECEIVER%", p.getName()).replaceAll("%MESSAGE%", message));
-						plg.getUser(p.getName()).setLastPM(sender);
-						if(sender instanceof Player){
-							plg.getUser(sender.getName()).setLastPM(p);
-						}else if(sender instanceof ConsoleCommandSender){
-							plg.setLastConsolePM(p);
-						}
-					}else{
-						sender.sendMessage(msgManager.getMessage("PLAYER_OFFLINE"));
-					}
-				}else{
-					sender.sendMessage(msgManager.getMessage("WRONG_USAGE").replaceAll("%USAGE%", cmd.getUsage()));
-				}
-			}else{
-				sender.sendMessage(msgManager.getMessage("NO_PERMISSION"));
-			}
+		if(!cmd.getName().equalsIgnoreCase("tell"))
+			return false;
+		
+		if(!sender.hasPermission("komplex.tell")){
+			sm(sender, "NO_PERMISSION");
 			return true;
 		}
-		return false;
+		
+		if(arg.length <= 1){
+			sm(sender, "WRONG_USAGE", "%USAGE%", cmd.getUsage());
+			return true;
+		}
+		
+		Player player = Bukkit.getPlayer(arg[0]);
+		if(player == null){
+			sm(sender, "PLAYER_OFFLINE");
+			return true;
+		}
+		
+		if(player.hasPermission("komplex.ignore.bypass") && plg.getUser(player.getName()).getIgnoredPlayers().contains(sender.getName().toLowerCase())){
+			sm(sender, "IGNORE_ADD_BYPASS", "%PLAYER%", sender.getName());
+			plg.getUser(player.getName()).getIgnoredPlayers().remove(sender.getName().toLowerCase());
+		}
+		if(plg.getUser(player.getName()).getIgnoredPlayers().contains(sender.getName().toLowerCase())){
+			return true;
+		}
+		
+		String message = Utils.buildMessage(arg, 1);
+		sm(player, "TELL_FORMAT_WHISPER", "%SENDER%", sender.getName(), "%MESSAGE%", message);
+		sm(sender, "TELL_FORMAT_SELF", "%RECEIVER%", player.getName(), "%MESSAGE%", message);
+		plg.getUser(player.getName()).setLastPM(sender);
+		if(sender instanceof Player){
+			plg.getUser(sender.getName()).setLastPM(player);
+		}else{
+			plg.setLastConsolePM(sender);
+		}
+		return true;
 	}
 
 }

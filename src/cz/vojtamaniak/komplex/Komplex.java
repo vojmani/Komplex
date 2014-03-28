@@ -5,8 +5,10 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import cz.vojtamaniak.komplex.commands.CommandAdminchat;
 import cz.vojtamaniak.komplex.commands.CommandAfk;
 import cz.vojtamaniak.komplex.commands.CommandBreak;
 import cz.vojtamaniak.komplex.commands.CommandClearChat;
@@ -16,6 +18,7 @@ import cz.vojtamaniak.komplex.commands.CommandGod;
 import cz.vojtamaniak.komplex.commands.CommandHat;
 import cz.vojtamaniak.komplex.commands.CommandHeal;
 import cz.vojtamaniak.komplex.commands.CommandHelpOp;
+import cz.vojtamaniak.komplex.commands.CommandIgnore;
 import cz.vojtamaniak.komplex.commands.CommandList;
 import cz.vojtamaniak.komplex.commands.CommandMail;
 import cz.vojtamaniak.komplex.commands.CommandNear;
@@ -51,6 +54,31 @@ public class Komplex extends JavaPlugin {
 		confManager.init();
 		database.load();
 		
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
+			@Override
+			public void run(){
+				for(Player p : Bukkit.getOnlinePlayers()){
+					if(getUser(p.getName()).getCountOfMails() != 0){
+						p.sendMessage(msgManager.getMessage("MAIL_INBOX").replaceAll("%COUNT%", ""+ getUser(p.getName()).getCountOfMails()));
+					}
+				}
+			}
+		}, 20L, 20L*30L);
+		
+		if(Bukkit.getOnlinePlayers().length != 0){
+			for(Player p : Bukkit.getOnlinePlayers()){
+				User user = new User(p);
+				
+				for(String player : database.getIgnoredPlayers(p.getName())){
+					user.getIgnoredPlayers().add(player.toLowerCase());
+				}
+				
+				user.setCountOfMails(database.getCountOfMails(p.getName()));
+				
+				addUser(user);
+			}
+		}
+		
 		log.info("is enabled.");
 	}
 	
@@ -80,6 +108,8 @@ public class Komplex extends JavaPlugin {
 		getCommand("tell").setExecutor(new CommandTell(this));
 		getCommand("reply").setExecutor(new CommandReply(this));
 		getCommand("near").setExecutor(new CommandNear(this));
+		getCommand("ignore").setExecutor(new CommandIgnore(this));
+		getCommand("adminchat").setExecutor(new CommandAdminchat(this));
 	}
 	
 	private void registerListeners(){
@@ -89,16 +119,18 @@ public class Komplex extends JavaPlugin {
 	
 	public void addUser(User user){
 		if(!users.containsValue(user)){
-			users.put(user.getPlayer().getName(), user);
+			users.put(user.getPlayer().getName().toLowerCase(), user);
 		}
 	}
 	
 	public User getUser(String name) {
-		return users.get(name);
+		if(users.containsKey(name.toLowerCase()))
+			return users.get(name.toLowerCase());
+		return null;
 	}
 	
 	public void removeUser(String name){
-		users.remove(name);
+		users.remove(name.toLowerCase());
 	}
 	
 	public ConfigManager getConfigManager(){

@@ -14,18 +14,21 @@ public class CommandWorkbench extends ICommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] arg) {
-		if(cmd.getName().equalsIgnoreCase("workbench")){
-			if(sender instanceof Player){
-				Player player = (Player)sender;
-				if(player.hasPermission("komplex.workbench")){
-					player.openWorkbench(null, true);
-				}else{
-					sender.sendMessage(msgManager.getMessage("NO_PERMISSION"));
-				}
-			}
+		if(!cmd.getName().equalsIgnoreCase("workbench"))
+			return false;
+		
+		if(!sender.hasPermission("komplex.workbench")){
+			sm(sender, "NO_PERMISSION");
 			return true;
 		}
-		return false;
+		
+		if(!(sender instanceof Player)){
+			sm(sender, "PLAYER_ONLY");
+			return true;
+		}
+		
+		((Player)sender).openWorkbench(null, true);
+		return true;
 	}
 
 }

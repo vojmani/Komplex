@@ -1,7 +1,6 @@
 package cz.vojtamaniak.komplex.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,53 +15,59 @@ public class CommandFly extends ICommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] arg){
-		if(cmd.getName().equalsIgnoreCase("fly")){
-			if(arg.length > 0){
-				flyOther(sender, arg);
-			}else{
-				flySelf(sender);
-			}
-			return true;
+		if(!cmd.getName().equalsIgnoreCase("fly"))
+			return false;
+		
+		if(arg.length > 0){
+			flyOther(sender, arg);
+		}else{
+			flySelf(sender);
 		}
-		return false;
+		return true;
 	}
 	
 	private void flySelf(CommandSender sender){
-		if(sender instanceof Player){
-			Player player = (Player) sender;
-			if(player.hasPermission("komplex.fly")){
-				if(player.getAllowFlight()){
-					player.setAllowFlight(false);
-					player.sendMessage(msgManager.getMessage("FLY_SELF_OFF"));
-				}else{
-					player.setAllowFlight(true);
-					player.sendMessage(msgManager.getMessage("FLY_SELF_ON"));
-				}
-			}else{
-				player.sendMessage(msgManager.getMessage("NO_PERMISSION"));
-			}
+		if(!(sender instanceof Player)){
+			sm(sender, "PLAYER_ONLY");
+			return;
+		}
+		
+		if(!sender.hasPermission("komplex.fly")){
+			sm(sender, "NO_PERMISSION");
+			return;
+		}
+		
+		Player player = (Player)sender;
+		if(player.getAllowFlight()){
+			player.setAllowFlight(false);
+			sm(sender, "FLY_SELF_OFF");
+		}else{
+			player.setAllowFlight(true);
+			sm(sender, "FLY_SELF_ON");
 		}
 	}
 	
 	private void flyOther(CommandSender sender, String[] arg){
-		 OfflinePlayer offP = Bukkit.getOfflinePlayer(arg[0]);
-		 if(offP.isOnline()){
-			 Player player = (Player) offP;
-			 if(sender.hasPermission("komplex.fly.other")){
-				 if(player.getAllowFlight()){
-					 player.setAllowFlight(false);
-					 sender.sendMessage(msgManager.getMessage("FLY_OTHER_OFF").replaceAll("%NICK%", player.getName()));
-					 player.sendMessage(msgManager.getMessage("FLY_WHISPER_OFF").replaceAll("%NICK%", sender.getName()));
-				 }else{
-					 player.setAllowFlight(true);
-					 sender.sendMessage(msgManager.getMessage("FLY_OTHER_ON").replaceAll("%NICK%", player.getName()));
-					 player.sendMessage(msgManager.getMessage("FLY_WHISPER_ON").replaceAll("%NICK%", sender.getName()));
-				 }
-			 }else{
-				 sender.sendMessage(msgManager.getMessage("NO_PERMISSION"));
-			 }
-		 }else{
-			 sender.sendMessage(msgManager.getMessage("PLAYER_OFFLINE"));
-		 }
+		if(!sender.hasPermission("komplex.fly.other")){
+			sm(sender, "NO_PERMISSION");
+			return;
+		}
+		
+		Player player = Bukkit.getPlayer(arg[0]);
+		
+		if(player == null){
+			sm(sender, "PLAYER_OFFLINE");
+			return;
+		}
+		
+		if(player.getAllowFlight()){
+			player.setAllowFlight(false);
+			sm(sender, "FLY_OTHER_OFF", "%NICK%", player.getName());
+			sm(player, "FLY_WHISPER_OFF", "%NICK%", sender.getName());
+		}else{
+			player.setAllowFlight(true);
+			sm(sender, "FLY_OTHER_ON", "%NICK%", player.getName());
+			sm(player, "FLY_WHISPER_ON", "%NICK%", sender.getName());
+		}
 	}
 }

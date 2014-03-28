@@ -5,7 +5,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -46,8 +48,8 @@ public class Database {
 		try{
 			PreparedStatement ps = con.prepareStatement("CREATE TABLE IF NOT EXISTS k_mail (id INT(11) NOT NULL AUTO_INCREMENT, sender VARCHAR(32) NOT NULL,receiver VARCHAR(32) NOT NULL,message TEXT NOT NULL, time BIGINT(20) NOT NULL, deleted TINYINT(1) NOT NULL DEFAULT '0', PRIMARY KEY (`id`) USING BTREE) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;");
 			ps.execute();
-			//ps = con.prepareStatement("");
-			//ps.execute();
+			ps = con.prepareStatement("CREATE TABLE IF NOT EXISTS k_ignore (id INT(11) NOT NULL AUTO_INCREMENT, player VARCHAR(32), ignoredPlayer VARCHAR(32), time BIGINT(20), PRIMARY KEY (`id`) USING BTREE) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;");
+			ps.execute();
 			ps.close();
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -121,10 +123,54 @@ public class Database {
 		return 0;
 	}
 	
+	public List<String> getIgnoredPlayers(String player){
+		List<String> ignoredPlayers = new ArrayList<String>();
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("SELECT ignoredPlayer FROM k_ignore WHERE player = ?");
+			ps.setString(1, player);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				ignoredPlayers.add(rs.getString("ignoredPlayer"));
+			}
+			close(ps, rs);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return ignoredPlayers;
+	}
+	
+	public void addIgnored(String player, String ignoredPlayer){
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("INSERT INTO k_ignore (player, ignoredPlayer, time) VALUES (?,?,?)");
+			ps.setString(1, player);
+			ps.setString(2, ignoredPlayer);
+			ps.setLong(3, System.currentTimeMillis());
+			ps.executeUpdate();
+			close(ps, null);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void removeIgnored(String player, String ignoredPlayer){
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("DELETE FROM k_ignore WHERE player = ? AND ignoredPlayer = ?");
+			ps.setString(1, player);
+			ps.setString(2, ignoredPlayer);
+			ps.executeUpdate();
+			close(ps, null);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
 	public void close(PreparedStatement ps, ResultSet rs){
 		try {
 			if(ps != null)
-					ps.close();
+				ps.close();
 			if(rs != null)
 				rs.close();
 		} catch (SQLException e) {
