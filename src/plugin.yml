@@ -60,6 +60,19 @@ commands:
   adminchat:
     usage: /adminchat <zprava>
     description: Posle zpravu ostatnim adminum
+  setwarp:
+    usage: /setwarp <nazev>
+    description: Nastavi warp
+  warp:
+    usage: /warp {nazev}
+    description: Teleportne hrace na warp
+  deletewarp:
+    usage: /deletewarp <nazev>
+    description: Smaze warp
+    aliases: [delwarp]
+  doublejump:
+    usage: /doublejump {nick}
+    description: Zapne hraci doublejump
 permissions:
   komplex.*:
     description: Prava na vsechny prikazy pluginu Komplex
@@ -203,3 +216,12 @@ permissions:
   komplex.adminchat:
     default: op
     description: Prida prava na prikaz /adminchat a na prijmani adminchatovych zprav
+  komplex.setwarp:
+    default: op
+    description: Prida prava na prikaz /setwarp
+  komplex.deletewarp:
+    default: op
+    description: Prida prava na prikaz /deletewarp
+  komplex.warp:
+    default: true
+    description: Prida prava na prikaz /warp

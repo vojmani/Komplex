@@ -11,6 +11,7 @@ public class User {
 	private Player p;
 	private boolean godMode;
 	private boolean isAfk;
+	private boolean doublejump;
 	private CommandSender lastPMSender;
 	private List<String> ignoredPlayers;
 	private int countOfMails;
@@ -22,6 +23,7 @@ public class User {
 		this.lastPMSender = null;
 		this.ignoredPlayers = new ArrayList<String>();
 		this.countOfMails = 0;
+		this.doublejump = false;
 	}
 	
 	public Player getPlayer(){
@@ -66,5 +68,13 @@ public class User {
 	
 	public int getCountOfMails(){
 		return countOfMails;
+	}
+	
+	public boolean getDoubleJump(){
+		return doublejump;
+	}
+	
+	public void setDoubleJump(boolean doublejump){
+		this.doublejump = doublejump;
 	}
 }

@@ -12,6 +12,8 @@ import cz.vojtamaniak.komplex.commands.CommandAdminchat;
 import cz.vojtamaniak.komplex.commands.CommandAfk;
 import cz.vojtamaniak.komplex.commands.CommandBreak;
 import cz.vojtamaniak.komplex.commands.CommandClearChat;
+import cz.vojtamaniak.komplex.commands.CommandDeleteWarp;
+import cz.vojtamaniak.komplex.commands.CommandDoubleJump;
 import cz.vojtamaniak.komplex.commands.CommandFeed;
 import cz.vojtamaniak.komplex.commands.CommandFly;
 import cz.vojtamaniak.komplex.commands.CommandGod;
@@ -24,7 +26,9 @@ import cz.vojtamaniak.komplex.commands.CommandMail;
 import cz.vojtamaniak.komplex.commands.CommandNear;
 import cz.vojtamaniak.komplex.commands.CommandPtime;
 import cz.vojtamaniak.komplex.commands.CommandReply;
+import cz.vojtamaniak.komplex.commands.CommandSetWarp;
 import cz.vojtamaniak.komplex.commands.CommandTell;
+import cz.vojtamaniak.komplex.commands.CommandWarp;
 import cz.vojtamaniak.komplex.commands.CommandWorkbench;
 import cz.vojtamaniak.komplex.listeners.EntityListener;
 import cz.vojtamaniak.komplex.listeners.PlayerListener;
@@ -110,6 +114,10 @@ public class Komplex extends JavaPlugin {
 		getCommand("near").setExecutor(new CommandNear(this));
 		getCommand("ignore").setExecutor(new CommandIgnore(this));
 		getCommand("adminchat").setExecutor(new CommandAdminchat(this));
+		getCommand("setwarp").setExecutor(new CommandSetWarp(this));
+		getCommand("warp").setExecutor(new CommandWarp(this));
+		getCommand("deleteWarp").setExecutor(new CommandDeleteWarp(this));
+		getCommand("doublejump").setExecutor(new CommandDoubleJump(this));
 	}
 	
 	private void registerListeners(){

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class Database {
@@ -49,6 +51,8 @@ public class Database {
 			PreparedStatement ps = con.prepareStatement("CREATE TABLE IF NOT EXISTS k_mail (id INT(11) NOT NULL AUTO_INCREMENT, sender VARCHAR(32) NOT NULL,receiver VARCHAR(32) NOT NULL,message TEXT NOT NULL, time BIGINT(20) NOT NULL, deleted TINYINT(1) NOT NULL DEFAULT '0', PRIMARY KEY (`id`) USING BTREE) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;");
 			ps.execute();
 			ps = con.prepareStatement("CREATE TABLE IF NOT EXISTS k_ignore (id INT(11) NOT NULL AUTO_INCREMENT, player VARCHAR(32), ignoredPlayer VARCHAR(32), time BIGINT(20), PRIMARY KEY (`id`) USING BTREE) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;");
+			ps.execute();
+			ps = con.prepareStatement("CREATE TABLE IF NOT EXISTS k_warps (id INT(11) NOT NULL AUTO_INCREMENT, name VARCHAR(32), world VARCHAR(32), x INT(11) NOT NULL, y INT(11) NOT NULL, z INT(11) NOT NULL, yaw FLOAT(30) NOT NULL, pitch FLOAT(30) NOT NULL, PRIMARY KEY (`id`) USING BTREE) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT DYNAMIC;");
 			ps.execute();
 			ps.close();
 		}catch(SQLException e){
@@ -116,6 +120,7 @@ public class Database {
 			while(rs.next()){
 				count = rs.getInt("COUNT(*)");
 			}
+			close(ps,rs);
 			return count;
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -160,6 +165,83 @@ public class Database {
 			PreparedStatement ps = con.prepareStatement("DELETE FROM k_ignore WHERE player = ? AND ignoredPlayer = ?");
 			ps.setString(1, player);
 			ps.setString(2, ignoredPlayer);
+			ps.executeUpdate();
+			close(ps, null);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void addWarp(String name, String world, int x, int y, int z, float yaw, float pitch){
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("INSERT INTO k_warps (name, world, x, y, z, yaw, pitch) VALUES (?,?,?,?,?,?,?)");
+			ps.setString(1, name);
+			ps.setString(2, world);
+			ps.setInt(3, x);
+			ps.setInt(4, y);
+			ps.setInt(5, z);
+			ps.setFloat(6, yaw);
+			ps.setFloat(7, pitch);
+			ps.executeUpdate();
+			close(ps, null);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public List<String> getWarpList(){
+		con = getConnection();
+		List<String> warps = new ArrayList<String>();
+		try{
+			PreparedStatement ps = con.prepareStatement("SELECT name FROM k_warps");
+			ResultSet rs =  ps.executeQuery();
+			while(rs.next()){
+				warps.add(rs.getString("name"));
+			}
+			close(ps, rs);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return warps;
+	}
+	
+	public Location getWarpLocation(String name){
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM k_warps WHERE name = ?");
+			ps.setString(1, name);
+			ResultSet rs = ps.executeQuery();
+			String world = "";
+			int x = 0;
+			int y = 0;
+			int z = 0;
+			float yaw = 0F;
+			float pitch = 0F;
+			while(rs.next()){
+				world = rs.getString("world");
+				x = rs.getInt("x");
+				y = rs.getInt("y");
+				z = rs.getInt("z");
+				yaw = rs.getFloat("yaw");
+				pitch = rs.getFloat("pitch");
+			}
+			close(ps, rs);
+			if(world == ""){
+				return null;
+			}
+			return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public void deleteWarp(String name){
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("DELETE FROM k_warps WHERE name = ?");
+			ps.setString(1, name);
 			ps.executeUpdate();
 			close(ps, null);
 		}catch(SQLException e){

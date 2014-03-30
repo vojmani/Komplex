@@ -91,6 +91,19 @@ public class MessageManager {
 		check("IGNORE_ADD_BYPASS", "&4Nemuzes ignorovat hrace %PLAYER%");
 		check("ADMINCHAT_MESSAGE", "&4[AdminChat] &f%NICK%: %MESSAGE%");
 		check("PLAYER_ONLY", "&4Tento prikaz nemuzes spustit z konzole.");
+		check("WARP_SET_SUCCESS", "&7Warp nastaven.");
+		check("WARP_SET_EXISTS", "&4Warp s timto jmenem jiz existuje.");
+		check("WARP_LIST_EMPTY", "&4Nejsou k dispozici zadne warpy.");
+		check("WARP_LIST", "&fWarpy: %WARPS%");
+		check("WARP_NOT_EXISTS", "&4Tento warp neexistuje. Zobraz si seznam warpu pomoci &7/warp&4.");
+		check("WARP_SUCCESS", "&7Byl jsi teleportovan na warp &f%WARP%&7.");
+		check("WARP_DELETED", "&7Warp %WARP% byl uspesne smazan.");
+		check("DOUBLEJUMP_SELF_ON", "&7Zapnul sis doublejump.");
+		check("DOUBLEJUMP_SELF_OFF", "&7Vypnul sis doublejump.");
+		check("DOUBLEJUMP_OTHER_ON", "&7Zapnul jsi doublejump hraci %NICK%.");
+		check("DOUBLEJUMP_OTHER_OFF", "&7Vypnul jsi doublejump hraci %NICK%.");
+		check("DOUBLEJUMP_WHISPER_ON", "&7Admin %NICK% ti zapl doublejump.");
+		check("DOUBLEJUMP_WHISPER_OFF", "&7Admin %NICK% ti vypl doublejump.");
 		
 			//There it will be filled with another messages.
 		

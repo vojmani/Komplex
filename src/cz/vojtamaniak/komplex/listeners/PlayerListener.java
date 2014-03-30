@@ -1,6 +1,9 @@
 package cz.vojtamaniak.komplex.listeners;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -9,6 +12,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
 
 import cz.vojtamaniak.komplex.Komplex;
 import cz.vojtamaniak.komplex.User;
@@ -60,13 +64,30 @@ public class PlayerListener extends IListener {
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerMove(PlayerMoveEvent e){
 		User user = plg.getUser(e.getPlayer().getName());
+		Player player = e.getPlayer();
 		if(user == null){
-			plg.getLogger().severe("problem1");
 			return;
 		}
 		if(user.isAfk()){
 			user.setAfk(false);
 			Bukkit.broadcast(msgManager.getMessage("AFK_LEAVE").replaceAll("%NICK%", e.getPlayer().getName()), "komplex.messages.afk");
+		}
+		
+		if((user.getDoubleJump()) && (player.getGameMode() != GameMode.CREATIVE) && (player.getLocation().getBlock().getRelative(0, -1, 0).getType() != Material.AIR) && (!player.isFlying())){
+			player.setAllowFlight(true);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOW)
+	public void onToggleFlight(PlayerToggleFlightEvent e){
+		Player player = e.getPlayer();
+		
+		if((player.getGameMode() != GameMode.CREATIVE) && (plg.getUser(player.getName()).getDoubleJump())){
+			player.setFlying(false);
+			player.setAllowFlight(false);
+			e.setCancelled(true);
+			player.setVelocity(player.getLocation().getDirection().multiply(1.4).setY(1.0));
+			player.playSound(player.getLocation(), Sound.GHAST_FIREBALL, 1.0F, 1.0F);
 		}
 	}
 	
