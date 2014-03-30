@@ -103,7 +103,7 @@ public class Database {
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
-		return null;
+		return mails;
 	}
 	
 	public int getCountOfMails(String player){

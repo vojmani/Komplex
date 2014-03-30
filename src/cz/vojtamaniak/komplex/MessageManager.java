@@ -74,7 +74,7 @@ public class MessageManager {
 		check("MAIL_CLEAR", "&4Pokud chces vymazat vsechny maily, napis &7/mail clear&4.");
 		check("MAIL_INBOX", "&4Mas &7%COUNT%&4 novych mailu! Pro precteni napis &8/mail read&4");
 		check("TELL_FORMAT_WHISPER", "&7[%SENDER% -> ty] &f%MESSAGE%");
-		check("TELL_FORMAT_SELF", "&7[ty -> %RECEIVER%] &f%MESSAGE%.");
+		check("TELL_FORMAT_SELF", "&7[ty -> %RECEIVER%] &f%MESSAGE%");
 		check("TELL_NO_RECIPIENT", "&4Jeste jsi neobdrzel zadnou soukromou zpravu.");
 		check("TELL_PLAYER_OFFLINE", "&4Hrac, na jehoz zpravu chces odpovedet, neni pripojen.");
 		check("NEAR_NOBODY", "&4nikdo");

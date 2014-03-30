@@ -18,8 +18,10 @@ public class CommandPtime extends ICommand {
 		if(!cmd.getName().equalsIgnoreCase("ptime"))
 			return false;
 		
-		if(arg.length == 0)
+		if(arg.length == 0){
 			getSelfTime(sender);
+			return true;
+		}
 		
 		switch(arg[0]){
 		case "set":

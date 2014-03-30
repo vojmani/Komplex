@@ -1,6 +1,6 @@
 name: Komplex
 main: cz.vojtamaniak.komplex.Komplex
-version: 0.3.1.1
+version: 0.4.1
 commands:
   afk:
     usage: /afk
@@ -17,6 +17,7 @@ commands:
   clearchat:
     usage: /clearchat
     description: Promaze chat.
+    aliases: [cc]
   god:
     usage: /god {nick}
     description: Zapne/Vypne nesmrtelnost.
@@ -32,6 +33,7 @@ commands:
   workbench:
     usage: /workbench
     description: Otevre crafting table.
+    aliases: [wb]
   helpop:
     usage: /helpop <message>
     description: Posle zpravu adminum.

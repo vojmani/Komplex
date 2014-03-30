@@ -44,7 +44,7 @@ public class CommandNear extends ICommand {
 			}
 		}
 		
-		if(sb.toString() == ""){
+		if(sb.length() == 0){
 			sm(sender, "NEAR", "%PLAYERS%", msgManager.getMessage("NEAR_NOBODY"));
 			return;
 		}
@@ -72,7 +72,7 @@ public class CommandNear extends ICommand {
 			}
 		}
 		
-		if(sb.toString() == ""){
+		if(sb.length() == 0){
 			sm(sender, "NEAR", "%NICK%", player.getName(), "%PLAYERS%", msgManager.getMessage("NEAR_NOBODY"));
 			return;
 		}

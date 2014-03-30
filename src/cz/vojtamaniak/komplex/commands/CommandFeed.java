@@ -27,16 +27,6 @@ public class CommandFeed extends ICommand {
 	}
 	
 	private void feedSelf(CommandSender sender){
-		if(sender instanceof Player){
-			Player player = (Player) sender;
-			if(player.hasPermission("komplex.feed")){
-				player.setFoodLevel(20);
-				player.sendMessage(msgManager.getMessage("FEED_SELF"));
-			}else{
-				player.sendMessage(msgManager.getMessage("NO_PERMISSION"));
-			}
-		}
-		
 		if(!sender.hasPermission("komplex.feed")){
 			sm(sender, "NO_PERMISSION");
 			return;

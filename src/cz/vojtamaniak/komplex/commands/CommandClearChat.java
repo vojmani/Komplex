@@ -14,7 +14,7 @@ public class CommandClearChat extends ICommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] arg) {
-		if(cmd.getName().equalsIgnoreCase("clearchat"))
+		if(!cmd.getName().equalsIgnoreCase("clearchat"))
 			return false;
 		
 		if(!sender.hasPermission("komplex.clearchat")){
