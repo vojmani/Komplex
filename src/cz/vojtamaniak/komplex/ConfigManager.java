@@ -46,6 +46,10 @@ public class ConfigManager {
 				conf.set("storage.mysql-data", "minecraft");
 				allOk = false;
 			}
+			if(!conf.contains("home")){
+				conf.createSection("home");
+				allOk = false;
+			}
 			
 			if(!allOk){
 				log.info("Repairing or creating config.yml file.");

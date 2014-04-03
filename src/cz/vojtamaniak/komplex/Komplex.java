@@ -20,12 +20,14 @@ import cz.vojtamaniak.komplex.commands.CommandGod;
 import cz.vojtamaniak.komplex.commands.CommandHat;
 import cz.vojtamaniak.komplex.commands.CommandHeal;
 import cz.vojtamaniak.komplex.commands.CommandHelpOp;
+import cz.vojtamaniak.komplex.commands.CommandHome;
 import cz.vojtamaniak.komplex.commands.CommandIgnore;
 import cz.vojtamaniak.komplex.commands.CommandList;
 import cz.vojtamaniak.komplex.commands.CommandMail;
 import cz.vojtamaniak.komplex.commands.CommandNear;
 import cz.vojtamaniak.komplex.commands.CommandPtime;
 import cz.vojtamaniak.komplex.commands.CommandReply;
+import cz.vojtamaniak.komplex.commands.CommandSetHome;
 import cz.vojtamaniak.komplex.commands.CommandSetWarp;
 import cz.vojtamaniak.komplex.commands.CommandTell;
 import cz.vojtamaniak.komplex.commands.CommandWarp;
@@ -118,6 +120,8 @@ public class Komplex extends JavaPlugin {
 		getCommand("warp").setExecutor(new CommandWarp(this));
 		getCommand("deleteWarp").setExecutor(new CommandDeleteWarp(this));
 		getCommand("doublejump").setExecutor(new CommandDoubleJump(this));
+		getCommand("home").setExecutor(new CommandHome(this));
+		getCommand("sethome").setExecutor(new CommandSetHome(this));
 	}
 	
 	private void registerListeners(){

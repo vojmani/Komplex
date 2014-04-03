@@ -12,6 +12,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 
 import cz.vojtamaniak.komplex.Komplex;
@@ -78,6 +80,10 @@ public class PlayerListener extends IListener {
 		}
 	}
 	
+	/**
+	 * @param e - PlayerToggleFlightEvent
+	 * @return
+	 * */
 	@EventHandler(priority = EventPriority.LOW)
 	public void onToggleFlight(PlayerToggleFlightEvent e){
 		Player player = e.getPlayer();
@@ -88,6 +94,17 @@ public class PlayerListener extends IListener {
 			e.setCancelled(true);
 			player.setVelocity(player.getLocation().getDirection().multiply(1.4).setY(1.0));
 			player.playSound(player.getLocation(), Sound.GHAST_FIREBALL, 1.0F, 1.0F);
+		}
+	}
+	
+	/**
+	 * @param e - PlayerTeleportEvent
+	 * @return
+	 * */
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerTeleport(PlayerTeleportEvent e){
+		if(e.getCause() == TeleportCause.COMMAND){
+			e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.SUCCESSFUL_HIT, 1.0F, 1.0F);
 		}
 	}
 	

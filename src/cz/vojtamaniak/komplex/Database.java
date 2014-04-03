@@ -54,6 +54,8 @@ public class Database {
 			ps.execute();
 			ps = con.prepareStatement("CREATE TABLE IF NOT EXISTS k_warps (id INT(11) NOT NULL AUTO_INCREMENT, name VARCHAR(32), world VARCHAR(32), x INT(11) NOT NULL, y INT(11) NOT NULL, z INT(11) NOT NULL, yaw FLOAT(30) NOT NULL, pitch FLOAT(30) NOT NULL, PRIMARY KEY (`id`) USING BTREE) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT DYNAMIC;");
 			ps.execute();
+			ps = con.prepareStatement("CREATE TABLE IF NOT EXISTS k_homes (id INT(11) NOT NULL AUTO_INCREMENT, name VARCHAR(32), world VARCHAR(32), x INT(11) NOT NULL, y INT(11) NOT NULL, z INT(11) NOT NULL, owner VARCHAR(32), PRIMARY KEY (`id`) USING BTREE) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT DYNAMIC;");
+			ps.execute();
 			ps.close();
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -247,6 +249,112 @@ public class Database {
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
+	}
+	
+	public int getCountOfHomes(String player){
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("SELECT COUNT(*) FROM k_homes WHERE owner = ?");
+			ps.setString(1, player);
+			ResultSet rs = ps.executeQuery();
+			int count = 0;
+			while(rs.next()){
+				count = rs.getInt("COUNT(*)");
+			}
+			close(ps, rs);
+			return count;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public void addHome(String owner, String name, String world, int x, int y, int z){
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("INSERT INTO k_homes (name, world, x, y, z, owner) VALUES (?,?,?,?,?,?)");
+			ps.setString(1, name);
+			ps.setString(2, world);
+			ps.setInt(3, x);
+			ps.setInt(4, y);
+			ps.setInt(5, z);
+			ps.setString(6, owner);
+			ps.executeUpdate();
+			close(ps, null);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void deleteAllHomes(String owner){
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("DELETE FROM k_homes WHERE owner = ?");
+			ps.setString(1, owner);
+			ps.executeUpdate();
+			close(ps, null);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public Location getHomeLocation(String owner, String name){
+		con = getConnection();
+		Location loc = null;
+		try{
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM k_homes WHERE name = ? AND owner = ?");
+			ps.setString(1, name);
+			ps.setString(2, owner);
+			ResultSet rs = ps.executeQuery();
+			String world = "";
+			int x = 0;
+			int y = 0;
+			int z = 0;
+			while(rs.next()){
+				world = rs.getString("world");
+				x = rs.getInt("x");
+				y = rs.getInt("y");
+				z = rs.getInt("z");
+			}
+			close(ps, rs);
+			if(world == ""){
+				return null;
+			}
+			loc = new Location(Bukkit.getWorld(world), x, y, z);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return loc;
+	}
+	
+	public void deleteHome(String owner, String name){
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("DELETE FROM k_homes WHERE name = ? AND owner = ?");
+			ps.setString(1, name);
+			ps.setString(2, owner);
+			ps.executeUpdate();
+			close(ps, null);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public List<String> getHomeList(String owner){
+		con = getConnection();
+		List<String> homes = new ArrayList<String>();
+		try{
+			PreparedStatement ps = con.prepareStatement("SELECT name FROM k_homes WHERE owner = ?");
+			ps.setString(1, owner);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				homes.add(rs.getString("name"));
+			}
+			close(ps, rs);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return homes;
 	}
 	
 	public void close(PreparedStatement ps, ResultSet rs){

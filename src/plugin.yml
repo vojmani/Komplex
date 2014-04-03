@@ -1,6 +1,6 @@
 name: Komplex
 main: cz.vojtamaniak.komplex.Komplex
-version: 0.4.1
+version: 0.4.2
 commands:
   afk:
     usage: /afk
@@ -73,6 +73,12 @@ commands:
   doublejump:
     usage: /doublejump {nick}
     description: Zapne hraci doublejump
+  home:
+    usage: /home {nazev}
+    description: Teleportne domu.
+  sethome:
+    usage: /sethome {nazev}
+    description: Nastavi domov.
 permissions:
   komplex.*:
     description: Prava na vsechny prikazy pluginu Komplex

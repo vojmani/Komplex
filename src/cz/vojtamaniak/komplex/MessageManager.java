@@ -104,6 +104,15 @@ public class MessageManager {
 		check("DOUBLEJUMP_OTHER_OFF", "&7Vypnul jsi doublejump hraci %NICK%.");
 		check("DOUBLEJUMP_WHISPER_ON", "&7Admin %NICK% ti zapl doublejump.");
 		check("DOUBLEJUMP_WHISPER_OFF", "&7Admin %NICK% ti vypl doublejump.");
+		check("HOME_SET_NONAME", "&4Musis napsat i nazev domova -> &7/sethome <nazev>&4.");
+		check("HOME_ADDED", "&7Domov byl pridan!");
+		check("HOME_ADD_DENIED", "&4Muzes mit maximalne jeden domov!");
+		check("HOME_ADD_MAX", "&4Muzes mit maximalne %MAX% domovu.");
+		check("HOME_NOONE", "&4Nemas zadny domov!");
+		check("HOME_TP", "&7Byl jsi teleportovan na domov %HOME%.");
+		check("HOME_TP_DEFAULT", "&7Byl jsi teleportovan domu.");
+		check("HOME_LIST", "&fTve domovy: %HOMES%");
+		check("HOME_NOT_EXISTS", "&4Tento domov neexistuje.");
 		
 			//There it will be filled with another messages.
 		
