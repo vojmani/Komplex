@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
@@ -36,7 +37,8 @@ public class PlayerListener extends IListener {
 		User user = new User(e.getPlayer());
 		user.setIgnoredPlayers(database.getIgnoredPlayers(e.getPlayer().getName()));
 		user.setCountOfMails(database.getCountOfMails(e.getPlayer().getName()));
-		plg.addUser(user);
+		user.setCountOfNotices(database.getCountOfNotices(e.getPlayer().getName()));
+		api.addUser(user);
 	}
 	
 	/**
@@ -47,7 +49,7 @@ public class PlayerListener extends IListener {
 	public void onPlayerQuit(PlayerQuitEvent e){
 		e.setQuitMessage(null);
 		Bukkit.broadcast(msgManager.getMessage("MESSAGE_QUIT").replaceAll("%NICK%", e.getPlayer().getName()), "komplex.messages.onquit");				
-		plg.removeUser(e.getPlayer().getName());
+		api.removeUser(e.getPlayer().getName());
 	}
 	
 	/**
@@ -56,7 +58,7 @@ public class PlayerListener extends IListener {
 	 *  */
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerKick(PlayerKickEvent e){
-		plg.removeUser(e.getPlayer().getName());
+		api.removeUser(e.getPlayer().getName());
 	}
 	
 	/**
@@ -65,17 +67,14 @@ public class PlayerListener extends IListener {
 	 *  */
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerMove(PlayerMoveEvent e){
-		User user = plg.getUser(e.getPlayer().getName());
 		Player player = e.getPlayer();
-		if(user == null){
-			return;
-		}
-		if(user.isAfk()){
-			user.setAfk(false);
+		String pName = player.getName();
+		if(api.isAfk(pName)){
+			api.setAfk(pName, false);
 			Bukkit.broadcast(msgManager.getMessage("AFK_LEAVE").replaceAll("%NICK%", e.getPlayer().getName()), "komplex.messages.afk");
 		}
 		
-		if((user.getDoubleJump()) && (player.getGameMode() != GameMode.CREATIVE) && (player.getLocation().getBlock().getRelative(0, -1, 0).getType() != Material.AIR) && (!player.isFlying())){
+		if((api.isDoubleJump(pName)) && (player.getGameMode() != GameMode.CREATIVE) && (player.getLocation().getBlock().getRelative(0, -1, 0).getType() != Material.AIR) && (!player.isFlying())){
 			player.setAllowFlight(true);
 		}
 	}
@@ -88,7 +87,7 @@ public class PlayerListener extends IListener {
 	public void onToggleFlight(PlayerToggleFlightEvent e){
 		Player player = e.getPlayer();
 		
-		if((player.getGameMode() != GameMode.CREATIVE) && (plg.getUser(player.getName()).getDoubleJump())){
+		if((player.getGameMode() != GameMode.CREATIVE) && (api.isDoubleJump(player.getName()))){
 			player.setFlying(false);
 			player.setAllowFlight(false);
 			e.setCancelled(true);
@@ -113,13 +112,31 @@ public class PlayerListener extends IListener {
 		String pName = e.getPlayer().getName();
 		
 		for(Player p : e.getRecipients()){
-			if(p.hasPermission("komplex.ignore.bypass") && plg.getUser(p.getName()).getIgnoredPlayers().contains(pName.toLowerCase())){
+			if(p.hasPermission("komplex.ignore.bypass") && api.getIgnoredPlayers(p.getName()).contains(pName.toLowerCase())){
 				p.sendMessage(msgManager.getMessage("IGNORE_ADD_BYPASS").replaceAll("%PLAYER%", pName));
-				plg.getUser(p.getName()).getIgnoredPlayers().remove(pName.toLowerCase());
+				api.getIgnoredPlayers(p.getName()).remove(pName.toLowerCase());
 			}
 			
-			if(plg.getUser(p.getName()).getIgnoredPlayers().contains(pName.toLowerCase())){
+			if(api.getIgnoredPlayers(p.getName()).contains(pName.toLowerCase())){
 				e.getRecipients().remove(p);
+			}
+		}
+		
+		if((((api.getLastMessageTime(pName) - System.currentTimeMillis()) / 1000) <= 60) && (plg.getUser(pName).getLastMessage() == e.getMessage())){
+			e.getPlayer().sendMessage(msgManager.getMessage("SPAM_WARNING"));
+			e.setCancelled(true);
+		}
+		
+		if(!e.isCancelled()){
+			plg.getUser(pName).setLastMessage(e.getMessage(), System.currentTimeMillis());
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerRespawn(PlayerRespawnEvent e){
+		if(!e.isBedSpawn()){
+			if(plg.getSpawnLocation() != null){
+				e.setRespawnLocation(plg.getSpawnLocation());
 			}
 		}
 	}

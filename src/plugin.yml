@@ -1,6 +1,6 @@
 name: Komplex
 main: cz.vojtamaniak.komplex.Komplex
-version: 0.4.2
+version: 0.4.4
 commands:
   afk:
     usage: /afk
@@ -79,6 +79,46 @@ commands:
   sethome:
     usage: /sethome {nazev}
     description: Nastavi domov.
+  spawn:
+    usage: /spawn {nick}
+    description: Teleportuje na spawn.
+  setspawn:
+    usage: /setspawn
+    description: Nastavi spawn.
+  notices:
+    usage: /notices global/add/{} {zprava}/{nick} {zprava}
+    description: Notices
+    aliases: [notice]
+  taketicket:
+    usage: /taketicket <id>
+    description: Vezme ticket
+  ticket:
+    usage: /ticket <zprava>
+    description: Vytvori ticket
+  tickets:
+    usage: /tickets -all/{}
+    description: Vypise seznam ticketu
+  closeticket:
+    usage: /closeticket {id}
+    description: Uzavre/otevre ticket
+  editsign:
+    usage: /editsign <radek> {text}
+    description: Edituje sign
+    aliases: [sign, signedit]
+  replyticket:
+    usage: /replyticket <id> <zprava>
+    description: Odpovi na ticket
+  deleteticket:
+    usage: /deleteticket <id>
+    description: Smaze ticket
+    aliases: [delticket]
+  checkticket:
+    usage: /checkticket <id>
+    description: Podiva se na ticket
+  deletehome:
+    usage: /deletehome {nazev}
+    description: Smaze dum
+    aliases: [delhome]
 permissions:
   komplex.*:
     description: Prava na vsechny prikazy pluginu Komplex

@@ -3,7 +3,6 @@ package cz.vojtamaniak.komplex.commands;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -34,17 +33,15 @@ public class CommandMail extends ICommand {
 		
 		switch(arg[0]){
 		case "send":
-			database.sendMail(sender.getName(), arg[1], Utils.buildMessage(arg, 2));
+			api.sendMail(sender.getName(), arg[1], Utils.buildMessage(arg, 2));
 			sm(sender, "MAIL_SEND");
-			if(Bukkit.getPlayer(arg[1]) != null)
-				plg.getUser(sender.getName()).setCountOfMails(database.getCountOfMails(arg[1]));
 			break;
 		case "read":
 			if(!(sender instanceof Player)){
 				sm(sender, "PLAYER_ONLY");
 				return true;
 			}
-			HashMap<String, String> mails = database.getMails(sender.getName());
+			HashMap<String, String> mails = api.getMails(sender.getName());
 			if(mails.isEmpty()){
 				sm(sender, "MAIL_EMPTY");
 				return true;
@@ -59,9 +56,8 @@ public class CommandMail extends ICommand {
 				sm(sender, "PLAYER_ONLY");
 				return true;
 			}
-			database.clearMails(sender.getName());
+			api.clearMails(sender.getName());
 			sm(sender, "MAIL_CLEARED");
-			plg.getUser(sender.getName()).setCountOfMails(0);
 			break;
 		}
 		return true;

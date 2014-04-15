@@ -5,7 +5,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import cz.vojtamaniak.komplex.Komplex;
-import cz.vojtamaniak.komplex.User;
 
 public class CommandAfk extends ICommand {
 
@@ -28,14 +27,10 @@ public class CommandAfk extends ICommand {
 			return true;
 		}
 		
-		User user = plg.getUser(sender.getName());
-		if(user.isAfk()){
-			bm("AFK_LEAVE", "komplex.message.afk", "%NICK%", sender.getName());
-			user.setAfk(false);
-		}else{
-			bm("AFK_ENTER", "komplex.message.afk", "%NICK%", sender.getName());
-			user.setAfk(true);
-		}
+		boolean isAfk = api.isAfk(sender.getName());
+		
+		bm(isAfk ? "AFK_LEAVE" : "AFK_ENTER", "komplex.message.afk", "%NICK%", sender.getName());
+		api.setAfk(sender.getName(), !isAfk);
 		return true;
 	}
 

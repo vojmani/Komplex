@@ -15,45 +15,50 @@ public class CommandBreak extends ICommand {
 	public CommandBreak(Komplex plg) {
 		super(plg);
 	}
-
+	
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] arg) {
-		if(cmd.getName().equalsIgnoreCase("break")){
-			if(sender instanceof Player){
-				Player player = (Player) sender;
-				Block target = player.getTargetBlock(null, 30);
-				if(target.getType() == Material.BEDROCK){
-					this.breakBedrock(player, target);
-				}else{
-					this.breakOtherBlocks(player, target);
-				}
-			}
+		if(!cmd.getName().equalsIgnoreCase("break"))
+			return false;
+		
+		if(!(sender instanceof Player)){
+			sm(sender, "PLAYER_ONLY");
 			return true;
 		}
-		return false;
+		
+		Player player = (Player)sender;
+		Block block = player.getTargetBlock(null, 30);
+		
+		if(block.getType() == Material.BEDROCK)
+			breakBedrock(player, block);
+		else
+			breakOtherBlocks(player, block);		
+		return true;
 	}
 	
-	private void breakOtherBlocks(Player player, Block target){
-		if(player.hasPermission("komplex.break")){
-			BlockBreakEvent e = new BlockBreakEvent(target, player);
-			Bukkit.getPluginManager().callEvent(e);
-			if(!e.isCancelled()){
-				target.setType(Material.AIR);
-			}
-		}else{
-			player.sendMessage(msgManager.getMessage("NO_PERMISSION"));
+	private void breakOtherBlocks(Player player, Block block){		
+		if(!player.hasPermission("komplex.break")){
+			sm(player, "NO_PERMISSION");
+			return;
 		}
+		
+		BlockBreakEvent e = new BlockBreakEvent(block, player);
+		Bukkit.getPluginManager().callEvent(e);
+		if(!e.isCancelled())
+			block.setType(Material.AIR);
 	}
 	
-	private void breakBedrock(Player player, Block target){
-		if(player.hasPermission("komplex.break.bedrock")){
-			BlockBreakEvent e = new BlockBreakEvent(target, player);
-			Bukkit.getPluginManager().callEvent(e);
-			if(!e.isCancelled()){
-				target.setType(Material.AIR);
-			}
-		}else{
-			player.sendMessage(msgManager.getMessage("NO_PERMISSION_BEDROCK"));
+	private void breakBedrock(Player player, Block block){
+		if(!player.hasPermission("komplex.break.bedrock")){
+			sm(player, "NO_PERMISSION_BEDROCK");
+			return;
 		}
+		
+		BlockBreakEvent e = new BlockBreakEvent(block, player);
+		Bukkit.getPluginManager().callEvent(e);
+		
+		if(!e.isCancelled())
+			block.setType(Material.AIR);
 	}
 }

@@ -35,22 +35,22 @@ public class CommandTell extends ICommand {
 			return true;
 		}
 		
-		if(player.hasPermission("komplex.ignore.bypass") && plg.getUser(player.getName()).getIgnoredPlayers().contains(sender.getName().toLowerCase())){
+		if(player.hasPermission("komplex.ignore.bypass") && api.getIgnoredPlayers(player.getName()).contains(sender.getName().toLowerCase())){
 			sm(sender, "IGNORE_ADD_BYPASS", "%PLAYER%", sender.getName());
-			plg.getUser(player.getName()).getIgnoredPlayers().remove(sender.getName().toLowerCase());
+			api.getIgnoredPlayers(player.getName()).remove(sender.getName().toLowerCase());
 		}
-		if(plg.getUser(player.getName()).getIgnoredPlayers().contains(sender.getName().toLowerCase())){
+		if(api.getIgnoredPlayers(player.getName()).contains(sender.getName().toLowerCase())){
 			return true;
 		}
 		
 		String message = Utils.buildMessage(arg, 1);
 		sm(player, "TELL_FORMAT_WHISPER", "%SENDER%", sender.getName(), "%MESSAGE%", message);
 		sm(sender, "TELL_FORMAT_SELF", "%RECEIVER%", player.getName(), "%MESSAGE%", message);
-		plg.getUser(player.getName()).setLastPM(sender);
+		api.setLastPMSender(player.getName(), sender);
 		if(sender instanceof Player){
-			plg.getUser(sender.getName()).setLastPM(player);
+			api.setLastPMSender(sender.getName(), player);
 		}else{
-			plg.setLastConsolePM(sender);
+			api.setLastConsolePM(sender);
 		}
 		return true;
 	}

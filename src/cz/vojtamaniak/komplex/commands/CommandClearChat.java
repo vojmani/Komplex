@@ -3,6 +3,7 @@ package cz.vojtamaniak.komplex.commands;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import cz.vojtamaniak.komplex.Komplex;
 
@@ -23,7 +24,9 @@ public class CommandClearChat extends ICommand {
 		}
 		
 		for(int i = 0; i < 120; i++){
-			Bukkit.broadcastMessage("");
+			for(Player p : Bukkit.getOnlinePlayers()){
+				p.sendMessage("");
+			}
 		}
 		Bukkit.broadcastMessage(msgManager.getMessage("CHAT_CLEARED").replaceAll("%NICK%", sender.getName()));
 		return true;

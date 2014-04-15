@@ -29,19 +29,20 @@ public class CommandSetHome extends ICommand {
 			return true;
 		}
 		Player player = (Player)sender;
+		int coh = api.getCountOfHomes(sender.getName());
 		
 		if(args.length == 0){
-			if((database.getCountOfHomes(sender.getName()) != 0)
+			if((coh != 0)
 					&& (sender.hasPermission("komplex.sethome.multiple"))){
 				sm(sender, "HOME_SET_NONAME");
 				return true;
 			}
 			
-			if(database.getCountOfHomes(sender.getName()) == 1)
-				database.deleteAllHomes(sender.getName());
+			if(coh == 1)
+				api.deleteAllHomes(sender.getName());
 			
 			Location loc = player.getLocation();
-			database.addHome(sender.getName(), "home", loc.getWorld().getName(), (int)loc.getX(), (int)loc.getY(), (int)loc.getZ());
+			api.addHome(sender.getName(), "home", loc.getWorld().getName(), (int)loc.getX(), (int)loc.getY(), (int)loc.getZ());
 			sm(sender, "HOME_ADDED");
 		}else{
 			if(!sender.hasPermission("komplex.sethome.multiple")){
@@ -51,7 +52,7 @@ public class CommandSetHome extends ICommand {
 			
 			Location loc = player.getLocation();
 			if(sender.hasPermission("komplex.sethome.multiple.unlimited")){
-				database.addHome(sender.getName(), args[0], loc.getWorld().getName(), (int)loc.getX(), (int)loc.getY(), (int)loc.getZ());
+				api.addHome(sender.getName(), args[0], loc.getWorld().getName(), (int)loc.getX(), (int)loc.getY(), (int)loc.getZ());
 				sm(sender, "HOME_ADDED");
 			}else{
 				int maxHomes = 0;
@@ -64,16 +65,16 @@ public class CommandSetHome extends ICommand {
 					}
 				}
 				
-				if(database.getCountOfHomes(sender.getName()) >= maxHomes){
+				if(coh >= maxHomes){
 					sm(sender, "HOME_ADD_MAX", "%MAX%", Integer.toString(maxHomes));
 					return true;
 				}
 				
-				if(database.getHomeLocation(sender.getName(), args[0]) != null){
-					database.deleteHome(sender.getName(), args[0]);
+				if(api.getHomeLocation(sender.getName(), args[0]) != null){
+					api.deleteHome(sender.getName(), args[0]);
 				}
 				
-				database.addHome(sender.getName(), args[0], loc.getWorld().getName(), (int)loc.getX(), (int)loc.getY(), (int)loc.getZ());
+				api.addHome(sender.getName(), args[0], loc.getWorld().getName(), (int)loc.getX(), (int)loc.getY(), (int)loc.getZ());
 				sm(sender, "HOME_ADDED");
 			}
 		}

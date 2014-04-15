@@ -31,7 +31,7 @@ public class CommandReply extends ICommand {
 		
 		String message = Utils.buildMessage(args, 0);
 		if(sender instanceof Player){
-			CommandSender lastPMSender = plg.getUser(sender.getName()).getLastPMSender();
+			CommandSender lastPMSender = api.getLastPMSender(sender.getName());
 			
 			if(lastPMSender == null){
 				sm(sender, "TELL_NO_RECIPIENT");
@@ -48,14 +48,14 @@ public class CommandReply extends ICommand {
 				
 				sm(lastPMPlayer, "TELL_FORMAT_WHISPER", "%SENDER%", sender.getName(), "%MESSAGE%", message);
 				sm(sender, "TELL_FORMAT_SELF", "%RECEIVER%", lastPMPlayer.getName(), "%MESSAGE%", message);
-				plg.getUser(lastPMPlayer.getName()).setLastPM(sender);
+				api.setLastPMSender(lastPMSender.getName(), sender);
 			}else if(lastPMSender instanceof ConsoleCommandSender){
 				sm(lastPMSender, "TELL_FORMAT_WHISPER", "%SENDER%", sender.getName(), "%MESSAGE%", message);
 				sm(sender, "TELL_FORMAT_SELF", "%RECEIVER%", lastPMSender.getName(), "%MESSAGE%", message);
-				plg.setLastConsolePM(sender);
+				api.setLastConsolePM(sender);
 			}
 		}else{
-			CommandSender lastPMSender = plg.getLastConsolePMSender();
+			CommandSender lastPMSender = api.getLastConsolePMSender();
 			
 			if(lastPMSender == null){
 				sm(sender, "TELL_NO_RECIPIENT");
@@ -71,7 +71,7 @@ public class CommandReply extends ICommand {
 				
 				sm(lastPMPlayer, "TELL_FORMAT_WHISPER", "%SENDER%", "KONZOLE", "%MESSAGE%", message);
 				sm(sender, "TELL_FORMAT_SELF", "%RECEIVER%", lastPMSender.getName(), "%MESSAGE%", message);
-				plg.getUser(lastPMSender.getName()).setLastPM(sender);
+				api.setLastPMSender(lastPMSender.getName(), sender);
 			}
 		}
 		return true;

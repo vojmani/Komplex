@@ -38,15 +38,10 @@ public class CommandGod extends ICommand {
 			return;
 		}
 		
-		if(plg.getUser(player.getName()).getGodMode()){
-			plg.getUser(player.getName()).setGodMode(false);
-			sm(player, "GOD_WHISPER_OFF", "%NICK%", sender.getName());
-			sm(sender, "GOD_OTHER_OFF", "%NICK%", player.getName());
-		}else{
-			plg.getUser(player.getName()).setGodMode(true);
-			sm(player, "GOD_WHISPER_ON", "%NICK%", sender.getName());
-			sm(sender, "GOD_OTHER_ON", "%NICK%", player.getName());
-		}
+		boolean god = api.isAfk(player.getName());
+		sm(player, god ? "GOD_WHISPER_OFF" : "GOD_WHISPER_ON", "%NICK%", sender.getName());
+		sm(sender, god ? "GOD_OTHER_OFF" : "GOD_OTHER_ON", "%NICK%", player.getName());
+		api.setGod(player.getName(), !god);
 	}
 	
 	private void godSelf(CommandSender sender){
@@ -59,13 +54,9 @@ public class CommandGod extends ICommand {
 			sm(sender, "PLAYER_ONLY");
 			return;
 		}
-		
-		if(plg.getUser(sender.getName()).getGodMode()){
-			plg.getUser(sender.getName()).setGodMode(false);
-			sm(sender, "GOD_SELF_OFF");
-		}else{
-			plg.getUser(sender.getName()).setGodMode(true);
-			sm(sender, "GOD_SELF_ON");
-		}
+
+		boolean god = api.isGod(sender.getName());
+		sm(sender, god ? "GOD_SELF_OFF" : "GOD_SELF_ON");
+		api.setGod(sender.getName(), !god);
 	}
 }

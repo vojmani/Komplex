@@ -11,6 +11,7 @@ public class CommandDeleteWarp extends ICommand {
 		super(plg);
 	}
 	
+	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args){
 		if(!cmd.getName().equalsIgnoreCase("deletewarp"))
 			return false;
@@ -20,12 +21,12 @@ public class CommandDeleteWarp extends ICommand {
 			return true;
 		}
 		
-		if(database.getWarpLocation(args[0]) == null){
+		if(api.getWarpLocation(args[0]) == null){
 			sm(sender, "WARP_NOT_EXISTS");
 			return true;
 		}
 		
-		database.deleteWarp(args[0]);
+		api.deleteWarp(args[0]);
 		sm(sender, "WARP_DELETED", "%WARP%", args[0]);
 		return true;
 	}

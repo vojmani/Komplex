@@ -15,6 +15,9 @@ public class User {
 	private CommandSender lastPMSender;
 	private List<String> ignoredPlayers;
 	private int countOfMails;
+	private int countOfNotices;
+	private String lastMessage;
+	private long lastMessageTime;
 	
 	public User(Player p){
 		this.p = p;
@@ -23,7 +26,10 @@ public class User {
 		this.lastPMSender = null;
 		this.ignoredPlayers = new ArrayList<String>();
 		this.countOfMails = 0;
+		this.countOfNotices = 0;
 		this.doublejump = false;
+		this.lastMessage = "";
+		this.lastMessageTime = 0L;
 	}
 	
 	public Player getPlayer(){
@@ -76,5 +82,26 @@ public class User {
 	
 	public void setDoubleJump(boolean doublejump){
 		this.doublejump = doublejump;
+	}
+	
+	public int getCountOfNotices(){
+		return countOfNotices;
+	}
+	
+	public void setCountOfNotices(int countOfNotices){
+		this.countOfNotices = countOfNotices;
+	}
+	
+	public long getLastMessageTime(){
+		return lastMessageTime;
+	}
+	
+	public String getLastMessage(){
+		return lastMessage;
+	}
+	
+	public void setLastMessage(String message, long time){
+		this.lastMessage = message;
+		this.lastMessageTime = time;
 	}
 }

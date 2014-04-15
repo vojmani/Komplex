@@ -33,7 +33,7 @@ public class CommandSetWarp extends ICommand {
 			return true;
 		}
 		
-		if(database.getWarpLocation(args[0]) != null){
+		if(api.getWarpLocation(args[0]) != null){
 			sm(sender, "WARP_SET_EXISTS");
 			return true;
 		}
@@ -42,7 +42,7 @@ public class CommandSetWarp extends ICommand {
 		
 		Location loc = player.getLocation();
 		
-		database.addWarp(args[0], loc.getWorld().getName(), (int)loc.getX(), (int)loc.getY(), (int)loc.getZ(), loc.getYaw(), loc.getPitch());
+		api.addWarp(args[0], loc.getWorld().getName(), (int)loc.getX(), (int)loc.getY(), (int)loc.getZ(), loc.getYaw(), loc.getPitch());
 		sm(sender, "WARP_SET_SUCCESS");
 		return true;
 	}

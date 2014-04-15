@@ -16,6 +16,7 @@ public class CommandHome extends ICommand {
 		super(plg);
 	}
 	
+	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args){
 		if(!cmd.getName().equalsIgnoreCase("home"))
 			return false;
@@ -33,8 +34,8 @@ public class CommandHome extends ICommand {
 		Player player = (Player)sender;
 		
 		if(args.length == 0){
-			Location loc = database.getHomeLocation(sender.getName(), "home");
-			int count = database.getCountOfHomes(sender.getName());
+			Location loc = api.getHomeLocation(sender.getName(), "home");
+			int count = api.getCountOfHomes(sender.getName());
 			
 			if(count == 0){
 				sm(sender, "HOME_NOONE");
@@ -45,7 +46,7 @@ public class CommandHome extends ICommand {
 				sm(sender, "HOME_TP_DEFAULT");
 			}else{
 				StringBuilder sb = new StringBuilder();
-				List<String> homes = database.getHomeList(sender.getName());
+				List<String> homes = api.getHomeList(sender.getName());
 				
 				for(String home : homes){
 					sb.append(home + ", ");
@@ -55,7 +56,7 @@ public class CommandHome extends ICommand {
 				sm(sender, "HOME_LIST", "%HOMES%", sb.toString());
 			}
 		}else{
-			Location loc = database.getHomeLocation(sender.getName(), args[0]);
+			Location loc = api.getHomeLocation(sender.getName(), args[0]);
 			if(loc == null){
 				sm(sender, "HOME_NOT_EXISTS");
 				return true;

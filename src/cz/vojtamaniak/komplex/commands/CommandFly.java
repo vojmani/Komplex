@@ -38,13 +38,10 @@ public class CommandFly extends ICommand {
 		}
 		
 		Player player = (Player)sender;
-		if(player.getAllowFlight()){
-			player.setAllowFlight(false);
-			sm(sender, "FLY_SELF_OFF");
-		}else{
-			player.setAllowFlight(true);
-			sm(sender, "FLY_SELF_ON");
-		}
+
+		boolean fly = player.getAllowFlight();
+		sm(sender, fly ? "FLY_SELF_OFF" : "FLY_SELF_ON");
+		player.setAllowFlight(!fly);
 	}
 	
 	private void flyOther(CommandSender sender, String[] arg){
@@ -60,14 +57,9 @@ public class CommandFly extends ICommand {
 			return;
 		}
 		
-		if(player.getAllowFlight()){
-			player.setAllowFlight(false);
-			sm(sender, "FLY_OTHER_OFF", "%NICK%", player.getName());
-			sm(player, "FLY_WHISPER_OFF", "%NICK%", sender.getName());
-		}else{
-			player.setAllowFlight(true);
-			sm(sender, "FLY_OTHER_ON", "%NICK%", player.getName());
-			sm(player, "FLY_WHISPER_ON", "%NICK%", sender.getName());
-		}
+		boolean fly = player.getAllowFlight();
+		sm(sender, fly ? "FLY_OTHER_OFF" : "FLY_OTHER_ON", "%NICK%", player.getName());
+		sm(player, fly ? "FLY_WHISPER_OFF" : "FLY_WHISPER_ON", "%NICK%", sender.getName());
+		player.setAllowFlight(!fly);
 	}
 }

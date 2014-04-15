@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 
 import cz.vojtamaniak.komplex.Database;
 import cz.vojtamaniak.komplex.Komplex;
+import cz.vojtamaniak.komplex.KomplexAPI;
 import cz.vojtamaniak.komplex.MessageManager;
 
 abstract public class ICommand implements CommandExecutor {
@@ -13,11 +14,13 @@ abstract public class ICommand implements CommandExecutor {
 	protected Komplex plg;
 	protected MessageManager msgManager;
 	protected Database database;
+	protected KomplexAPI api;
 	
 	public ICommand(Komplex plg){
 		this.plg = plg;
 		this.msgManager = plg.getMessageManager();
 		this.database = plg.getDB();
+		this.api = plg.getAPI();
 	}
 	
 	protected void sm(CommandSender sender, String key, String... replacements){

@@ -26,7 +26,7 @@ public class CommandWarp extends ICommand {
 		}
 		
 		if(args.length == 0){
-			List<String> warps = database.getWarpList();
+			List<String> warps = api.getWarpList();
 			if(warps.isEmpty()){
 				sm(sender, "WARP_LIST_EMPTY");
 				return true;
@@ -48,7 +48,7 @@ public class CommandWarp extends ICommand {
 			}
 			
 			Location loc = null;
-			if((loc = database.getWarpLocation(args[0])) == null){
+			if((loc = api.getWarpLocation(args[0])) == null){
 				sm(sender, "WARP_NOT_EXISTS");
 				return true;
 			}

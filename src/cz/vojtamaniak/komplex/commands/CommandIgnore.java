@@ -52,7 +52,7 @@ public class CommandIgnore extends ICommand {
 	}
 	
 	private void listIgnored(CommandSender sender){
-		List<String> ignPlayers = database.getIgnoredPlayers(sender.getName());
+		List<String> ignPlayers = api.getIgnoredPlayers(sender.getName());
 		if(ignPlayers.isEmpty()){
 			sm(sender, "IGNORE_LIST_EMPTY");
 			return;
@@ -70,31 +70,36 @@ public class CommandIgnore extends ICommand {
 	
 	private void addIgnored(CommandSender sender, String[] args){
 		if(plg.getUser(sender.getName().toLowerCase()).getIgnoredPlayers().contains(args[1].toLowerCase())){
-			sender.sendMessage(msgManager.getMessage("IGNORE_ADD_ALREADY"));
+			sm(sender, "IGNORE_ADD_ALREADY");
 		}else if(Bukkit.getOfflinePlayer(args[1]).isOnline()){
 			Player p = (Player)Bukkit.getOfflinePlayer(args[1]);
 			if(p.hasPermission("komplex.ignore.bypass")){
-				sender.sendMessage(msgManager.getMessage("IGNORE_ADD_BYPASS").replaceAll("%PLAYER%", p.getName()));
+				sm(sender, "IGNORE_ADD_BYPASS", "%PLAYER%", p.getName());
 				return;
 			}
+			if(sender.getName().equalsIgnoreCase(args[1])){
+				sm(sender, "IGNORE_ADD_SELF");
+				return;
+			}
+			
+			api.addIgnoredPlayer(sender.getName(), args[1]);
+			sm(sender, "IGNORE_ADD_SUCCESS", "%PLAYER%", args[1]);
 		}else{
 			if(sender.getName().equalsIgnoreCase(args[1])){
-				sender.sendMessage(msgManager.getMessage("IGNORE_ADD_SELF"));
+				sm(sender, "IGNORE_ADD_SELF");
 				return;
 			}
-			plg.getUser(sender.getName().toLowerCase()).getIgnoredPlayers().add(args[1].toLowerCase());
-			database.addIgnored(sender.getName(), args[1]);
-			sender.sendMessage(msgManager.getMessage("IGNORE_ADD_SUCCESS").replaceAll("%PLAYER%", args[1]));
+			api.addIgnoredPlayer(sender.getName(), args[1]);
+			sm(sender, "IGNORE_ADD_SUCCESS", "%PLAYER%", args[1]);
 		}
 	}
 	
 	private void removeIgnored(CommandSender sender, String[] args){
 		if(!plg.getUser(sender.getName().toLowerCase()).getIgnoredPlayers().contains(args[1].toLowerCase())){
-			sender.sendMessage(msgManager.getMessage("IGNORE_REMOVE_NOTIGNORED"));
+			sm(sender, "IGNORE_REMOVE_NOTIGNORED");
 		}else{
-			plg.getUser(sender.getName().toLowerCase()).getIgnoredPlayers().remove(args[1].toLowerCase());
-			database.removeIgnored(sender.getName(), args[1]);
-			sender.sendMessage(msgManager.getMessage("IGNORE_REMOVE_SUCCESS"));
+			api.removeIgnoredPlayer(sender.getName(), args[1]);
+			sm(sender, "IGNORE_REMOVE_SUCCESS");
 		}
 	}
 }

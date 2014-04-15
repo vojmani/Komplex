@@ -14,6 +14,7 @@ public class CommandHat extends ICommand {
 		super(plg);
 	}
 	
+	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] arg){
 		
 		if(!cmd.getName().equalsIgnoreCase("hat"))
@@ -32,11 +33,16 @@ public class CommandHat extends ICommand {
 		Player player = (Player)sender;
 		ItemStack hat = player.getInventory().getHelmet();
 		ItemStack hand = player.getItemInHand();
+		if(hand.getAmount() > 1){
+			sm(sender, "HAT_AMOUNT");
+			return true;
+		}
 		hand.setAmount(1);
 		
 		PlayerInventory inv = player.getInventory();
 		inv.setHelmet(hand);
 		inv.setItemInHand(hat);
+		sm(sender, "HAT_SUCCESS");
 		return true;
 	}
 }

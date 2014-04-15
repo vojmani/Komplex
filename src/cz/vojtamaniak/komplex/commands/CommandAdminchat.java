@@ -1,9 +1,7 @@
 package cz.vojtamaniak.komplex.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import cz.vojtamaniak.komplex.Komplex;
 import cz.vojtamaniak.komplex.Utils;
@@ -14,6 +12,7 @@ public class CommandAdminchat extends ICommand{
 		super(plg);
 	}
 
+	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args){
 		if(!cmd.getName().equalsIgnoreCase("adminchat")){
 			return false;
@@ -28,11 +27,7 @@ public class CommandAdminchat extends ICommand{
 			sm(sender, "NO_PERMISSION");
 		}
 		
-		for(Player p : Bukkit.getOnlinePlayers()){
-			if(p.hasPermission("komplex.adminchat")){
-				sm(p, "ADMINCHAT_MESSAGE", "%NICK%", sender.getName(), "%MESSAGE%", Utils.buildMessage(args, 0));
-			}
-		}
+		bm("ADMINCHAT_MESSAGE", "komplex.adminchat", "%NICK%", sender.getName(), "%MESSAGE%", Utils.buildMessage(args, 0));
 		return true;
 	}
 }

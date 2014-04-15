@@ -13,6 +13,7 @@ public class CommandDoubleJump extends ICommand {
 		super(plg);
 	}
 	
+	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args){
 		if(!cmd.getName().equalsIgnoreCase("doublejump"))
 			return false;
@@ -36,13 +37,11 @@ public class CommandDoubleJump extends ICommand {
 			return;
 		}
 		
-		if(plg.getUser(sender.getName()).getDoubleJump()){
-			plg.getUser(sender.getName()).setDoubleJump(false);
-			sm(sender, "DOUBLEJUMP_SELF_OFF");
-		}else{
-			plg.getUser(sender.getName()).setDoubleJump(true);
-			sm(sender, "DOUBLEJUMP_SELF_ON");
-		}
+		boolean isDoubleJump = api.isDoubleJump(sender.getName());
+		
+		sm(sender, isDoubleJump ? "DOUBLEJUMP_SELF_OFF" : "DOUBLEJUMP_SELF_ON");
+		api.setDoubleJump(sender.getName(), !isDoubleJump);
+		((Player)sender).setAllowFlight(!isDoubleJump);
 	}
 	
 	private void other(CommandSender sender, String[] args){
@@ -57,15 +56,10 @@ public class CommandDoubleJump extends ICommand {
 			return;
 		}
 		
-		if(plg.getUser(args[0]).getDoubleJump()){
-			plg.getUser(args[0]).setDoubleJump(false);
-			sm(sender, "DOUBLEJUMP_OTHER_OFF", "%NICK%", player.getName());
-			sm(player, "DOUBLEJUMP_WHISPER_OFF", "%NICK%", sender.getName());
-			player.setAllowFlight(false);
-		}else{
-			plg.getUser(args[0]).setDoubleJump(true);
-			sm(sender, "DOUBLEJUMP_OTHER_ON", "%NICK%", player.getName());
-			sm(player, "DOUBLEJUMP_WHISPER_ON", "%NICK%", sender.getName());
-		}
+		boolean isDoubleJump = api.isDoubleJump(player.getName());
+		
+		sm(sender, isDoubleJump ? "DOUBLEJUMP_OTHER_OFF" : "DOUBLEJUMP_OTHER_ON", "%NICK%", player.getName());
+		sm(player, isDoubleJump ? "DOUBLEJUMP_WHISPER_OFF" : "DOUBLEJUMP_WHISPER_ON", "%NICK%", sender.getName());
+		api.setDoubleJump(player.getName(), !isDoubleJump);
 	}
 }
