@@ -64,6 +64,10 @@ public class Database {
 			ps.executeUpdate();
 			ps = con.prepareStatement("CREATE TABLE IF NOT EXISTS k_spawn (id INT(11) NOT NULL AUTO_INCREMENT, world VARCHAR(32) NOT NULL, x INT(11) NOT NULL, y INT(11) NOT NULL, z INT(11) NOT NULL, yaw FLOAT(11) NOT NULL, pitch FLOAT(11) NOT NULL, PRIMARY KEY (`id`) USING BTREE) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;");
 			ps.executeUpdate();
+			ps = con.prepareStatement("CREATE TABLE IF NOT EXISTS k_users (id INT(11) NOT NULL AUTO_INCREMENT, name VARCHAR(32), balance INT(11), lastip VARCHAR(32), PRIMARY KEY (`id`) USING BTREE) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;");
+			ps.executeUpdate();
+			ps = con.prepareStatement("CREATE TABLE IF NOT EXISTS k_banlist (id INT(11) NOT NULL AUTO_INCREMENT, name VARCHAR(32), reason TEXT, time BIGINT(20), temptime BIGINT(20), type INT(10), PRIMARY KEY (`id`) USING BTREE) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;");
+			ps.executeUpdate();
 			close(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -678,6 +682,87 @@ public class Database {
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean isFirstTimeOnline(String player){
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("SELECT COUNT(*) FROM `k_users` WHERE `name` = ?");
+			ps.setString(1, player);
+			ResultSet rs = ps.executeQuery();
+			int count = 0;
+			while(rs.next())
+				count = rs.getInt(1);
+			
+			close(ps,rs);
+			return count == 0;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return true;
+	}
+	
+	public void addUser(String name, int currency, String ip){
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("INSERT INTO `k_users` (name, balance, lastip) VALUES (?,?,?)");
+			ps.setString(1, name);
+			ps.setInt(2, currency);
+			ps.setString(3, ip);
+			ps.executeUpdate();
+			close(ps, null);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void setUsersLastIP(String name, String ip){
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("UPDATE `k_users` SET `lastip` = ? WHERE `name` = ?");
+			ps.setString(1, ip);
+			ps.setString(2, name);
+			ps.executeUpdate();
+			close(ps, null);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public List<String> getPlayersByIP(String ip) {
+		con = getConnection();
+		List<String> nicks = new ArrayList<String>();
+		try{
+			PreparedStatement ps = con.prepareStatement("SELECT `name` FROM `k_users` WHERE `lastip` = ?");
+			ps.setString(1, ip);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+				nicks.add(rs.getString("name"));
+			
+			close(ps, rs);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return nicks;
+	}
+	
+	public String getPlayersIP(String player) {
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("SELECT `lastip` FROM `k_users` WHERE `name` = ?");
+			ps.setString(1, player);
+			ResultSet rs = ps.executeQuery();
+			String ip = "";
+			while(rs.next())
+				ip = rs.getString("lastip");
+			close(ps, rs);
+			if(ip == "")
+				return null;
+			return ip;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public void close(PreparedStatement ps, ResultSet rs){

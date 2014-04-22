@@ -39,7 +39,7 @@ abstract public class ICommand implements CommandExecutor {
 				index++;
 			}
 		}
-		sender.sendMessage(message);
+		sender.sendMessage(message.split("\n"));
 	}
 	
 	protected void bm(String key, String permission, String... replacements){

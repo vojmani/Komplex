@@ -130,7 +130,6 @@ public class KomplexAPI {
 		getUser(player).setGodMode(god);
 	}
 
-	
 	public Location getHomeLocation(final String player, final String name){
 		return database.getHomeLocation(player, name);
 	}
@@ -142,7 +141,6 @@ public class KomplexAPI {
 	public List<String> getHomeList(final String player){
 		return database.getHomeList(player);
 	}
-	
 	
 	public List<String> getIgnoredPlayers(final String player){
 		return getUser(player).getIgnoredPlayers();
@@ -363,5 +361,39 @@ public class KomplexAPI {
 	public void kickPlayer(String name, String reason, String admin) {
 		Bukkit.broadcastMessage(plg.getMessageManager().getMessage("KICK_BROADCAST").replaceAll("%NICK%", name).replaceAll("%ADMIN%", admin).replaceAll("%REASON%", reason));
 		// TODO save to mysql banlist history
+	}
+
+	public void setLastMoveTime(String name, long currentTimeMillis) {
+		getUser(name).setLastMoveTime(currentTimeMillis);
+	}
+	
+	public boolean isFirstTimeOnline(String player){
+		return database.isFirstTimeOnline(player);
+	}
+	
+	public void addUserDB(final String name, final int currency, final String ip){
+		sched.runTaskAsynchronously(plg, new Runnable(){
+			@Override
+			public void run(){
+				database.addUser(name, currency, ip);
+			}
+		});
+	}
+
+	public void setUsersLastIP(final String name, final String ip) {
+		sched.runTaskAsynchronously(plg, new Runnable(){
+			@Override
+			public void run(){
+				database.setUsersLastIP(name, ip);
+			}
+		});	
+	}
+	
+	public List<String> getPlayersByIP(String ip){
+		return database.getPlayersByIP(ip);
+	}
+	
+	public String getPlayersIP(String player){
+		return database.getPlayersIP(player);
 	}
 }

@@ -22,6 +22,7 @@ import cz.vojtamaniak.komplex.commands.CommandDeleteHome;
 import cz.vojtamaniak.komplex.commands.CommandDeleteTicket;
 import cz.vojtamaniak.komplex.commands.CommandDeleteWarp;
 import cz.vojtamaniak.komplex.commands.CommandDoubleJump;
+import cz.vojtamaniak.komplex.commands.CommandDupeIP;
 import cz.vojtamaniak.komplex.commands.CommandEditSign;
 import cz.vojtamaniak.komplex.commands.CommandFeed;
 import cz.vojtamaniak.komplex.commands.CommandFly;
@@ -96,6 +97,15 @@ public class Komplex extends JavaPlugin {
 			@Override
 			public void run(){
 				for(Player p : Bukkit.getOnlinePlayers()){
+					if(getUser(p.getName()).getLastMoveTime() > 180000){
+						getUser(p.getName()).setAfk(true);
+						Bukkit.broadcast(msgManager.getMessage("AFK_ENTER").replaceAll("%NICK%", p.getName()), "komplex.messages.afk");
+						if(getUser(p.getName()).getLastMoveTime() > 300000){
+							p.kickPlayer(msgManager.getMessage("AFK_KICK_WHISPER"));
+							Bukkit.broadcast(msgManager.getMessage("AFK_KICK_BROADCAST").replaceAll("%NICK%", p.getName()), "komplex.messages.afk");
+						}
+					}
+					
 					if(getUser(p.getName()).getCountOfMails() > 0){
 						p.sendMessage(msgManager.getMessage("MAIL_INBOX").replaceAll("%COUNT%", ""+ getUser(p.getName()).getCountOfMails()));
 					}
@@ -105,7 +115,7 @@ public class Komplex extends JavaPlugin {
 					}
 				}
 			}
-		}, 20L, 20L*60L);
+		}, 20L, 20L*30L);
 		
 		if(Bukkit.getOnlinePlayers().length != 0){
 			for(Player p : Bukkit.getOnlinePlayers()){
@@ -175,6 +185,7 @@ public class Komplex extends JavaPlugin {
 		getCommand("checkticket").setExecutor(new CommandCheckTicket(this));
 		getCommand("deletehome").setExecutor(new CommandDeleteHome(this));
 		getCommand("vanish").setExecutor(new CommandVanish(this));
+		getCommand("dupeip").setExecutor(new CommandDupeIP(this));
 	}
 	
 	private void registerListeners(){

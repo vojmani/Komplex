@@ -123,7 +123,10 @@ commands:
     aliases: [delhome]
   vanish:
     usage: /vanish {nick}
-    description: Zneviditelni hraceS
+    description: Zneviditelni hrace
+  dupeip:
+    usage: /dupeip <nick>/<ip>
+    description: Vyuziti IP
 permissions:
   komplex.*:
     description: Prava na vsechny prikazy pluginu Komplex

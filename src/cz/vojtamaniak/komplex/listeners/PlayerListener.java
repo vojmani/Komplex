@@ -62,6 +62,12 @@ public class PlayerListener extends IListener {
 		team.addPlayer(e.getPlayer());
 		team.setSuffix(" "+ChatColor.translateAlternateColorCodes('&', prefix));
 		e.getPlayer().setPlayerListName(ChatColor.translateAlternateColorCodes('&', suffix + e.getPlayer().getName()));
+		if(api.isFirstTimeOnline(e.getPlayer().getName())){
+			Bukkit.broadcastMessage(msgManager.getMessage("NEWBIE").replaceAll("%NICK%", e.getPlayer().getName()));
+			api.addUserDB(e.getPlayer().getName(), 0, e.getPlayer().getAddress().getHostName());
+		}else{
+			api.setUsersLastIP(e.getPlayer().getName(), e.getPlayer().getAddress().getHostName());
+		}
 	}
 	
 	/**
@@ -100,6 +106,8 @@ public class PlayerListener extends IListener {
 		if((api.isDoubleJump(pName)) && (player.getGameMode() != GameMode.CREATIVE) && (player.getLocation().getBlock().getRelative(0, -1, 0).getType() != Material.AIR) && (!player.isFlying())){
 			player.setAllowFlight(true);
 		}
+		
+		api.setLastMoveTime(player.getName(), System.currentTimeMillis());
 	}
 	
 	/**
