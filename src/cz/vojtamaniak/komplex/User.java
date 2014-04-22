@@ -18,6 +18,7 @@ public class User {
 	private int countOfNotices;
 	private String lastMessage;
 	private long lastMessageTime;
+	private boolean vanish;
 	
 	public User(Player p){
 		this.p = p;
@@ -30,6 +31,7 @@ public class User {
 		this.doublejump = false;
 		this.lastMessage = "";
 		this.lastMessageTime = 0L;
+		this.vanish = false;
 	}
 	
 	public Player getPlayer(){
@@ -103,5 +105,13 @@ public class User {
 	public void setLastMessage(String message, long time){
 		this.lastMessage = message;
 		this.lastMessageTime = time;
+	}
+
+	public boolean isVanish() {
+		return vanish;
+	}
+
+	public void setVanish(boolean vanish) {
+		this.vanish = vanish;
 	}
 }

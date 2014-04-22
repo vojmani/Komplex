@@ -151,6 +151,15 @@ public class MessageManager {
 		check("EDITSIGN_SUCCESS", "&aCedule upravena!");
 		check("EDITSIGN_LINE_MINMAX", "&4Radek musi byt v rozmezi 1 - 4");
 		check("SPAM_WARNING", "&4Prosim, neopakuj jednu zpravu vicekrat. Diky!");
+		check("VANISH_SELF_ON", "&aZapnul sis neviditelnost.");
+		check("VANISH_SELF_OFF", "&aVypnul sis neviditelnost.");
+		check("VANISH_OTHER_ON", "&7Zapnul jsi neviditelnost hraci %NICK%.");
+		check("VANISH_OTHER_OFF", "&7Vypnul jsi neviditelnost hraci %NICK%.");
+		check("VANISH_WHISPER_ON", "&7Admin %NICK% ti zapnul neviditelnost.");
+		check("VANISH_WHISPER_OFF", "&7Admin %NICK% ti vypnul neviditelnost.");
+		check("CHAT_FORMAT", "%PREFIX% %NAME% > %SUFFIX%%MESSAGE%");
+		check("KICK_WHISPER", "&6Byl jsi vyhozen adminem &7%ADMIN%&6. Duvod: &7%REASON%");
+		check("KICK_BROADCAST", "&7%NICK%&6 byl vyhozen adminem &7%ADMIN%&6. Duvod: &7%REASON%");
 		
 		if(!allOk){
 			log.info("repairing or creating new messages.yml file.");

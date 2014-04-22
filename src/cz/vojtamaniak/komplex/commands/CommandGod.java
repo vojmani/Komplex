@@ -38,7 +38,7 @@ public class CommandGod extends ICommand {
 			return;
 		}
 		
-		boolean god = api.isAfk(player.getName());
+		boolean god = api.isGod(player.getName());
 		sm(player, god ? "GOD_WHISPER_OFF" : "GOD_WHISPER_ON", "%NICK%", sender.getName());
 		sm(sender, god ? "GOD_OTHER_OFF" : "GOD_OTHER_ON", "%NICK%", player.getName());
 		api.setGod(player.getName(), !god);

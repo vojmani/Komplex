@@ -3,13 +3,13 @@ package cz.vojtamaniak.komplex;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import cz.vojtamaniak.komplex.commands.CommandAdminchat;
@@ -46,6 +46,7 @@ import cz.vojtamaniak.komplex.commands.CommandTakeTicket;
 import cz.vojtamaniak.komplex.commands.CommandTell;
 import cz.vojtamaniak.komplex.commands.CommandTicket;
 import cz.vojtamaniak.komplex.commands.CommandTickets;
+import cz.vojtamaniak.komplex.commands.CommandVanish;
 import cz.vojtamaniak.komplex.commands.CommandWarp;
 import cz.vojtamaniak.komplex.commands.CommandWorkbench;
 import cz.vojtamaniak.komplex.listeners.EntityListener;
@@ -57,23 +58,30 @@ public class Komplex extends JavaPlugin {
 	private MessageManager msgManager;
 	private ConfigManager confManager;
 	private HashMap<String, User> users;
+	private List<Player> hiddenPlayers;
 	private Database database;
 	private CommandSender lastPMSender;
 	private Location spawnLoc;
 	private KomplexAPI api;
-	private List<UUID> fallingblocks;
 	
 	@Override
 	public void onEnable(){
-		log = getLogger();
-		msgManager = new MessageManager(this);
-		confManager = new ConfigManager(this);
-		users = new HashMap<String, User>();
-		database = new Database(this);
-		lastPMSender = null;
-		spawnLoc = database.getSpawnLocation();
-		api = new KomplexAPI(this);
-		fallingblocks = new ArrayList<UUID>();
+		this.log = getLogger();
+		this.msgManager = new MessageManager(this);
+		this.confManager = new ConfigManager(this);
+		this.users = new HashMap<String, User>();
+		this.database = new Database(this);
+		this.lastPMSender = null;
+		this.api = new KomplexAPI(this);
+		this.hiddenPlayers = new ArrayList<Player>();
+		
+		Plugin pex = Bukkit.getPluginManager().getPlugin("PermissionsEx");
+		if(pex == null){
+			log.severe("PermissionsEx plugin not found!");
+			log.severe("Komplex can not work without PermissionsEx.");
+			log.severe("Disabling Komplex...");
+			Bukkit.getPluginManager().disablePlugin(this);
+		}
 		
 		registerExecutors();
 		registerListeners();
@@ -81,6 +89,8 @@ public class Komplex extends JavaPlugin {
 		msgManager.init();
 		confManager.init();
 		database.load();
+		
+		spawnLoc = database.getSpawnLocation();
 		
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
 			@Override
@@ -117,6 +127,9 @@ public class Komplex extends JavaPlugin {
 	
 	@Override
 	public void onDisable(){
+		this.users.clear();
+		this.hiddenPlayers.clear();
+		Bukkit.getScheduler().cancelTasks(this);
 		log.info("is disabled.");
 	}
 	
@@ -161,6 +174,7 @@ public class Komplex extends JavaPlugin {
 		getCommand("deleteticket").setExecutor(new CommandDeleteTicket(this));
 		getCommand("checkticket").setExecutor(new CommandCheckTicket(this));
 		getCommand("deletehome").setExecutor(new CommandDeleteHome(this));
+		getCommand("vanish").setExecutor(new CommandVanish(this));
 	}
 	
 	private void registerListeners(){
@@ -212,7 +226,7 @@ public class Komplex extends JavaPlugin {
 		return api;
 	}
 
-	public List<UUID> getFallingblocks() {
-		return fallingblocks;
+	public List<Player> getHiddenPlayers() {
+		return hiddenPlayers;
 	}
 }

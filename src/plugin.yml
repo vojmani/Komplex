@@ -1,6 +1,8 @@
 name: Komplex
 main: cz.vojtamaniak.komplex.Komplex
 version: 0.4.4
+depend: [PermissionsEx]
+authors: [vojtamaniak]
 commands:
   afk:
     usage: /afk
@@ -119,6 +121,9 @@ commands:
     usage: /deletehome {nazev}
     description: Smaze dum
     aliases: [delhome]
+  vanish:
+    usage: /vanish {nick}
+    description: Zneviditelni hraceS
 permissions:
   komplex.*:
     description: Prava na vsechny prikazy pluginu Komplex

@@ -1,6 +1,10 @@
 package cz.vojtamaniak.komplex.listeners;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -16,7 +20,10 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
+import ru.tehkode.permissions.bukkit.PermissionsEx;
 import cz.vojtamaniak.komplex.Komplex;
 import cz.vojtamaniak.komplex.User;
 
@@ -39,6 +46,22 @@ public class PlayerListener extends IListener {
 		user.setCountOfMails(database.getCountOfMails(e.getPlayer().getName()));
 		user.setCountOfNotices(database.getCountOfNotices(e.getPlayer().getName()));
 		api.addUser(user);
+		for(Player hp : plg.getHiddenPlayers()){
+			e.getPlayer().hidePlayer(hp);
+		}
+		
+		String prefix = PermissionsEx.getUser(e.getPlayer()).getPrefix();
+		String group = PermissionsEx.getUser(e.getPlayer()).getGroups()[0].getName();
+		String suffix = PermissionsEx.getUser(e.getPlayer()).getSuffix();
+		
+		Scoreboard sb = e.getPlayer().getScoreboard();
+		Team team = sb.getTeam(group);
+		if(team == null)
+			team = sb.registerNewTeam(group);
+		
+		team.addPlayer(e.getPlayer());
+		team.setSuffix(" "+ChatColor.translateAlternateColorCodes('&', prefix));
+		e.getPlayer().setPlayerListName(ChatColor.translateAlternateColorCodes('&', suffix + e.getPlayer().getName()));
 	}
 	
 	/**
@@ -109,7 +132,7 @@ public class PlayerListener extends IListener {
 	
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerChat(AsyncPlayerChatEvent e){
-		String pName = e.getPlayer().getName();
+		final String pName = e.getPlayer().getName();
 		
 		for(Player p : e.getRecipients()){
 			if(p.hasPermission("komplex.ignore.bypass") && api.getIgnoredPlayers(p.getName()).contains(pName.toLowerCase())){
@@ -122,13 +145,36 @@ public class PlayerListener extends IListener {
 			}
 		}
 		
-		if((((api.getLastMessageTime(pName) - System.currentTimeMillis()) / 1000) <= 60) && (plg.getUser(pName).getLastMessage() == e.getMessage())){
+		if(((System.currentTimeMillis() - plg.getUser(pName).getLastMessageTime()) < 60000) && (plg.getUser(pName).getLastMessage().equals(e.getMessage())) && (!e.getPlayer().hasPermission("komplex.spam.bypass"))){
 			e.getPlayer().sendMessage(msgManager.getMessage("SPAM_WARNING"));
 			e.setCancelled(true);
 		}
 		
+		String regex = ".{0,}([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5]):[\\d]{1,5}.{0,}";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher m = pattern.matcher(e.getMessage());
+		if((m.matches()) && (!e.getPlayer().hasPermission("komplex.ipcensor.bypass"))){
+			Bukkit.getScheduler().runTask(plg, new Runnable(){
+				@Override
+				public void run(){
+					plg.getServer().dispatchCommand(Bukkit.getConsoleSender(), "kick "+pName+" reklama");
+				}
+			});
+			e.setMessage(e.getMessage().replaceAll("([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5]):[\\d]{1,5}", "*.*.*.*:*****"));
+		}
+		
 		if(!e.isCancelled()){
 			plg.getUser(pName).setLastMessage(e.getMessage(), System.currentTimeMillis());
+		
+			String format = msgManager.getMessage("CHAT_FORMAT");
+			String prefix = PermissionsEx.getUser(pName).getPrefix();
+			String suffix = PermissionsEx.getUser(pName).getSuffix();
+			
+			format = format.replace("%PREFIX%", prefix);
+			format = format.replace("%SUFFIX%", suffix);
+			format = format.replace("%NAME%", pName);
+			format = format.replace("%MESSAGE%", e.getMessage());
+			e.setFormat(format.replaceAll("&", "§"));
 		}
 	}
 	
