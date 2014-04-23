@@ -31,7 +31,7 @@ public class CommandCheckTicket extends ICommand {
 		
 		int id = Integer.parseInt(args[0]);
 		
-		HashMap<String, Object> ticket = database.getTicket(id);
+		HashMap<String, Object> ticket = api.getTicket(id);
 		if(ticket == null){
 			sm(sender, "TICKET_NOT_EXISTS", "%ID%", id+"");
 			return true;

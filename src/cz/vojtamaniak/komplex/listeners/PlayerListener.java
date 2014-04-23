@@ -42,7 +42,7 @@ public class PlayerListener extends IListener {
 		e.setJoinMessage(null);
 		Bukkit.broadcast(msgManager.getMessage("MESSAGE_JOIN").replaceAll("%NICK%", e.getPlayer().getName()), "komplex.messages.onjoin");
 		User user = new User(e.getPlayer());
-		user.setIgnoredPlayers(database.getIgnoredPlayers(e.getPlayer().getName()));
+		user.setIgnoredPlayers(api.getIgnoredPlayers(e.getPlayer().getName()));
 		user.setCountOfMails(database.getCountOfMails(e.getPlayer().getName()));
 		user.setCountOfNotices(database.getCountOfNotices(e.getPlayer().getName()));
 		api.addUser(user);
@@ -64,9 +64,9 @@ public class PlayerListener extends IListener {
 		e.getPlayer().setPlayerListName(ChatColor.translateAlternateColorCodes('&', suffix + e.getPlayer().getName()));
 		if(api.isFirstTimeOnline(e.getPlayer().getName())){
 			Bukkit.broadcastMessage(msgManager.getMessage("NEWBIE").replaceAll("%NICK%", e.getPlayer().getName()));
-			api.addUserDB(e.getPlayer().getName(), 0, e.getPlayer().getAddress().getHostName());
+			api.addUserDB(e.getPlayer().getName(), 0, e.getPlayer().getAddress().getHostString());
 		}else{
-			api.setUsersLastIP(e.getPlayer().getName(), e.getPlayer().getAddress().getHostName());
+			api.setUsersLastIP(e.getPlayer().getName(), e.getPlayer().getAddress().getHostString());
 		}
 	}
 	

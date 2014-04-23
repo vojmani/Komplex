@@ -97,21 +97,21 @@ public class Komplex extends JavaPlugin {
 			@Override
 			public void run(){
 				for(Player p : Bukkit.getOnlinePlayers()){
-					if(getUser(p.getName()).getLastMoveTime() > 180000){
-						getUser(p.getName()).setAfk(true);
-						Bukkit.broadcast(msgManager.getMessage("AFK_ENTER").replaceAll("%NICK%", p.getName()), "komplex.messages.afk");
-						if(getUser(p.getName()).getLastMoveTime() > 300000){
-							p.kickPlayer(msgManager.getMessage("AFK_KICK_WHISPER"));
-							Bukkit.broadcast(msgManager.getMessage("AFK_KICK_BROADCAST").replaceAll("%NICK%", p.getName()), "komplex.messages.afk");
-						}
-					}
-					
 					if(getUser(p.getName()).getCountOfMails() > 0){
 						p.sendMessage(msgManager.getMessage("MAIL_INBOX").replaceAll("%COUNT%", ""+ getUser(p.getName()).getCountOfMails()));
 					}
 					
 					if(getUser(p.getName()).getCountOfNotices() > 0){
 						p.sendMessage(msgManager.getMessage("NOTICE_SCHED").replaceAll("%COUNT%", ""+ getUser(p.getName()).getCountOfNotices()));
+					}
+					
+					if((System.currentTimeMillis() - getUser(p.getName()).getLastMoveTime()) > 180000){
+						getUser(p.getName()).setAfk(true);
+						Bukkit.broadcast(msgManager.getMessage("AFK_ENTER").replaceAll("%NICK%", p.getName()), "komplex.messages.afk");
+						if((System.currentTimeMillis() - getUser(p.getName()).getLastMoveTime()) > 300000){
+							p.kickPlayer(msgManager.getMessage("AFK_KICK_WHISPER"));
+							Bukkit.broadcast(msgManager.getMessage("AFK_KICK_BROADCAST").replaceAll("%NICK%", p.getName()), "komplex.messages.afk");
+						}
 					}
 				}
 			}

@@ -32,7 +32,7 @@ public class User {
 		this.doublejump = false;
 		this.lastMessage = "";
 		this.lastMessageTime = 0L;
-		this.lastMoveTime = 0L;
+		this.lastMoveTime = System.currentTimeMillis();
 		this.vanish = false;
 	}
 	
