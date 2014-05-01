@@ -52,7 +52,7 @@ public class MessageManager {
 		check("HEAL_SELF", "&aUzdravil ses.");
 		check("HEAL_OTHER", "&7Uzdravil jsi hrace &f%NICK%&7.");
 		check("HEAL_WHISPER", "&7Admin &f%NICK%&7 te uzdravil.");
-		check("WRONG_USAGE", "&cSpatny format prikazu.\n&cSpravny format: &f%USAGE%");
+		check("WRONG_USAGE", "&cSpatny format prikazu. &cSpravny format: &f%USAGE%");
 		check("PTIME_GET_SELF", "&7Tvuj cas je &f%TIME%&7 ticku.");
 		check("PTIME_GET_OTHER", "&7Cas hrace &f%NICK%&7 je &f%TIME%&7 ticku.");
 		check("PTIME_RESET_SELF", "&aTvuj cas je nyni stejny jako globalni serverovy cas.");
@@ -158,12 +158,30 @@ public class MessageManager {
 		check("VANISH_WHISPER_ON", "&7Admin &f%NICK%&7 ti zapnul neviditelnost.");
 		check("VANISH_WHISPER_OFF", "&7Admin &f%NICK%&7 ti vypnul neviditelnost.");
 		check("CHAT_FORMAT", "%PREFIX%%NAME% > %SUFFIX%%MESSAGE%");
-		check("KICK_WHISPER", "&6Byl jsi vyhozen adminem &7%ADMIN%&6. Duvod: &7%REASON%");
-		check("KICK_BROADCAST", "&7%NICK%&6 byl vyhozen adminem &7%ADMIN%&6.\n&6Duvod: &7%REASON%");
+		check("KICK_WHISPER", "&2Byl jsi vyhozen adminem &7%ADMIN%&2. Duvod: &7%REASON%");
+		check("KICK_BROADCAST", "&7%NICK%&2 byl vyhozen adminem &7%ADMIN%&2. &2Duvod: &7%REASON%");
 		check("NEWBIE", "&f%NICK%&d je zde poprve! Vitej!");
 		check("DUPEIP_IP_EMPTY", "&cS touto IP se jeste nikdo nepripojil.");
 		check("DUPEIP_IP", "&7Hraci hrajici na IP &f%IP%&7: %NICKS%");
 		check("DUPEIP_NICK_NOT_EXISTS", "&cS timto nickem nikdo nehraje.");
+		check("WARN_BROADCAST", "&7%NICK%&2 byl varovan adminem &7%ADMIN%&2. &2Duvod: &7%REASON%");
+		check("WARN_WHISPER", "Byl jsi varovan adminem %ADMIN%. Duvod: %REASON%");
+		check("TEMPBAN_AMOUNT_INT", "&cPocet sekund/minut/hodin/dni/mesicu/roku musi byt cislo!");
+		check("TEMPBAN_BROADCAST", "&7%NICK%&2 byl docasne zabanovan adminem &7%ADMIN%&2 do &7%TEMPTIME%&2. &2Duvod: &7%REASON%");
+		check("TEMPBAN_WHISPER", "&2Byl jsi docasne zabanovan adminem &7%ADMIN%&2 do &7%TEMPTIME%&2. &2Duvod: &7%REASON%");
+		check("TEMPBAN_JOIN", "&2Jsi docasne zabanovan adminem &7%ADMIN%&2 do &7%TEMPTIME%&2. Duvod: &7%REASON%");
+		check("BAN_ALREADY", "&cTento hrac je jiz zabanovan.");
+		check("BAN_BROADCAST", "&7%NICK%&2 byl zabanovan adminem &7%ADMIN%&2. &2Duvod: &7%REASON%");
+		check("BAN_WHISPER", "&2Byl jsi zabanovan adminem &7%ADMIN%&2. Duvod: &7%REASON%");
+		check("BAN_JOIN", "&2Jsi zabanovan adminem &7%ADMIN%&2. Duvod: &7%REASON%");
+		check("UNBAN_NOT_BANNED", "&cTento hrac neni zabanovan.");
+		check("UNBAN_BROADCAST", "&7%NICK%&2 byl odbanovan adminem &7%ADMIN%&2.");
+		check("CHECKBAN_NO_RECORDS", "&cNebyly nalezeny zadne zaznamy pro hrace &f%NICK%&c.");
+		check("CHECKBAN", "&aZobrazuji &f%COUNT%&a zaznamu pro hrace &f%NICK%&a:");
+		check("CHECKBAN_LINE", "&4%TYPE%: &e%REASON% &aod: &f%TIME% &aAdmin: &f%ADMIN%");
+		check("CHECKBAN_LINE_TB", "&4%TYPE%: &e%REASON% &aod: &f%TIME% &ado: &f%TEMPTIME% &aAdmin: &f%ADMIN%");
+		check("CHECKBAN_LINE_WARN", "&4%TYPE%: &e%REASON% &aDatum: &f%TIME% &aAdmin: &f%ADMIN%");
+		check("ITEMID", "&aId itemu, ktery drzis: &f%ID%&a.");
 		
 		if(!allOk){
 			log.info("repairing or creating new messages.yml file.");

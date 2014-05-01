@@ -2,6 +2,7 @@ package cz.vojtamaniak.komplex.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
@@ -45,9 +46,9 @@ public class CommandHeal extends ICommand {
 		player.setFoodLevel(20);
 		player.setFireTicks(0);
 		sm(player, "HEAL_SELF");
-		Entity e = player.getWorld().spawnEntity(player.getLocation(), EntityType.OCELOT);
-		e.playEffect(EntityEffect.WOLF_HEARTS);
-		e.remove();
+		if(plg.getConfigManager().getConfig().getBoolean("feed-heal-effects")){
+			playEffect(player.getLocation());
+		}
 	}
 
 	private void healOther(CommandSender sender, String[] arg) {
@@ -67,9 +68,14 @@ public class CommandHeal extends ICommand {
 		player.setFireTicks(0);
 		sm(sender, "HEAL_OTHER", "%NICK%", player.getName());
 		sm(player, "HEAL_WHISPER", "%NICK%", sender.getName());
-		Entity e = player.getWorld().spawnEntity(player.getLocation(), EntityType.OCELOT);
+		if(plg.getConfigManager().getConfig().getBoolean("feed-heal-effects")){
+			playEffect(player.getLocation());
+		}
+	}
+
+	private void playEffect(Location loc){
+		Entity e = loc.getWorld().spawnEntity(loc, EntityType.WOLF);
 		e.playEffect(EntityEffect.WOLF_HEARTS);
 		e.remove();
 	}
-
 }

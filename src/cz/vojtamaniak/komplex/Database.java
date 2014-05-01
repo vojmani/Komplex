@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -23,6 +24,7 @@ public class Database {
 	private String database;
 	
 	private FileConfiguration conf;
+	private Komplex plg;
 	
 	public Database(Komplex plg){
 		this.conf = plg.getConfigManager().getConfig();
@@ -30,6 +32,7 @@ public class Database {
 		this.user = conf.getString("storage.mysql-user");
 		this.password = conf.getString("storage.mysql-pass");
 		this.database = conf.getString("storage.mysql-data");
+		this.plg = plg;
 	}
 	
 	public Connection getConnection(){
@@ -66,9 +69,41 @@ public class Database {
 			ps.executeUpdate();
 			ps = con.prepareStatement("CREATE TABLE IF NOT EXISTS k_users (id INT(11) NOT NULL AUTO_INCREMENT, name VARCHAR(32), balance INT(11), lastip VARCHAR(32), PRIMARY KEY (`id`) USING BTREE) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;");
 			ps.executeUpdate();
-			ps = con.prepareStatement("CREATE TABLE IF NOT EXISTS k_banlist (id INT(11) NOT NULL AUTO_INCREMENT, name VARCHAR(32), reason TEXT, time BIGINT(20), temptime BIGINT(20), type INT(10), PRIMARY KEY (`id`) USING BTREE) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;");
+			ps = con.prepareStatement("CREATE TABLE IF NOT EXISTS k_banlist (id INT(11) NOT NULL AUTO_INCREMENT, name VARCHAR(32), reason TEXT, admin VARCHAR(32), time BIGINT(20), temptime BIGINT(20), type INT(10), PRIMARY KEY (`id`) USING BTREE) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;");
 			ps.executeUpdate();
 			close(ps, null);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		init();
+	}
+	
+	public void init(){
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM `k_banlist` WHERE (`type` NOT IN (3, 5, 8)) && (`temptime` = 0 || `temptime` > UNIX_TIMESTAMP())");
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				String name = rs.getString("name").toLowerCase();
+				int type = rs.getInt("type");
+				List<BanInfo> list = new ArrayList<BanInfo>();
+				if(plg.banCache.containsKey(name))
+					list = plg.banCache.get(name);
+				
+				list.add(new BanInfo(name, rs.getString("reason"), rs.getString("admin"), BanType.fromId(rs.getInt("type")), rs.getLong("time"), rs.getLong("temptime")));
+				plg.banCache.put(name, list);
+				
+				if(type == 1 || type == 11){
+					String address = getPlayersIP(name);
+					List<BanInfo> listIp = new ArrayList<BanInfo>();
+					if(plg.banIpCache.containsKey(address))
+						listIp = plg.banIpCache.get(address);
+					
+					listIp.add(new BanInfo(name, rs.getString("reason"), rs.getString("admin"), BanType.fromId(rs.getInt("type")), rs.getLong("time"), rs.getLong("temptime")));
+					plg.banIpCache.put(address, listIp);
+				}
+			}
+			close(ps, rs);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -624,9 +659,9 @@ public class Database {
 		return 0;
 	}
 	
-	public HashMap<Long, String> getNotices(String player, boolean read){
+	public TreeMap<Long, String> getNotices(String player, boolean read){
 		con = getConnection();
-		HashMap<Long, String> notices = new HashMap<Long, String>();
+		TreeMap<Long, String> notices = new TreeMap<Long, String>();
 		try{
 			if(read){
 				PreparedStatement ps = con.prepareStatement("SELECT * FROM `k_notices` WHERE `player` = ? OR `player` = '-GLOBAL-' ORDER BY `time` DESC");
@@ -763,6 +798,64 @@ public class Database {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public void addBan(String name, String reason, String admin, BanType type, long temptime) { 
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("INSERT INTO `k_banlist` (name, reason, admin, time, temptime, type) VALUES (?,?,?,?,?,?)");
+			ps.setString(1, name);
+			ps.setString(2, reason);
+			ps.setString(3, admin);
+			ps.setLong(4, System.currentTimeMillis());
+			ps.setLong(5, temptime);
+			ps.setInt(6, type.getId());
+			ps.executeUpdate();
+			close(ps, null);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void clearWarns(String name) {
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("DELETE FROM `k_banlist` WHERE `name` = ? AND `type` = 2");
+			ps.setString(1, name);
+			ps.executeUpdate();
+			close(ps, null);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void removeBan(String name) {
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("DELETE FROM `k_banlist` WHERE `name` = ? AND `type` IN (0, 10)");
+			ps.setString(1, name);
+			ps.executeUpdate();
+			close(ps, null);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public List<BanInfo> getPlayersBanRecords(String name){
+		con = getConnection();
+		List<BanInfo> list = new ArrayList<BanInfo>();
+		try{
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM `k_banlist` WHERE `name` = ?");
+			ps.setString(1, name);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+				list.add(new BanInfo(rs.getString("name"), rs.getString("reason"), rs.getString("admin"), BanType.fromId(rs.getInt("type")), rs.getLong("time"), rs.getLong("temptime")));
+			
+			close(ps, rs);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return list;
 	}
 	
 	public void close(PreparedStatement ps, ResultSet rs){

@@ -1,5 +1,7 @@
 package cz.vojtamaniak.komplex.listeners;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +16,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -24,8 +28,11 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import ru.tehkode.permissions.bukkit.PermissionsEx;
+import cz.vojtamaniak.komplex.BanInfo;
+import cz.vojtamaniak.komplex.BanType;
 import cz.vojtamaniak.komplex.Komplex;
 import cz.vojtamaniak.komplex.User;
+import cz.vojtamaniak.komplex.Utils;
 
 public class PlayerListener extends IListener {
 
@@ -42,7 +49,7 @@ public class PlayerListener extends IListener {
 		e.setJoinMessage(null);
 		Bukkit.broadcast(msgManager.getMessage("MESSAGE_JOIN").replaceAll("%NICK%", e.getPlayer().getName()), "komplex.messages.onjoin");
 		User user = new User(e.getPlayer());
-		user.setIgnoredPlayers(api.getIgnoredPlayers(e.getPlayer().getName()));
+		user.setIgnoredPlayers(database.getIgnoredPlayers(e.getPlayer().getName()));
 		user.setCountOfMails(database.getCountOfMails(e.getPlayer().getName()));
 		user.setCountOfNotices(database.getCountOfNotices(e.getPlayer().getName()));
 		api.addUser(user);
@@ -192,6 +199,31 @@ public class PlayerListener extends IListener {
 			if(plg.getSpawnLocation() != null){
 				e.setRespawnLocation(plg.getSpawnLocation());
 			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerLogin(PlayerLoginEvent e){
+		String name = e.getPlayer().getName().toLowerCase();
+		if(plg.banCache.containsKey(name)){
+			List<BanInfo> list = plg.banCache.get(name);
+			Iterator<BanInfo> i = list.iterator();
+			while(i.hasNext()){
+				BanInfo info = i.next();
+				if(info.getType() == BanType.BAN){
+					e.disallow(Result.KICK_BANNED, msgManager.getMessage("BAN_JOIN").replaceAll("%ADMIN%", info.getAdmin()).replaceAll("%REASON%", info.getReason()));
+					return;
+				}
+				
+				if(info.getType() == BanType.TEMPBAN){
+					if(info.getTemptime() > System.currentTimeMillis()){
+						e.disallow(Result.KICK_BANNED, msgManager.getMessage("TEMPBAN_JOIN").replaceAll("%ADMIN%", info.getAdmin()).replaceAll("%REASON%", info.getReason()).replaceAll("%TEMPTIME%", Utils.dateFormat(info.getTemptime())));
+					}else{
+						i.remove();
+					}
+				}
+			}
+			plg.banCache.put(name, list);
 		}
 	}
 }

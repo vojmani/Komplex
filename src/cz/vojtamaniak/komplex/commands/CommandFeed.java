@@ -41,7 +41,8 @@ public class CommandFeed extends ICommand {
 		Player player = (Player) sender;
 		player.setFoodLevel(20);
 		sm(sender, "FEED_SELF");
-		player.playSound(player.getLocation(), Sound.BURP, 1.0F, 1.0F);
+		if(plg.getConfigManager().getConfig().getBoolean("feed-heal-effects"))
+			player.playSound(player.getLocation(), Sound.BURP, 1.0F, 1.0F);
 	}
 	
 	private void feedOther(CommandSender sender, String[] arg){		
@@ -60,6 +61,7 @@ public class CommandFeed extends ICommand {
 		player.setFoodLevel(20);
 		sm(player, "FEED_OTHER_WHISPER", "%NICK%", sender.getName());
 		sm(sender, "FEED_OTHER", "%NICK%", player.getName());
-		player.playSound(player.getLocation(), Sound.BURP, 1.0F, 1.0F);
+		if(plg.getConfigManager().getConfig().getBoolean("feed-heal-effects"))
+			player.playSound(player.getLocation(), Sound.BURP, 1.0F, 1.0F);
 	} 
 }

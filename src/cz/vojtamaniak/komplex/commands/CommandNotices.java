@@ -1,7 +1,7 @@
 package cz.vojtamaniak.komplex.commands;
 
-import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -26,7 +26,7 @@ public class CommandNotices extends ICommand {
 				return true;
 			}
 			
-			HashMap<Long, String> notices = null;
+			TreeMap<Long, String> notices = null;
 			if(args.length != 0 && args[0].equals("-all")){
 				notices = api.getNotices(sender.getName(), true);
 			}else{

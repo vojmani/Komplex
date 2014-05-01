@@ -2,25 +2,20 @@ package cz.vojtamaniak.komplex;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map.Entry;
-import java.util.SortedMap;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 
 public class Utils {
 	
 	public static String buildMessage(String[] arg, int start){
-		String message = "";
+		StringBuilder sb = new StringBuilder();
 		
 		for(int i = start; i < arg.length; i++){
-			message += arg[i] + " ";
+			sb.append(arg[i] + " ");
 		}
-		return message;
+		return sb.toString();
 	}
 	
 	public static String dateFormat(long time){
-		SimpleDateFormat sdf = new SimpleDateFormat("d. M. y, H:m");
+		SimpleDateFormat sdf = new SimpleDateFormat("d. M. y, HH:mm");
 		return sdf.format(new Date(time));
 	}
 	
@@ -33,16 +28,56 @@ public class Utils {
 		}
 	}
 	
-	public void paginate(CommandSender sender, SortedMap<Integer, String> map, int page, int pageLength) {
-		sender.sendMessage(ChatColor.YELLOW + "List: Page (" + String.valueOf(page) + " of " + (((map.size() % pageLength) == 0) ? map.size() / pageLength : (map.size() / pageLength) + 1));
-		int i = 0, k = 0;
-		page--;
-		for (final Entry<Integer, String> e : map.entrySet()) {
-			        k++;
-			        if ((((page * pageLength) + i + 1) == k) && (k != ((page * pageLength) + pageLength + 1))) {
-			            i++;
-			            sender.sendMessage(ChatColor.YELLOW + " - " + e.getValue());
-			        }
-			    }
-			}
+	public static long toMillis(int amount, String type){
+		long sec = 0;
+		
+		switch(type.toLowerCase()){
+		case "sec":
+			sec = amount;
+			break;
+		case "second":
+			sec = amount;
+			break;
+		case "seconds":
+			sec = amount;
+			break;
+		case "min":
+			sec = amount * 60;
+			break;
+		case "minute":
+			sec = amount * 60;
+			break;
+		case "minutes":
+			sec = amount * 60;
+			break;
+		case "hour":
+			sec = amount * 60 * 60;
+			break;
+		case "hours":
+			sec = amount * 60 * 60;
+			break;
+		case "day":
+			sec = amount * 60 * 60 * 24;
+			break;
+		case "days":
+			sec = amount * 60 * 60 * 24;
+			break;
+		case "month":
+			sec = amount * 60 * 60 * 24 * 31;
+			break;
+		case "months":
+			sec = amount * 60 * 60 * 24 * 31;
+			break;
+		case "year":
+			sec = amount * 60 * 60 * 24 * 365;
+			break;
+		case "years":
+			sec = amount * 60 * 60 * 24 * 365;
+			break;
+		default:
+			return -1;
+		}
+		
+		return (sec * 1000);
+	}
 }

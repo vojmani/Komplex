@@ -14,8 +14,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import cz.vojtamaniak.komplex.commands.CommandAdminchat;
 import cz.vojtamaniak.komplex.commands.CommandAfk;
+import cz.vojtamaniak.komplex.commands.CommandBan;
 import cz.vojtamaniak.komplex.commands.CommandBreak;
 import cz.vojtamaniak.komplex.commands.CommandCheckTicket;
+import cz.vojtamaniak.komplex.commands.CommandCheckban;
 import cz.vojtamaniak.komplex.commands.CommandClearChat;
 import cz.vojtamaniak.komplex.commands.CommandCloseTicket;
 import cz.vojtamaniak.komplex.commands.CommandDeleteHome;
@@ -32,6 +34,9 @@ import cz.vojtamaniak.komplex.commands.CommandHeal;
 import cz.vojtamaniak.komplex.commands.CommandHelpOp;
 import cz.vojtamaniak.komplex.commands.CommandHome;
 import cz.vojtamaniak.komplex.commands.CommandIgnore;
+import cz.vojtamaniak.komplex.commands.CommandItemid;
+import cz.vojtamaniak.komplex.commands.CommandJump;
+import cz.vojtamaniak.komplex.commands.CommandKick;
 import cz.vojtamaniak.komplex.commands.CommandList;
 import cz.vojtamaniak.komplex.commands.CommandMail;
 import cz.vojtamaniak.komplex.commands.CommandNear;
@@ -45,9 +50,12 @@ import cz.vojtamaniak.komplex.commands.CommandSetWarp;
 import cz.vojtamaniak.komplex.commands.CommandSpawn;
 import cz.vojtamaniak.komplex.commands.CommandTakeTicket;
 import cz.vojtamaniak.komplex.commands.CommandTell;
+import cz.vojtamaniak.komplex.commands.CommandTempban;
 import cz.vojtamaniak.komplex.commands.CommandTicket;
 import cz.vojtamaniak.komplex.commands.CommandTickets;
+import cz.vojtamaniak.komplex.commands.CommandUnban;
 import cz.vojtamaniak.komplex.commands.CommandVanish;
+import cz.vojtamaniak.komplex.commands.CommandWarn;
 import cz.vojtamaniak.komplex.commands.CommandWarp;
 import cz.vojtamaniak.komplex.commands.CommandWorkbench;
 import cz.vojtamaniak.komplex.listeners.EntityListener;
@@ -64,6 +72,8 @@ public class Komplex extends JavaPlugin {
 	private CommandSender lastPMSender;
 	private Location spawnLoc;
 	private KomplexAPI api;
+	public HashMap<String, List<BanInfo>> banCache;
+	public HashMap<String, List<BanInfo>> banIpCache;
 	
 	@Override
 	public void onEnable(){
@@ -75,6 +85,8 @@ public class Komplex extends JavaPlugin {
 		this.lastPMSender = null;
 		this.api = new KomplexAPI(this);
 		this.hiddenPlayers = new ArrayList<Player>();
+		this.banCache = new HashMap<String, List<BanInfo>>();
+		this.banIpCache = new HashMap<String, List<BanInfo>>();
 		
 		Plugin pex = Bukkit.getPluginManager().getPlugin("PermissionsEx");
 		if(pex == null){
@@ -106,9 +118,10 @@ public class Komplex extends JavaPlugin {
 					}
 					
 					if((System.currentTimeMillis() - getUser(p.getName()).getLastMoveTime()) > 180000){
+						if(!getUser(p.getName()).isAfk())
+							Bukkit.broadcast(msgManager.getMessage("AFK_ENTER").replaceAll("%NICK%", p.getName()), "komplex.messages.afk");
 						getUser(p.getName()).setAfk(true);
-						Bukkit.broadcast(msgManager.getMessage("AFK_ENTER").replaceAll("%NICK%", p.getName()), "komplex.messages.afk");
-						if((System.currentTimeMillis() - getUser(p.getName()).getLastMoveTime()) > 300000){
+						if(((System.currentTimeMillis() - getUser(p.getName()).getLastMoveTime()) > 300000) && (p.hasPermission("komplex.afk.bypass"))){
 							p.kickPlayer(msgManager.getMessage("AFK_KICK_WHISPER"));
 							Bukkit.broadcast(msgManager.getMessage("AFK_KICK_BROADCAST").replaceAll("%NICK%", p.getName()), "komplex.messages.afk");
 						}
@@ -186,6 +199,14 @@ public class Komplex extends JavaPlugin {
 		getCommand("deletehome").setExecutor(new CommandDeleteHome(this));
 		getCommand("vanish").setExecutor(new CommandVanish(this));
 		getCommand("dupeip").setExecutor(new CommandDupeIP(this));
+		getCommand("kick").setExecutor(new CommandKick(this));
+		getCommand("ban").setExecutor(new CommandBan(this));
+		getCommand("tempban").setExecutor(new CommandTempban(this));
+		getCommand("unban").setExecutor(new CommandUnban(this));
+		getCommand("warn").setExecutor(new CommandWarn(this));
+		getCommand("checkban").setExecutor(new CommandCheckban(this));
+		getCommand("itemid").setExecutor(new CommandItemid(this));
+		getCommand("jump").setExecutor(new CommandJump(this));
 	}
 	
 	private void registerListeners(){

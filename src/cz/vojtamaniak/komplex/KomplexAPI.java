@@ -1,7 +1,10 @@
 package cz.vojtamaniak.komplex;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -23,6 +26,10 @@ public class KomplexAPI {
 	
 	public User getUser(String player){
 		return plg.getUser(player);
+	}
+	
+	public List<BanInfo> getBanCacheUser(String player){
+		return plg.banCache.get(player.toLowerCase());
 	}
 	
 	public void addUser(User user){
@@ -208,7 +215,7 @@ public class KomplexAPI {
 		getUser(receiver).setCountOfMails(0);
 	}
 
-	public HashMap<Long, String> getNotices(String player, boolean read){
+	public TreeMap<Long, String> getNotices(String player, boolean read){
 		return database.getNotices(player, read);
 	}
 	
@@ -357,10 +364,26 @@ public class KomplexAPI {
 	public boolean getVanish(String player){
 		return getUser(player).isVanish();
 	}
+	
+	public void addRecord(final String name, final String reason, final String admin, final BanType type, final long temptime){
+		sched.runTaskAsynchronously(plg, new Runnable(){
+			@Override
+			public void run(){
+				database.addBan(name, reason, admin, type, temptime);
+			}	
+		});
+		
+		List<BanInfo> list = new ArrayList<BanInfo>();
+		if(plg.banCache.containsKey(name.toLowerCase()))
+			list = plg.banCache.get(name.toLowerCase());
+		
+		list.add(new BanInfo(name, reason, admin, type, System.currentTimeMillis(), temptime));
+		plg.banCache.put(name.toLowerCase(), list);
+	}
 
 	public void kickPlayer(String name, String reason, String admin) {
 		Bukkit.broadcastMessage(plg.getMessageManager().getMessage("KICK_BROADCAST").replaceAll("%NICK%", name).replaceAll("%ADMIN%", admin).replaceAll("%REASON%", reason));
-		// TODO save to mysql banlist history
+		addRecord(name, reason, admin, BanType.KICK, 0L);
 	}
 
 	public void setLastMoveTime(String name, long currentTimeMillis) {
@@ -395,5 +418,110 @@ public class KomplexAPI {
 	
 	public String getPlayersIP(String player){
 		return database.getPlayersIP(player);
+	}
+
+	public void addWarn(String name, String reason, String admin) {
+		addRecord(name, reason, admin, BanType.WARN, 0L);
+	}
+
+	public int getCountOfWarns(String name) {
+		int count = 0;
+		for(BanInfo info : getBanCacheUser(name)){
+			if(info.getType() == BanType.WARN){
+				count++;
+			}
+		}
+		
+		return count;
+	}
+	
+	public void clearWarns(final String name){
+		sched.runTaskAsynchronously(plg, new Runnable(){
+			@Override
+			public void run(){
+				database.clearWarns(name);
+			}
+		});
+		
+		if(!plg.banCache.containsKey(name.toLowerCase()))
+			return;
+		
+		List<BanInfo> list = plg.banCache.get(name.toLowerCase());
+		
+		Iterator<BanInfo> i = list.iterator();
+		while(i.hasNext()){
+			BanInfo info = i.next();
+			if(info.getType() == BanType.WARN){
+				i.remove();
+			}
+		}
+		
+		plg.banCache.put(name.toLowerCase(), list);
+	}
+
+	public void tempbanPlayer(String name, long temptime, String reason, String admin) {
+		addRecord(name, reason, admin, BanType.TEMPBAN, temptime);
+	}
+	
+	public void addBan(String name, String reason, String admin){
+		addRecord(name, reason, admin, BanType.BAN, 0L);
+	}
+	
+	public boolean isPermaBanned(String name){
+		if(!plg.banCache.containsKey(name.toLowerCase()))
+			return false;
+		
+		boolean isBanned = false;
+		for(BanInfo info : plg.banCache.get(name.toLowerCase())){
+			if(info.getType() == BanType.BAN){
+				isBanned = true;
+			}
+		}
+		
+		return isBanned;
+	}
+	
+	public boolean isBanned(String name){
+		if(!plg.banCache.containsKey(name.toLowerCase()))
+			return false;
+		
+		boolean isBanned = false;
+		for(BanInfo info : plg.banCache.get(name.toLowerCase())){
+			if(info.getType() == BanType.BAN || info.getType() == BanType.TEMPBAN){
+				isBanned = true;
+			}
+		}
+		return isBanned;
+	}
+	
+	public void unbanPlayer(final String name, final String admin){
+		sched.runTaskAsynchronously(plg, new Runnable(){
+			@Override
+			public void run(){
+				database.removeBan(name);
+			}
+		});
+		
+		List<BanInfo> list = plg.banCache.get(name.toLowerCase());
+		Iterator<BanInfo> i = list.iterator();
+		while(i.hasNext()){
+			final BanInfo info = i.next();
+			if(info.getType() == BanType.BAN || info.getType() == BanType.TEMPBAN){
+				i.remove();
+				sched.runTaskAsynchronously(plg, new Runnable(){
+					@Override
+					public void run(){
+						database.addBan(name, "Odbanovan: "+ info.getReason(), admin, BanType.UNBAN, 0L);
+					}
+				});
+				break;
+			}
+		}
+		
+		plg.banCache.put(name.toLowerCase(), list);
+	}
+
+	public List<BanInfo> getPlayersBanRecords(String name) {
+		return database.getPlayersBanRecords(name);
 	}
 }

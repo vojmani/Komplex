@@ -50,6 +50,18 @@ public class ConfigManager {
 				conf.createSection("home");
 				allOk = false;
 			}
+			if(!conf.contains("explodes-fallingblock")){
+				conf.set("explodes-fallingblock", false);
+				allOk = false;
+			}
+			if(!conf.contains("feed-heal-effects")){
+				conf.set("feed-heal-effects", false);
+				allOk = false;
+			}
+			if(!conf.contains("jump-use-velocity")){
+				conf.set("jump-use-velocity", false);
+				allOk = false;
+			}
 			
 			if(!allOk){
 				log.info("Repairing or creating config.yml file.");

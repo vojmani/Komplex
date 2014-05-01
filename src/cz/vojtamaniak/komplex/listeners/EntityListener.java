@@ -45,9 +45,12 @@ public class EntityListener extends IListener {
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.LOW)
 	public void onEntityExplode(EntityExplodeEvent e){
+		if(!plg.getConfigManager().getConfig().getBoolean("explodes-fallingblock"))
+			return;
+			
 		for(Block b : e.blockList()){
 			if(b.getType() == Material.TNT)
-				return;
+				continue;
 			/*float x = (float) -1 + (float) (Math.random() * ((1 - -1) + 1));
 			float y = (float) -1 + (float) (Math.random() * ((1 - -1) + 1));
 			float z = (float) -1 + (float) (Math.random() * ((1 - -1) + 1));*/
@@ -73,6 +76,9 @@ public class EntityListener extends IListener {
 	
 	@EventHandler(priority = EventPriority.LOW)
 	public void onEntityChangeBlock(EntityChangeBlockEvent e){
+		if(!plg.getConfigManager().getConfig().getBoolean("explodes-fallingblock"))
+			return;
+		
 		if(e.getEntity() instanceof FallingBlock){
 			FallingBlock fblock = (FallingBlock)e.getEntity();
 			Iterator<UUID> i = fbs.iterator();

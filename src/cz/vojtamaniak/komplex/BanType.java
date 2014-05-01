@@ -9,7 +9,6 @@ public enum BanType {
 	JAIL(6),
 	MUTE(7),
 	INFO(8),
-	PERMA(9),
 	TEMPBAN(10),
 	TEMPIPBAN(11),
 	TEMPJAIL(12);
@@ -23,8 +22,21 @@ public enum BanType {
 		return id;
 	}
 	
+	public static BanType fromId(int id){
+		for(BanType bt : BanType.values()){
+			if(bt.getId() == id){
+				return bt;
+			}
+		}
+		return null;
+	}
+	
 	public String toCode(){
-		switch(id){
+		return toCode(id);
+	}
+	
+	public static String toCode(int i){
+		switch(i){
 		case 0:
 			return "B";
 		case 1:

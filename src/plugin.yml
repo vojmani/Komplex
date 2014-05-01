@@ -127,6 +127,31 @@ commands:
   dupeip:
     usage: /dupeip <nick>/<ip>
     description: Vyuziti IP
+  kick:
+    usage: /kick <hrac> {duvod}
+    description: Vyhodi hrace
+  ban:
+    usage: /ban <nick> {duvod}
+    description: Zabanuje hrace
+  tempban:
+    usage: /tempban <nick> <pocet> <sec/min/hour/day/month/year> {duvod}
+    description: Docasne zabanuje hrace
+  warn:
+    usage: /warn <nick> <duvod>
+    description: Varuje hrace
+  unban:
+    usage: /unban <nick>
+    description: Odbanuje hrace
+  checkban:
+    usage: /checkban <nick>
+    description: Zjisti bany hrace
+  itemid:
+    usage: /itemid
+    description: Zjisti id itemu
+    aliases: [itemdb]
+  jump:
+    usage: /jump
+    description: skoci
 permissions:
   komplex.*:
     description: Prava na vsechny prikazy pluginu Komplex
