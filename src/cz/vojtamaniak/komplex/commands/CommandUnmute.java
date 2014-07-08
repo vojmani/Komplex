@@ -8,18 +8,18 @@ import cz.vojtamaniak.komplex.BanInfo;
 import cz.vojtamaniak.komplex.BanType;
 import cz.vojtamaniak.komplex.Komplex;
 
-public class CommandUnban extends ICommand {
-	
-	public CommandUnban(Komplex plg){
+public class CommandUnmute extends ICommand {
+
+	public CommandUnmute(Komplex plg) {
 		super(plg);
 	}
-	
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args) {
-		if(!cmd.getName().equalsIgnoreCase("unban"))
+		if(!cmd.getName().equalsIgnoreCase("unmute"))
 			return false;
 		
-		if(!sender.hasPermission("komplex.unban")){
+		if(!sender.hasPermission("komplex.unmute")){
 			sendNoPermission(sender);
 			return true;
 		}
@@ -29,15 +29,15 @@ public class CommandUnban extends ICommand {
 			return true;
 		}
 		
-		if(!api.isBanned(args[0])){
-			sm(sender, "UNBAN_NOT_BANNED");
+		if(!api.isMuted(args[0])){
+			sm(sender, "UNMUTE_NOT_MUTED");
 			return true;
 		}
 		
 		//REMOVE
 		BanInfo info = null;
 		for(BanInfo i : api.getBanCacheUser(args[0])){
-			if(i.getType() == BanType.BAN || i.getType() == BanType.TEMPBAN){
+			if(i.getType() == BanType.MUTE || i.getType() == BanType.TEMPMUTE){
 				info = i;
 			}
 		}
@@ -48,8 +48,7 @@ public class CommandUnban extends ICommand {
 		if(sender instanceof Player)
 			admin = sender.getName();
 		
-		api.unbanPlayer(name, admin, true);
-		bm("UNBAN_BROADCAST", "", "%NICK%", name, "%ADMIN%", admin);
+		api.unmutePlayer(name, admin, true);
 		return true;
 	}
 

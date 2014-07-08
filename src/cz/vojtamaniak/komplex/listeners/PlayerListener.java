@@ -10,13 +10,19 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -44,12 +50,13 @@ public class PlayerListener extends IListener {
 	 * @param e - PlayerJoinEvent
 	 * @return
 	 */
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e){
 		e.setJoinMessage(null);
 		Bukkit.broadcast(msgManager.getMessage("MESSAGE_JOIN").replaceAll("%NICK%", e.getPlayer().getName()), "komplex.messages.onjoin");
 		User user = new User(e.getPlayer());
 		user.setIgnoredPlayers(database.getIgnoredPlayers(e.getPlayer().getName()));
+		user.setTools(database.getCommandTools(e.getPlayer().getName()));
 		user.setCountOfMails(database.getCountOfMails(e.getPlayer().getName()));
 		user.setCountOfNotices(database.getCountOfNotices(e.getPlayer().getName()));
 		api.addUser(user);
@@ -64,7 +71,7 @@ public class PlayerListener extends IListener {
 		Scoreboard sb = e.getPlayer().getScoreboard();
 		Team team = sb.getTeam(group);
 		if(team == null)
-			team = sb.registerNewTeam(group);
+			team = sb.registerNewTeam("komplex_"+group);
 		
 		team.addPlayer(e.getPlayer());
 		team.setSuffix(" "+ChatColor.translateAlternateColorCodes('&', prefix));
@@ -81,7 +88,7 @@ public class PlayerListener extends IListener {
 	 * @param e - PlayerQuitEvent
 	 * @return
 	 */
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent e){
 		e.setQuitMessage(null);
 		Bukkit.broadcast(msgManager.getMessage("MESSAGE_QUIT").replaceAll("%NICK%", e.getPlayer().getName()), "komplex.messages.onquit");				
@@ -92,7 +99,7 @@ public class PlayerListener extends IListener {
 	 *  @param e - PlayerKickEvent
 	 *  @return
 	 *  */
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler
 	public void onPlayerKick(PlayerKickEvent e){
 		api.removeUser(e.getPlayer().getName());
 	}
@@ -101,7 +108,7 @@ public class PlayerListener extends IListener {
 	 *  @param e - PlayerMoveEvent
 	 *  @return
 	 *  */
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent e){
 		Player player = e.getPlayer();
 		String pName = player.getName();
@@ -121,7 +128,7 @@ public class PlayerListener extends IListener {
 	 * @param e - PlayerToggleFlightEvent
 	 * @return
 	 * */
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler
 	public void onToggleFlight(PlayerToggleFlightEvent e){
 		Player player = e.getPlayer();
 		
@@ -138,16 +145,38 @@ public class PlayerListener extends IListener {
 	 * @param e - PlayerTeleportEvent
 	 * @return
 	 * */
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler
 	public void onPlayerTeleport(PlayerTeleportEvent e){
 		if(e.getCause() == TeleportCause.COMMAND){
 			e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.SUCCESSFUL_HIT, 1.0F, 1.0F);
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler
 	public void onPlayerChat(AsyncPlayerChatEvent e){
 		final String pName = e.getPlayer().getName();
+		
+		if(plg.banCache.containsKey(pName.toLowerCase())){
+			Iterator<BanInfo> itr = plg.banCache.get(pName.toLowerCase()).iterator();
+			while(itr.hasNext()){
+				BanInfo info = itr.next();
+				if(info.getType() == BanType.MUTE){
+					e.getPlayer().sendMessage(msgManager.getMessage("MUTE_CHAT").replaceAll("%ADMIN%", info.getAdmin()).replaceAll("%REASON%", info.getReason()));
+					e.setCancelled(true);
+					return;
+				}
+				
+				if(info.getType() == BanType.TEMPMUTE){
+					if(info.getTemptime() < System.currentTimeMillis()){
+						itr.remove();
+					}else{
+						e.getPlayer().sendMessage(msgManager.getMessage("TEMPMUTE_CHAT").replaceAll("%ADMIN%", info.getAdmin()).replaceAll("%TEMPTIME%", Utils.dateFormat(info.getTemptime())).replaceAll("%REASON%", info.getReason()));
+						e.setCancelled(true);
+						return;
+					}
+				}
+			}
+		}
 		
 		for(Player p : e.getRecipients()){
 			if(p.hasPermission("komplex.ignore.bypass") && api.getIgnoredPlayers(p.getName()).contains(pName.toLowerCase())){
@@ -193,7 +222,7 @@ public class PlayerListener extends IListener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler
 	public void onPlayerRespawn(PlayerRespawnEvent e){
 		if(!e.isBedSpawn()){
 			if(plg.getSpawnLocation() != null){
@@ -202,7 +231,7 @@ public class PlayerListener extends IListener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler
 	public void onPlayerLogin(PlayerLoginEvent e){
 		String name = e.getPlayer().getName().toLowerCase();
 		if(plg.banCache.containsKey(name)){
@@ -224,6 +253,54 @@ public class PlayerListener extends IListener {
 				}
 			}
 			plg.banCache.put(name, list);
+		}
+	}
+	
+	@EventHandler
+	public void onInventoryClick(InventoryClickEvent e){
+		if(e.getInventory().getTitle().equals("Odznaky")){
+			e.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerInteract(PlayerInteractEvent e){
+		if(e.hasItem()){
+			if(!e.getPlayer().hasPermission("komplex.commandtool"))
+				return;
+			if(!api.hasCommandOnTool(e.getPlayer().getName(), e.getItem().getType()))
+				return;
+			
+			e.getPlayer().performCommand(api.getCommandOnTool(e.getPlayer().getName(), e.getItem().getType()));
+		}
+		
+		if(e.hasBlock()){
+			if(e.getClickedBlock().getType() == Material.CHEST){
+				if(api.getVanish(e.getPlayer().getName()) && e.getPlayer().hasPermission("komplex.silentchest")){
+					e.setCancelled(true);
+					e.getPlayer().openInventory(((Chest)e.getClickedBlock()).getInventory());
+					e.getPlayer().sendMessage(msgManager.getMessage("VANISH_SILENTCHEST"));
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onInventoryOpen(InventoryOpenEvent e){
+		HumanEntity p = e.getPlayer();
+		if(e.getInventory().getHolder() instanceof Chest || e.getInventory().getHolder() instanceof DoubleChest){
+			if(api.getVanish(p.getName()) && p.hasPermission("komplex.vanish.silentchest")){
+				e.setCancelled(true);
+				p.openInventory(e.getInventory());
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerPickupItem(PlayerPickupItemEvent e){
+		Player p = e.getPlayer();
+		if(api.getVanish(p.getName()) && p.hasPermission("komplex.vanish.nopickup")){
+			e.setCancelled(true);
 		}
 	}
 }

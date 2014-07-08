@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,6 +19,8 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import cz.vojtamaniak.komplex.Komplex;
@@ -48,8 +51,8 @@ public class EntityListener extends IListener {
 		if(!plg.getConfigManager().getConfig().getBoolean("explodes-fallingblock"))
 			return;
 			
-		for(Block b : e.blockList()){
-			if(b.getType() == Material.TNT)
+		for(final Block b : e.blockList()){
+			if(b.getType() == Material.TNT || b.getType() == Material.PORTAL || b.getType() == Material.ENDER_PORTAL || b.getType() == Material.ENDER_PORTAL_FRAME)
 				continue;
 			/*float x = (float) -1 + (float) (Math.random() * ((1 - -1) + 1));
 			float y = (float) -1 + (float) (Math.random() * ((1 - -1) + 1));
@@ -69,8 +72,14 @@ public class EntityListener extends IListener {
 			FallingBlock fblock = b.getLocation().getWorld().spawnFallingBlock(b.getLocation(), b.getType(), b.getData());
 			fblock.setDropItem(false);
 			fblock.setVelocity(new Vector(x, y, z));
-			b.setType(Material.AIR);
 			fbs.add(fblock.getUniqueId());
+			Bukkit.getScheduler().runTask(plg, new Runnable() {
+				
+				@Override
+				public void run() {
+					b.breakNaturally();
+				}
+			});
 		}
 	}
 	
@@ -86,7 +95,7 @@ public class EntityListener extends IListener {
 				UUID uuid = i.next();
 				if(fblock.getUniqueId().equals(uuid)){
 					e.setCancelled(true);
-					e.getBlock().getWorld().playEffect(e.getBlock().getLocation(), Effect.STEP_SOUND, fblock.getMaterial());
+					//e.getBlock().getWorld().playEffect(e.getBlock().getLocation(), Effect.STEP_SOUND, fblock.getMaterial());
 					i.remove();
 					fblock.remove();
 					//e.getBlock().getWorld().dropItemNaturally(e.getBlock().getLocation(), new ItemStack(fblock.getMaterial()));
@@ -98,5 +107,15 @@ public class EntityListener extends IListener {
 	private float random(float min, float max){
 		Random rand = new Random();
 		return rand.nextFloat() * (max - min) + min;
+	}
+	
+	public void onEntityTarget(EntityTargetEvent e){
+		if(e.getTarget() instanceof Player){
+			Player p = (Player)e.getTarget();
+			
+			if(api.getVanish(p.getName()) && p.hasPermission("komplex.vanish.notarget")){
+				e.setCancelled(true);
+			}
+		}
 	}
 }

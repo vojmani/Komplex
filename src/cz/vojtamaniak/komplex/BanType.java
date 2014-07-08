@@ -11,7 +11,9 @@ public enum BanType {
 	INFO(8),
 	TEMPBAN(10),
 	TEMPIPBAN(11),
-	TEMPJAIL(12);
+	TEMPJAIL(12),
+	TEMPMUTE(13), 
+	UNMUTE(9);
 	
 	int id;
 	private BanType(int i){
@@ -46,17 +48,21 @@ public enum BanType {
 		case 3:
 			return "K";
 		case 5:
-			return "UN";
+			return "UB";
 		case 6:
 			return "J";
 		case 7:
 			return "M";
+		case 9:
+			return "UM";
 		case 10:
 			return "TB";
 		case 11:
 			return "TIP";
 		case 12:
 			return "TJ";
+		case 13:
+			return "TM";
 		default:
 			return "?";
 		}

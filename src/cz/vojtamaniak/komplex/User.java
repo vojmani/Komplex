@@ -1,8 +1,10 @@
 package cz.vojtamaniak.komplex;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -20,6 +22,7 @@ public class User {
 	private long lastMessageTime;
 	private long lastMoveTime;
 	private boolean vanish;
+	private HashMap<Material, String> tools;
 	
 	public User(Player p){
 		this.p = p;
@@ -34,6 +37,7 @@ public class User {
 		this.lastMessageTime = 0L;
 		this.lastMoveTime = System.currentTimeMillis();
 		this.vanish = false;
+		this.tools = new HashMap<Material, String>();
 	}
 	
 	public Player getPlayer(){
@@ -123,5 +127,13 @@ public class User {
 	
 	public void setLastMoveTime(long time){
 		this.lastMoveTime = time;
+	}
+
+	public HashMap<Material, String> getTools() {
+		return tools;
+	}
+	
+	public void setTools(HashMap<Material, String> tools){
+		this.tools = tools;
 	}
 }

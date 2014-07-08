@@ -20,6 +20,7 @@ import cz.vojtamaniak.komplex.commands.CommandCheckTicket;
 import cz.vojtamaniak.komplex.commands.CommandCheckban;
 import cz.vojtamaniak.komplex.commands.CommandClearChat;
 import cz.vojtamaniak.komplex.commands.CommandCloseTicket;
+import cz.vojtamaniak.komplex.commands.CommandCommandtool;
 import cz.vojtamaniak.komplex.commands.CommandDeleteHome;
 import cz.vojtamaniak.komplex.commands.CommandDeleteTicket;
 import cz.vojtamaniak.komplex.commands.CommandDeleteWarp;
@@ -28,6 +29,7 @@ import cz.vojtamaniak.komplex.commands.CommandDupeIP;
 import cz.vojtamaniak.komplex.commands.CommandEditSign;
 import cz.vojtamaniak.komplex.commands.CommandFeed;
 import cz.vojtamaniak.komplex.commands.CommandFly;
+import cz.vojtamaniak.komplex.commands.CommandGadgets;
 import cz.vojtamaniak.komplex.commands.CommandGod;
 import cz.vojtamaniak.komplex.commands.CommandHat;
 import cz.vojtamaniak.komplex.commands.CommandHeal;
@@ -37,8 +39,10 @@ import cz.vojtamaniak.komplex.commands.CommandIgnore;
 import cz.vojtamaniak.komplex.commands.CommandItemid;
 import cz.vojtamaniak.komplex.commands.CommandJump;
 import cz.vojtamaniak.komplex.commands.CommandKick;
+import cz.vojtamaniak.komplex.commands.CommandLag;
 import cz.vojtamaniak.komplex.commands.CommandList;
 import cz.vojtamaniak.komplex.commands.CommandMail;
+import cz.vojtamaniak.komplex.commands.CommandMute;
 import cz.vojtamaniak.komplex.commands.CommandNear;
 import cz.vojtamaniak.komplex.commands.CommandNotices;
 import cz.vojtamaniak.komplex.commands.CommandPtime;
@@ -51,9 +55,11 @@ import cz.vojtamaniak.komplex.commands.CommandSpawn;
 import cz.vojtamaniak.komplex.commands.CommandTakeTicket;
 import cz.vojtamaniak.komplex.commands.CommandTell;
 import cz.vojtamaniak.komplex.commands.CommandTempban;
+import cz.vojtamaniak.komplex.commands.CommandTempmute;
 import cz.vojtamaniak.komplex.commands.CommandTicket;
 import cz.vojtamaniak.komplex.commands.CommandTickets;
 import cz.vojtamaniak.komplex.commands.CommandUnban;
+import cz.vojtamaniak.komplex.commands.CommandUnmute;
 import cz.vojtamaniak.komplex.commands.CommandVanish;
 import cz.vojtamaniak.komplex.commands.CommandWarn;
 import cz.vojtamaniak.komplex.commands.CommandWarp;
@@ -74,9 +80,13 @@ public class Komplex extends JavaPlugin {
 	private KomplexAPI api;
 	public HashMap<String, List<BanInfo>> banCache;
 	public HashMap<String, List<BanInfo>> banIpCache;
+	private Lag lag;
+	private long uptime;
+	public List<String> infoMessages;
 	
 	@Override
 	public void onEnable(){
+		this.uptime = System.currentTimeMillis();
 		this.log = getLogger();
 		this.msgManager = new MessageManager(this);
 		this.confManager = new ConfigManager(this);
@@ -87,12 +97,21 @@ public class Komplex extends JavaPlugin {
 		this.hiddenPlayers = new ArrayList<Player>();
 		this.banCache = new HashMap<String, List<BanInfo>>();
 		this.banIpCache = new HashMap<String, List<BanInfo>>();
+		this.lag = new Lag();
 		
 		Plugin pex = Bukkit.getPluginManager().getPlugin("PermissionsEx");
 		if(pex == null){
 			log.severe("PermissionsEx plugin not found!");
 			log.severe("Komplex can not work without PermissionsEx.");
 			log.severe("Disabling Komplex...");
+			Bukkit.getPluginManager().disablePlugin(this);
+		}
+		
+		Plugin plib = Bukkit.getPluginManager().getPlugin("ProtocolLib");
+		if(plib == null){
+			log.severe("ProtocolLib plugin not found!");
+			log.severe("Komplex cannot run without ProtocolLib.");
+			log.severe("Disabling Komplex..");
 			Bukkit.getPluginManager().disablePlugin(this);
 		}
 		
@@ -104,40 +123,41 @@ public class Komplex extends JavaPlugin {
 		database.load();
 		
 		spawnLoc = database.getSpawnLocation();
+		infoMessages = database.getInfoMessages();
 		
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
 			@Override
 			public void run(){
 				for(Player p : Bukkit.getOnlinePlayers()){
 					if(getUser(p.getName()).getCountOfMails() > 0){
-						p.sendMessage(msgManager.getMessage("MAIL_INBOX").replaceAll("%COUNT%", ""+ getUser(p.getName()).getCountOfMails()));
+						p.sendMessage(MessageManager.getMessage("MAIL_INBOX").replaceAll("%COUNT%", ""+ getUser(p.getName()).getCountOfMails()));
 					}
 					
 					if(getUser(p.getName()).getCountOfNotices() > 0){
-						p.sendMessage(msgManager.getMessage("NOTICE_SCHED").replaceAll("%COUNT%", ""+ getUser(p.getName()).getCountOfNotices()));
+						p.sendMessage(MessageManager.getMessage("NOTICE_SCHED").replaceAll("%COUNT%", ""+ getUser(p.getName()).getCountOfNotices()));
 					}
 					
 					if((System.currentTimeMillis() - getUser(p.getName()).getLastMoveTime()) > 180000){
 						if(!getUser(p.getName()).isAfk())
-							Bukkit.broadcast(msgManager.getMessage("AFK_ENTER").replaceAll("%NICK%", p.getName()), "komplex.messages.afk");
+							Bukkit.broadcast(MessageManager.getMessage("AFK_ENTER").replaceAll("%NICK%", p.getName()), "komplex.messages.afk");
 						getUser(p.getName()).setAfk(true);
 						if(((System.currentTimeMillis() - getUser(p.getName()).getLastMoveTime()) > 300000) && (p.hasPermission("komplex.afk.bypass"))){
-							p.kickPlayer(msgManager.getMessage("AFK_KICK_WHISPER"));
-							Bukkit.broadcast(msgManager.getMessage("AFK_KICK_BROADCAST").replaceAll("%NICK%", p.getName()), "komplex.messages.afk");
+							p.kickPlayer(MessageManager.getMessage("AFK_KICK_WHISPER"));
+							Bukkit.broadcast(MessageManager.getMessage("AFK_KICK_BROADCAST").replaceAll("%NICK%", p.getName()), "komplex.messages.afk");
 						}
 					}
 				}
 			}
 		}, 20L, 20L*30L);
 		
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, lag, 100L, 1L);
+		
 		if(Bukkit.getOnlinePlayers().length != 0){
 			for(Player p : Bukkit.getOnlinePlayers()){
 				User user = new User(p);
 				
-				for(String player : database.getIgnoredPlayers(p.getName())){
-					user.getIgnoredPlayers().add(player.toLowerCase());
-				}
-				
+				user.setIgnoredPlayers(database.getIgnoredPlayers(p.getName()));
+				user.setTools(database.getCommandTools(p.getName()));
 				user.setCountOfMails(database.getCountOfMails(p.getName()));
 				user.setCountOfNotices(database.getCountOfNotices(p.getName()));
 				
@@ -145,7 +165,8 @@ public class Komplex extends JavaPlugin {
 			}
 		}
 		
-		log.info("is enabled.");
+		long timetaken = (System.currentTimeMillis() - uptime) / 1000;
+		log.info("is enabled [ "+ timetaken +"s ]");
 	}
 	
 	@Override
@@ -207,6 +228,12 @@ public class Komplex extends JavaPlugin {
 		getCommand("checkban").setExecutor(new CommandCheckban(this));
 		getCommand("itemid").setExecutor(new CommandItemid(this));
 		getCommand("jump").setExecutor(new CommandJump(this));
+		getCommand("gadgets").setExecutor(new CommandGadgets(this));
+		getCommand("commandtool").setExecutor(new CommandCommandtool(this));
+		getCommand("mute").setExecutor(new CommandMute(this));
+		getCommand("tempmute").setExecutor(new CommandTempmute(this));
+		getCommand("unmute").setExecutor(new CommandUnmute(this));
+		getCommand("lag").setExecutor(new CommandLag(this));
 	}
 	
 	private void registerListeners(){
@@ -260,5 +287,9 @@ public class Komplex extends JavaPlugin {
 
 	public List<Player> getHiddenPlayers() {
 		return hiddenPlayers;
+	}
+	
+	public long getUptime(){
+		return uptime;
 	}
 }

@@ -41,7 +41,7 @@ public class CommandCheckban extends ICommand {
 		Iterator<BanInfo> i = list.iterator();
 		while(i.hasNext()){
 			BanInfo info = i.next();
-			if(info.getType() == BanType.TEMPBAN || info.getType() == BanType.TEMPJAIL)
+			if(info.getType() == BanType.TEMPBAN || info.getType() == BanType.TEMPJAIL || info.getType() == BanType.TEMPMUTE)
 				sm(sender, "CHECKBAN_LINE_TB", "%TYPE%", info.getType().toCode(), "%REASON%", info.getReason(), "%TEMPTIME%", Utils.dateFormat(info.getTemptime()), "%ADMIN%", info.getAdmin(), "%TIME%", Utils.dateFormat(info.getTime()));
 			else if(info.getType() == BanType.KICK || info.getType() == BanType.UNBAN || info.getType() == BanType.WARN)
 				sm(sender, "CHECKBAN_LINE_WARN", "%TYPE%", info.getType().toCode(), "%REASON%", info.getReason(), "%ADMIN%", info.getAdmin(), "%TIME%", Utils.dateFormat(info.getTime()));

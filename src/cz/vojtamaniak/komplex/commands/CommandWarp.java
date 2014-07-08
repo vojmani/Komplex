@@ -39,6 +39,11 @@ public class CommandWarp extends ICommand {
 				}
 			}
 			
+			if(sb.toString().equals("")){
+				sm(sender, "WARP_LIST_EMPTY");
+				return true;
+			}
+						
 			sb.replace(sb.length() - 2, sb.length(), "");
 			sm(sender, "WARP_LIST", "%WARPS%", sb.toString());
 		}else{

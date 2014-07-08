@@ -10,18 +10,18 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class MessageManager {
 	
 	private File messFile;
-	private FileConfiguration mess;
+	private static FileConfiguration mess;
 	private Logger log;
 	private boolean allOk;
 	
 	public MessageManager(Komplex plg){
 		this.messFile = new File(plg.getDataFolder(), "messages.yml");
-		this.mess = YamlConfiguration.loadConfiguration(messFile);
+		mess = YamlConfiguration.loadConfiguration(messFile);
 		this.log = plg.getLogger();
 		this.allOk = true;
 	}
 	
-	public String getMessage(String message){
+	public static String getMessage(String message){
 		return format(mess.getString(message));
 	}
 	
@@ -67,7 +67,8 @@ public class MessageManager {
 		check("AFK_LEAVE", "&f%NICK% &euz neni AFK.");
 		check("HELPOP_MESSAGE", "&6[HelpOp] &f%NICK%: %MESSAGE%");
 		check("LIST", "&9Prave je pripojeno &b%NUMBEROFPLAYERS% &9z &b%MAXPLAYERS% &9hracu: &b%PLAYERS%");
-		check("HIDDEN_PREFIX", "&7[NEVIDITELNY]");
+		check("LIST_AFK", "&7[AFK]&f");
+		check("LIST_HIDDEN", "&7[VANISH]&f");
 		check("MAIL_FORMAT", "&f%SENDER%: %MESSAGE%");
 		check("MAIL_CLEARED", "&aMail(y) vymazany!");
 		check("MAIL_SEND", "&aMail odeslan!");
@@ -157,6 +158,7 @@ public class MessageManager {
 		check("VANISH_OTHER_OFF", "&7Vypnul jsi neviditelnost hraci &f%NICK%&7.");
 		check("VANISH_WHISPER_ON", "&7Admin &f%NICK%&7 ti zapnul neviditelnost.");
 		check("VANISH_WHISPER_OFF", "&7Admin &f%NICK%&7 ti vypnul neviditelnost.");
+		check("VANISH_SILENTCHEST", "&bTuto bednu oteviras potichu. Nikdo jiny te nevidi ji otevirat.");
 		check("CHAT_FORMAT", "%PREFIX%%NAME% > %SUFFIX%%MESSAGE%");
 		check("KICK_WHISPER", "&2Byl jsi vyhozen adminem &7%ADMIN%&2. Duvod: &7%REASON%");
 		check("KICK_BROADCAST", "&7%NICK%&2 byl vyhozen adminem &7%ADMIN%&2. &2Duvod: &7%REASON%");
@@ -170,6 +172,8 @@ public class MessageManager {
 		check("TEMPBAN_BROADCAST", "&7%NICK%&2 byl docasne zabanovan adminem &7%ADMIN%&2 do &7%TEMPTIME%&2. &2Duvod: &7%REASON%");
 		check("TEMPBAN_WHISPER", "&2Byl jsi docasne zabanovan adminem &7%ADMIN%&2 do &7%TEMPTIME%&2. &2Duvod: &7%REASON%");
 		check("TEMPBAN_JOIN", "&2Jsi docasne zabanovan adminem &7%ADMIN%&2 do &7%TEMPTIME%&2. Duvod: &7%REASON%");
+		check("TEMPBAN_ALREADY_EXTEND", "&7Hrac &f%NICK%&7 jiz ma tempban. Prodluzuji...");
+		check("TEMPBAN_PERMABANNED", "&cTento hrac je permanentne zabanovan.");
 		check("BAN_ALREADY", "&cTento hrac je jiz zabanovan.");
 		check("BAN_BROADCAST", "&7%NICK%&2 byl zabanovan adminem &7%ADMIN%&2. &2Duvod: &7%REASON%");
 		check("BAN_WHISPER", "&2Byl jsi zabanovan adminem &7%ADMIN%&2. Duvod: &7%REASON%");
@@ -182,6 +186,26 @@ public class MessageManager {
 		check("CHECKBAN_LINE_TB", "&4%TYPE%: &e%REASON% &aod: &f%TIME% &ado: &f%TEMPTIME% &aAdmin: &f%ADMIN%");
 		check("CHECKBAN_LINE_WARN", "&4%TYPE%: &e%REASON% &aDatum: &f%TIME% &aAdmin: &f%ADMIN%");
 		check("ITEMID", "&aId itemu, ktery drzis: &f%ID%&a.");
+		check("GADGETS_INVALID_SLOT", "&cNeznamy slot!");
+		check("GADGETS_SUCCESS", "&aOdznak pridan hraci &f%NICK%&a.");
+		check("GADGETS_WHISPER", "Byl ti pridan odznak! Vice na /gadgets");
+		check("GADGETS_REMOVE_NOT_HAVE", "&cTento hrac nema uvedeny odznacek!");
+		check("GADGETS_SUCCESS_REMOVE", "&aOdznacek byl odstranen hraci &f%NICK%&a.");
+		check("MUTE_CHAT", "&cJsi umlcen adminem &f%ADMIN%&c! Nemuzes nic psat do chatu! &cDuvod: &f%REASON%");
+		check("MUTE_BROADCAST", "&7%NICK%&2 byl umlcen adminem &7%ADMIN%&2. Duvod: &7%REASON%");
+		check("MUTE_NOTICE", "Byl jsi umlcen adminem %ADMIN%. Duvod: %REASON%");
+		check("TEMPMUTE_CHAT", "&cJsi docasne umlcen adminem &f%ADMIN%&c! Nemuzes nic psat do chatu do &f%TEMPTIME%&c. Duvod: &f%REASON%");
+		check("TEMPMUTE_PERMAMUTED", "&cTento hrac je jiz trvale umlcen!");
+		check("TEMPMUTE_ALREADY_EXTEND", "&7Hrac &f%NICK%&7 je jiz docasne umlcen. Prodluzuji trest...");
+		check("TEMPMUTE_BROADCAST", "&7%NICK%&2 byl docasne umlcen adminem &7%ADMIN%&2 do &7%TEMPTIME%&2. Duvod: &7%REASON%");
+		check("TEMPMUTE_NOTICE", "Byl jsi docasne umlcen adminem %ADMIN% do %TEMPTIME%. Duvod: %REASON%");
+		check("COMMANDTOOL_ITEM_AIR", "&cPrikaz musis pripnout na item!");
+		check("COMMANDTOOL_REMOVE", "&aPrikaz byl odstranen z itemu &f%ITEM%&a.");
+		check("COMMANDTOOL_ADD", "&aNa item &f%ITEM%&a byl pridan nasledujici prikaz: &f%COMMAND%");
+		check("LAG_TPS", "&9TPS: &b%TPS%");
+		check("LAG_PERCENTAGE", "&9Zalagovanost: &b%PERCENTAGE%&9%");
+		check("LAG_UPTIME", "&9Uptime: &b%UPTIME% &9minut");
+		check("LAG_WORLD", "&b%WORLD%&9: Entity: &b%ENTITIES%&9; Chunky: &b%CHUNKS%&9");
 		
 		if(!allOk){
 			log.info("repairing or creating new messages.yml file.");
@@ -193,7 +217,7 @@ public class MessageManager {
 		}
 	}
 	
-	private String format(String message){
+	private static String format(String message){
 		//Change "and" character with selection sign 
 		return message.replaceAll("&", "§");
 	}

@@ -9,6 +9,10 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.PacketContainer;
+
 import cz.vojtamaniak.komplex.Komplex;
 
 public class CommandHeal extends ICommand {
@@ -74,8 +78,17 @@ public class CommandHeal extends ICommand {
 	}
 
 	private void playEffect(Location loc){
-		Entity e = loc.getWorld().spawnEntity(loc, EntityType.WOLF);
+		/*Entity e = loc.getWorld().spawnEntity(loc, EntityType.WOLF);
 		e.playEffect(EntityEffect.WOLF_HEARTS);
-		e.remove();
+		e.remove();*/
+		PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.WORLD_PARTICLES);
+		packet.getModifier().writeDefaults();
+		packet.getStrings().write(0, "heart");
+		packet.getFloat().write(0, (float)loc.getX());
+		packet.getFloat().write(1, (float)loc.getY());
+		packet.getFloat().write(2, (float)loc.getZ());
+		packet.getIntegers().write(0, 5);
+		
+		ProtocolLibrary.getProtocolManager().broadcastServerPacket(packet, loc, 20);
 	}
 }

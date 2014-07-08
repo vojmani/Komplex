@@ -12,6 +12,7 @@ import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class Database {
@@ -71,7 +72,13 @@ public class Database {
 			ps.executeUpdate();
 			ps = con.prepareStatement("CREATE TABLE IF NOT EXISTS k_banlist (id INT(11) NOT NULL AUTO_INCREMENT, name VARCHAR(32), reason TEXT, admin VARCHAR(32), time BIGINT(20), temptime BIGINT(20), type INT(10), PRIMARY KEY (`id`) USING BTREE) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;");
 			ps.executeUpdate();
-			close(ps, null);
+			ps = con.prepareStatement("CREATE TABLE IF NOT EXISTS k_gadgets (id INT(11) NOT NULL AUTO_INCREMENT, player VARCHAR(32), gadgetId INT(11), PRIMARY KEY (`id`) USING BTREE) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;");
+			ps.executeUpdate();
+			ps = con.prepareStatement("CREATE TABLE IF NOT EXISTS k_tool (id INT(11) NOT NULL AUTO_INCREMENT, player VARCHAR(32), material VARCHAR(32), command TEXT, PRIMARY KEY (`id`) USING BTREE) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;");
+			ps.executeUpdate();
+			ps = con.prepareStatement("CREATE TABLE IF NOT EXISTS k_infomessages (id INT(11) NOT NULL AUTO_INCREMENT, message TEXT, PRIMARY KEY (`id`) USING BTREE) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;");
+			ps.executeUpdate();
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -103,7 +110,7 @@ public class Database {
 					plg.banIpCache.put(address, listIp);
 				}
 			}
-			close(ps, rs);
+			c(ps, rs);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -118,7 +125,7 @@ public class Database {
 			ps.setString(3, message);
 			ps.setLong(4, System.currentTimeMillis());
 			ps.executeUpdate();
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -130,7 +137,7 @@ public class Database {
 			PreparedStatement ps = con.prepareStatement("UPDATE k_mail SET deleted = 1 WHERE receiver = ?");
 			ps.setString(1, player);
 			ps.executeUpdate();
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -146,7 +153,7 @@ public class Database {
 			while(rs.next()){
 				mails.put(rs.getString("sender"), rs.getString("message"));
 			}
-			close(ps, rs);
+			c(ps, rs);
 			return mails;
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -164,7 +171,7 @@ public class Database {
 			while(rs.next()){
 				count = rs.getInt("COUNT(*)");
 			}
-			close(ps,rs);
+			c(ps,rs);
 			return count;
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -182,7 +189,7 @@ public class Database {
 			while(rs.next()){
 				ignoredPlayers.add(rs.getString("ignoredPlayer"));
 			}
-			close(ps, rs);
+			c(ps, rs);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -197,7 +204,7 @@ public class Database {
 			ps.setString(2, ignoredPlayer);
 			ps.setLong(3, System.currentTimeMillis());
 			ps.executeUpdate();
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -210,7 +217,7 @@ public class Database {
 			ps.setString(1, player);
 			ps.setString(2, ignoredPlayer);
 			ps.executeUpdate();
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -228,7 +235,7 @@ public class Database {
 			ps.setFloat(6, yaw);
 			ps.setFloat(7, pitch);
 			ps.executeUpdate();
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -243,7 +250,7 @@ public class Database {
 			while(rs.next()){
 				warps.add(rs.getString("name"));
 			}
-			close(ps, rs);
+			c(ps, rs);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -270,7 +277,7 @@ public class Database {
 				yaw = rs.getFloat("yaw");
 				pitch = rs.getFloat("pitch");
 			}
-			close(ps, rs);
+			c(ps, rs);
 			if(world == ""){
 				return null;
 			}
@@ -287,7 +294,7 @@ public class Database {
 			PreparedStatement ps = con.prepareStatement("DELETE FROM k_warps WHERE name = ?");
 			ps.setString(1, name);
 			ps.executeUpdate();
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -303,7 +310,7 @@ public class Database {
 			while(rs.next()){
 				count = rs.getInt("COUNT(*)");
 			}
-			close(ps, rs);
+			c(ps, rs);
 			return count;
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -322,7 +329,7 @@ public class Database {
 			ps.setInt(5, z);
 			ps.setString(6, owner);
 			ps.executeUpdate();
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -334,7 +341,7 @@ public class Database {
 			PreparedStatement ps = con.prepareStatement("DELETE FROM k_homes WHERE owner = ?");
 			ps.setString(1, owner);
 			ps.executeUpdate();
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -358,7 +365,7 @@ public class Database {
 				y = rs.getInt("y");
 				z = rs.getInt("z");
 			}
-			close(ps, rs);
+			c(ps, rs);
 			if(world == ""){
 				return null;
 			}
@@ -376,7 +383,7 @@ public class Database {
 			ps.setString(1, name);
 			ps.setString(2, owner);
 			ps.executeUpdate();
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -392,7 +399,7 @@ public class Database {
 			while(rs.next()){
 				homes.add(rs.getString("name"));
 			}
-			close(ps, rs);
+			c(ps, rs);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -415,7 +422,7 @@ public class Database {
 			ps.setFloat(10, yaw);
 			ps.setFloat(11, pitch);
 			ps.executeUpdate();
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -444,7 +451,7 @@ public class Database {
 				}
 			}
 			
-			close(ps, rs);
+			c(ps, rs);
 			if(ticket.isEmpty()){
 				return null;
 			}
@@ -463,7 +470,7 @@ public class Database {
 			ps.setString(1, admin);
 			ps.setInt(2, id);
 			ps.executeUpdate();
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -479,7 +486,7 @@ public class Database {
 				while(rs.next()){
 					String message = "";
 					
-					if(rs.getString("status") == "CLOSED"){
+					if(rs.getString("status") == "cD"){
 						message = "§2#" + rs.getInt("id") + "§f " + rs.getString("creator") + ": §8" + rs.getString("text");
 					}else{
 						if(rs.getString("admin_reply") != null){
@@ -491,9 +498,9 @@ public class Database {
 					
 					tickets.add(message);
 				}
-				close(ps, rs);
+				c(ps, rs);
 			}else{
-				PreparedStatement ps = con.prepareStatement("SELECT * FROM `k_tickets` WHERE `status` != 'CLOSED'");
+				PreparedStatement ps = con.prepareStatement("SELECT * FROM `k_tickets` WHERE `status` != 'cD'");
 				ResultSet rs = ps.executeQuery();
 				while(rs.next()){
 					String message = "";
@@ -506,7 +513,7 @@ public class Database {
 					
 					tickets.add(message);
 				}
-				close(ps, rs);
+				c(ps, rs);
 			}
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -514,17 +521,17 @@ public class Database {
 		return tickets;
 	}
 
-	public void closeTicket(int id, boolean close){
+	public void closeTicket(int id, boolean c){
 		con = getConnection();
 		try{
 			String status = "OPEN";
-			if(close)
-				status = "CLOSED";
+			if(c)
+				status = "cD";
 			PreparedStatement ps = con.prepareStatement("UPDATE `k_tickets` SET `status` = ? WHERE id = ?");
 			ps.setString(1, status);
 			ps.setInt(2, id);
 			ps.executeUpdate();
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -537,7 +544,7 @@ public class Database {
 			ps.setLong(1, System.currentTimeMillis());
 			ps.setInt(2, id);
 			ps.executeUpdate();
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -558,7 +565,7 @@ public class Database {
 				ps.setInt(2, id);
 				ps.executeUpdate();
 			}
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -570,7 +577,7 @@ public class Database {
 			PreparedStatement ps = con.prepareStatement("DELETE FROM `k_tickets` WHERE `id` = ?");
 			ps.setInt(1, id);
 			ps.executeUpdate();
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -589,7 +596,7 @@ public class Database {
 			ps.setFloat(5, yaw);
 			ps.setFloat(6, pitch);
 			ps.executeUpdate();
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -615,7 +622,7 @@ public class Database {
 				yaw = rs.getFloat("yaw");
 				pitch = rs.getFloat("pitch");
 			}
-			close(ps, rs);
+			c(ps, rs);
 			
 			if(world == "")
 				return null;
@@ -635,7 +642,7 @@ public class Database {
 			ps.setLong(2, System.currentTimeMillis());
 			ps.setString(3, text);
 			ps.executeUpdate();
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -651,7 +658,7 @@ public class Database {
 			int count = 0;
 			while(rs.next())
 				count = rs.getInt(1);
-			close(ps, rs);
+			c(ps, rs);
 			return count;
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -669,7 +676,7 @@ public class Database {
 				ResultSet rs = ps.executeQuery();
 				while(rs.next())
 					notices.put(rs.getLong("time"), rs.getString("text"));
-				close(ps,rs);
+				c(ps,rs);
 			}else{
 				PreparedStatement ps = con.prepareStatement("SELECT * FROM `k_notices` AS `n` WHERE NOT EXISTS(SELECT * FROM `k_notices_read` AS `r` WHERE (`n`.`player` = ? || `n`.`player` = '-GLOBAL-') && `n`.`id` = `r`.`notice_id` && `r`.`player` = ?) AND `n`.`player` IN (?, '-GLOBAL-') ORDER BY `time` DESC");
 				ps.setString(1, player);
@@ -678,7 +685,7 @@ public class Database {
 				ResultSet rs = ps.executeQuery();
 				while(rs.next())
 					notices.put(rs.getLong("time"), rs.getString("text"));
-				close(ps, rs);
+				c(ps, rs);
 			}
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -696,7 +703,7 @@ public class Database {
 			ResultSet rs = ps.executeQuery();
 			while(rs.next())
 				ids.add(rs.getInt("id"));
-			close(ps, rs);
+			c(ps, rs);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -713,7 +720,7 @@ public class Database {
 				ps.setString(2, player);
 				ps.executeUpdate();
 			}
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -729,7 +736,7 @@ public class Database {
 			while(rs.next())
 				count = rs.getInt(1);
 			
-			close(ps,rs);
+			c(ps,rs);
 			return count == 0;
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -745,7 +752,7 @@ public class Database {
 			ps.setInt(2, currency);
 			ps.setString(3, ip);
 			ps.executeUpdate();
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -758,7 +765,7 @@ public class Database {
 			ps.setString(1, ip);
 			ps.setString(2, name);
 			ps.executeUpdate();
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -774,7 +781,7 @@ public class Database {
 			while(rs.next())
 				nicks.add(rs.getString("name"));
 			
-			close(ps, rs);
+			c(ps, rs);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -790,7 +797,7 @@ public class Database {
 			String ip = "";
 			while(rs.next())
 				ip = rs.getString("lastip");
-			close(ps, rs);
+			c(ps, rs);
 			if(ip == "")
 				return null;
 			return ip;
@@ -811,7 +818,7 @@ public class Database {
 			ps.setLong(5, temptime);
 			ps.setInt(6, type.getId());
 			ps.executeUpdate();
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -823,7 +830,7 @@ public class Database {
 			PreparedStatement ps = con.prepareStatement("DELETE FROM `k_banlist` WHERE `name` = ? AND `type` = 2");
 			ps.setString(1, name);
 			ps.executeUpdate();
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -835,7 +842,7 @@ public class Database {
 			PreparedStatement ps = con.prepareStatement("DELETE FROM `k_banlist` WHERE `name` = ? AND `type` IN (0, 10)");
 			ps.setString(1, name);
 			ps.executeUpdate();
-			close(ps, null);
+			c(ps, null);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -851,14 +858,145 @@ public class Database {
 			while(rs.next())
 				list.add(new BanInfo(rs.getString("name"), rs.getString("reason"), rs.getString("admin"), BanType.fromId(rs.getInt("type")), rs.getLong("time"), rs.getLong("temptime")));
 			
-			close(ps, rs);
+			c(ps, rs);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
 		return list;
 	}
 	
-	public void close(PreparedStatement ps, ResultSet rs){
+	public List<Integer> getPlayersGadgets(String name) {
+		con = getConnection();
+		List<Integer> list = new ArrayList<Integer>();
+		try{
+			PreparedStatement ps = con.prepareStatement("SELECT `gadgetId` FROM `k_gadgets` WHERE `player` = ?");
+			ps.setString(1, name);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+				list.add(rs.getInt("gadgetId"));
+			c(ps, rs);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	public void addGadget(String player, int id) {
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("INSERT INTO `k_gadgets` (`player`, `gadgetId`) VALUES (?,?)");
+			ps.setString(1, player);
+			ps.setInt(2, id);
+			ps.executeUpdate();
+			c(ps, null);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public boolean hasGadget(String player, int gadgetId) {
+		boolean hasGadget = false;
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("SELECT COUNT(*) FROM `k_gadgets` WHERE `player` = ? AND `gadgetId` = ?");
+			ps.setString(1, player);
+			ps.setInt(2, gadgetId);
+			ResultSet rs = ps.executeQuery();
+			int count = 0;
+			while(rs.next())
+				count = rs.getInt(1);
+			c(ps, rs);
+			hasGadget = (count == 1);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return hasGadget;
+	}
+	
+	public void removeCommandFromTool(String player, String material){
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("DELETE FROM `k_tool` WHERE `player` = ? AND `material` = ?");
+			ps.setString(1, player);
+			ps.setString(2, material);
+			ps.executeUpdate();
+			c(ps, null);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public HashMap<Material, String> getCommandTools(String player){
+		con = getConnection();
+		HashMap<Material, String> tools = new HashMap<Material, String>();
+		try{
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM `k_tool` WHERE `player` = ?");
+			ps.setString(1, player);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+				tools.put(Material.matchMaterial(rs.getString("material")), rs.getString("command"));
+			c(ps, rs);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return tools;
+	}
+	
+	public void addCommandTool(String player, String material, String command){
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("INSERT INTO `k_tool` (`player`,`material`,`command`) VALUES (?,?,?)");
+			ps.setString(1, player);
+			ps.setString(2, material);
+			ps.setString(3, command);
+			ps.executeUpdate();
+			c(ps, null);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void removeMute(String name) {
+		con = getConnection();
+		try {
+			PreparedStatement ps = con.prepareStatement("DELETE FROM `k_banlist` WHERE `name` = ? AND `type` IN (7,13)");
+			ps.setString(1, name);
+			ps.executeUpdate();
+			c(ps, null);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public List<String> getInfoMessages() {
+		con = getConnection();
+		List<String> list = new ArrayList<String>();
+		try {
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM `k_infomessages` ORDER BY `id`");
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				list.add(rs.getString("message"));
+			}
+			c(ps, rs);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	public void removeInfoMessage(int id){
+		con = getConnection();
+		try{
+			PreparedStatement ps = con.prepareStatement("DELETE FROM `k_infomessages` WHERE `id` = ?");
+			ps.setInt(1, id);
+			ps.executeUpdate();
+			c(ps, null);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	private void c(PreparedStatement ps, ResultSet rs){
 		try {
 			if(ps != null)
 				ps.close();

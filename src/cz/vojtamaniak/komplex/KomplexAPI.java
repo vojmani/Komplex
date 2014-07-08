@@ -8,6 +8,7 @@ import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -345,7 +346,7 @@ public class KomplexAPI {
 	public void setVanish(Player player, boolean vanish){
 		if(vanish){
 			for(Player p : Bukkit.getOnlinePlayers()){
-				if(p.hasPermission("komplex.vanish.bypass")){
+				if(!p.hasPermission("komplex.vanish.see")){
 					p.hidePlayer(player);
 				}
 			}
@@ -482,19 +483,10 @@ public class KomplexAPI {
 	}
 	
 	public boolean isBanned(String name){
-		if(!plg.banCache.containsKey(name.toLowerCase()))
-			return false;
-		
-		boolean isBanned = false;
-		for(BanInfo info : plg.banCache.get(name.toLowerCase())){
-			if(info.getType() == BanType.BAN || info.getType() == BanType.TEMPBAN){
-				isBanned = true;
-			}
-		}
-		return isBanned;
+		return (isPermaBanned(name) || isTempbanned(name));
 	}
 	
-	public void unbanPlayer(final String name, final String admin){
+	public void unbanPlayer(final String name, final String admin, boolean log){
 		sched.runTaskAsynchronously(plg, new Runnable(){
 			@Override
 			public void run(){
@@ -508,12 +500,14 @@ public class KomplexAPI {
 			final BanInfo info = i.next();
 			if(info.getType() == BanType.BAN || info.getType() == BanType.TEMPBAN){
 				i.remove();
-				sched.runTaskAsynchronously(plg, new Runnable(){
-					@Override
-					public void run(){
-						database.addBan(name, "Odbanovan: "+ info.getReason(), admin, BanType.UNBAN, 0L);
-					}
-				});
+				if(log){
+					sched.runTaskAsynchronously(plg, new Runnable(){
+						@Override
+						public void run(){
+							database.addBan(name, "Odbanovan: "+ info.getReason(), admin, BanType.UNBAN, 0L);
+						}
+					});
+				}
 				break;
 			}
 		}
@@ -523,5 +517,211 @@ public class KomplexAPI {
 
 	public List<BanInfo> getPlayersBanRecords(String name) {
 		return database.getPlayersBanRecords(name);
+	}
+
+	public List<Integer> getPlayerGadgets(String name) {
+		return database.getPlayersGadgets(name);
+	}
+
+	public void addGadget(final String player, final int id) {
+		sched.runTaskAsynchronously(plg, new Runnable(){
+			@Override
+			public void run(){
+				database.addGadget(player, id);
+			}
+		});
+	}
+
+	public boolean hasGadget(String player, int gadgetId) {
+		return database.hasGadget(player, gadgetId);
+	}
+
+	public void removeCommandFromTool(final String player, final Material holdItem) {
+		sched.runTaskAsynchronously(plg, new Runnable(){
+			@Override
+			public void run(){
+				database.removeCommandFromTool(player, holdItem.name());
+			}
+		});
+		
+		getUser(player).getTools().remove(holdItem);
+	}
+	
+	public void addCommandTool(final String player, final Material material, final String command){
+		sched.runTaskAsynchronously(plg, new Runnable(){
+			@Override
+			public void run(){
+				database.addCommandTool(player, material.name(), command);
+			}
+		});
+		
+		getUser(player).getTools().put(material, command);
+	}
+
+	public boolean isPermaMuted(String pName) {
+		if(!plg.banCache.containsKey(pName.toLowerCase()))
+			return false;
+		
+		boolean isMuted = false;
+		Iterator<BanInfo> i = plg.banCache.get(pName.toLowerCase()).iterator();
+		while(i.hasNext()){
+			BanInfo info = i.next();
+			if(info.getType() == BanType.MUTE){
+				isMuted = true;
+			}
+		}
+		
+		return isMuted;
+	}
+	
+	public boolean isMuted(String name){
+		return (isPermaMuted(name) || isTempmuted(name));
+	}
+
+	public boolean isTempbanned(String pName) {
+		if(!plg.banCache.containsKey(pName.toLowerCase()))
+			return false;
+		
+		boolean isTempbanned = false;
+		Iterator<BanInfo> i = plg.banCache.get(pName.toLowerCase()).iterator();
+		while(i.hasNext()){
+			BanInfo info = i.next();
+			if(info.getType() == BanType.TEMPBAN && info.getTemptime() > System.currentTimeMillis()){
+				isTempbanned = true;
+			}
+			
+			if(info.getType() == BanType.TEMPBAN && info.getTemptime() <= System.currentTimeMillis()){
+				i.remove();
+			}
+		}
+		
+		return isTempbanned;
+	}
+	
+	public BanInfo getTempBan(String name){
+		if(!plg.banCache.containsKey(name.toLowerCase()))
+			return null;
+		
+		if(!isTempbanned(name))
+			return null;
+		
+		Iterator<BanInfo> i = plg.banCache.get(name.toLowerCase()).iterator();
+		while(i.hasNext()){
+			BanInfo info = i.next();
+			if(info.getType() == BanType.TEMPBAN)
+				return info;
+		}
+		
+		return null;
+	}
+
+	public String getCommandOnTool(String name, Material type) {
+		return getUser(name).getTools().get(type);
+	}
+
+	public boolean hasCommandOnTool(String name, Material type) {
+		return getUser(name).getTools().containsKey(type);
+	}
+
+	public void mutePlayer(String name, String admin, String reason) {
+		addRecord(name, reason, admin, BanType.MUTE, 0L);
+	}
+	
+	public void tempMutePlayer(String name, String admin, String reason, long temptime){
+		addRecord(name, reason, admin, BanType.TEMPMUTE, temptime);
+	}
+	
+	public boolean isTempmuted(String name){
+		if(!plg.banCache.containsKey(name.toLowerCase()))
+			return false;
+		
+		Iterator<BanInfo> i = plg.banCache.get(name.toLowerCase()).iterator();
+		boolean isTempmuted = false;
+		while(i.hasNext()){
+			BanInfo info = i.next();
+			
+			if(info.getType() == BanType.TEMPMUTE && info.getTemptime() > System.currentTimeMillis()){
+				isTempmuted = true;
+			}
+			
+			if(info.getType() == BanType.TEMPMUTE && info.getTemptime() <= System.currentTimeMillis()){
+				i.remove();
+			}
+		}
+		return isTempmuted;
+	}
+
+	public BanInfo getTempmute(String name) {
+		if(!plg.banCache.containsKey(name.toLowerCase()))
+			return null;
+		
+		if(!isTempmuted(name))
+			return null;
+		
+		Iterator<BanInfo> i = plg.banCache.get(name.toLowerCase()).iterator();
+		while(i.hasNext()){
+			BanInfo info = i.next();
+			if(info.getType() == BanType.TEMPMUTE)
+				return info;
+		}
+		
+		return null;
+	}
+	
+	public BanInfo getMute(String name){
+		if(!plg.banCache.containsKey(name.toLowerCase()))
+			return null;
+		
+		if(!isTempmuted(name))
+			return null;
+		
+		Iterator<BanInfo> i = plg.banCache.get(name.toLowerCase()).iterator();
+		while(i.hasNext()){
+			BanInfo info = i.next();
+			if(info.getType() == BanType.TEMPMUTE || info.getType() == BanType.MUTE)
+				return info;
+		}
+		
+		return null;
+	}
+
+	public void unmutePlayer(final String name, final String admin, boolean log) {
+		sched.runTaskAsynchronously(plg, new Runnable(){
+			@Override
+			public void run(){
+				database.removeMute(name);
+			}
+		});
+		
+		List<BanInfo> list = plg.banCache.get(name.toLowerCase());
+		Iterator<BanInfo> i = list.iterator();
+		while(i.hasNext()){
+			final BanInfo info = i.next();
+			if(info.getType() == BanType.MUTE || info.getType() == BanType.TEMPMUTE){
+				i.remove();
+				if(log){
+					sched.runTaskAsynchronously(plg, new Runnable(){
+						@Override
+						public void run(){
+							database.addBan(name, "Odmutovan: "+ info.getReason(), admin, BanType.UNMUTE, 0L);
+						}
+					});
+				}
+				break;
+			}
+		}
+		
+		plg.banCache.put(name.toLowerCase(), list);
+	}
+
+	public void removeInfoMessage(final int id) {
+		sched.runTaskAsynchronously(plg, new Runnable(){
+			@Override
+			public void run() {
+				database.removeInfoMessage(id);
+			}
+		});
+		
+		plg.infoMessages.remove(id);
 	}
 }

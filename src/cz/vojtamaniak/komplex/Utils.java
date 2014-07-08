@@ -1,7 +1,11 @@
 package cz.vojtamaniak.komplex;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import org.bukkit.Material;
 
 public class Utils {
 	
@@ -79,5 +83,33 @@ public class Utils {
 		}
 		
 		return (sec * 1000);
+	}
+	
+	public static String getMessage(String key, String... replacements){
+		String message = MessageManager.getMessage(key);
+		
+		if(replacements.length != 0){
+			if((replacements.length % 2) != 0){
+				return "";
+			}
+			
+			int index = 0;
+			for(String s : replacements){
+				if(s.startsWith("%")){
+					message = message.replaceAll(s, replacements[index + 1]);
+				}
+				index++;
+			}
+		}
+		
+		return message;
+	}
+	
+	public static boolean isSign(Material mat){
+		List<Material> signs = new ArrayList<Material>();
+		signs.add(Material.SIGN);
+		signs.add(Material.SIGN_POST);
+		signs.add(Material.WALL_SIGN);
+		return signs.contains(mat) ? true : false;
 	}
 }

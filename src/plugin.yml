@@ -152,6 +152,25 @@ commands:
   jump:
     usage: /jump
     description: skoci
+  gadgets:
+    usage: /gadgets add/- {nick} {id}
+    description: Odznacky!
+  mute:
+    usage: /mute <nick> {duvod}
+    description: Umlci hrace
+  tempmute:
+    usage: /tempmute <nick> <pocet> <sec/min/hour/day/month/year> {duvod}
+    description: Umlci docasne hrace
+  commandtool:
+    usage: /commandtool {prikaz}
+    description: Command tool
+    aliases: [powertool, pt, ct, cmdtool, ptool, ctool]
+  unmute:
+    usage: /unmute <nick>
+    description: Odmlci hrace
+  lag:
+    usage: /lag
+    description: Lag
 permissions:
   komplex.*:
     description: Prava na vsechny prikazy pluginu Komplex

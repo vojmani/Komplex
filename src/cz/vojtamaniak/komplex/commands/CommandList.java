@@ -25,7 +25,15 @@ public class CommandList extends ICommand {
 		
 		StringBuilder sb = new StringBuilder();
 		for(Player p : Bukkit.getOnlinePlayers()){
-			sb.append(p.getName() + ", ");
+			if(api.isAfk(p.getName())){
+				sb.append(gm("LIST_AFK") + p.getName() + ", ");
+			}else if(api.getVanish(p.getName()) && sender.hasPermission("komplex.vanish.see")){
+				sb.append(gm("LIST_HIDDEN") + p.getName() + ", ");
+			}else if(api.getVanish(p.getName()) && !sender.hasPermission("komplex.vanish.see")){
+				continue;
+			}else{
+				sb.append(p.getName() + ", ");
+			}
 		}
 		if(sb.length() != 0)
 			sb.replace(sb.length() - 2, sb.length(), "");
