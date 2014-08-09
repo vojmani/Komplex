@@ -43,6 +43,11 @@ public class CommandTell extends ICommand {
 			return true;
 		}
 		
+		if(api.getVanish(player.getName()) && !sender.hasPermission("komplex.vanish.bypass")){
+			sm(sender, "PLAYER_OFFLINE");
+			return true;
+		}
+		
 		String message = Utils.buildMessage(arg, 1);
 		sm(player, "TELL_FORMAT_WHISPER", "%SENDER%", sender.getName(), "%MESSAGE%", message);
 		sm(sender, "TELL_FORMAT_SELF", "%RECEIVER%", player.getName(), "%MESSAGE%", message);

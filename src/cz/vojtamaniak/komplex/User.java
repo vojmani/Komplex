@@ -20,7 +20,8 @@ public class User {
 	private long lastMessageTime;
 	private long lastMoveTime;
 	private boolean vanish;
-	
+	private TpaInfo lastTpaInfo;
+
 	public User(Player p){
 		this.p = p;
 		this.godMode = false;
@@ -124,4 +125,13 @@ public class User {
 	public void setLastMoveTime(long time){
 		this.lastMoveTime = time;
 	}
+	
+	public TpaInfo getLastTpaInfo() {
+		return lastTpaInfo;
+	}
+
+	public void setLastTpaInfo(TpaInfo lastTpaInfo) {
+		this.lastTpaInfo = lastTpaInfo;
+	}
+
 }

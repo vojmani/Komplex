@@ -53,11 +53,17 @@ import cz.vojtamaniak.komplex.commands.CommandTell;
 import cz.vojtamaniak.komplex.commands.CommandTempban;
 import cz.vojtamaniak.komplex.commands.CommandTicket;
 import cz.vojtamaniak.komplex.commands.CommandTickets;
+import cz.vojtamaniak.komplex.commands.CommandTpa;
+import cz.vojtamaniak.komplex.commands.CommandTpaall;
+import cz.vojtamaniak.komplex.commands.CommandTpaccept;
+import cz.vojtamaniak.komplex.commands.CommandTpahere;
+import cz.vojtamaniak.komplex.commands.CommandTpdeny;
 import cz.vojtamaniak.komplex.commands.CommandUnban;
 import cz.vojtamaniak.komplex.commands.CommandVanish;
 import cz.vojtamaniak.komplex.commands.CommandWarn;
 import cz.vojtamaniak.komplex.commands.CommandWarp;
 import cz.vojtamaniak.komplex.commands.CommandWorkbench;
+import cz.vojtamaniak.komplex.listeners.BlockListener;
 import cz.vojtamaniak.komplex.listeners.EntityListener;
 import cz.vojtamaniak.komplex.listeners.PlayerListener;
 
@@ -130,7 +136,7 @@ public class Komplex extends JavaPlugin {
 			}
 		}, 20L, 20L*30L);
 		
-		if(Bukkit.getOnlinePlayers().length != 0){
+		if(Bukkit.getOnlinePlayers().size() != 0){
 			for(Player p : Bukkit.getOnlinePlayers()){
 				User user = new User(p);
 				
@@ -160,7 +166,7 @@ public class Komplex extends JavaPlugin {
 		return msgManager;
 	}
 	
-	private void registerExecutors(){
+	private void registerExecutors(){//53
 		getCommand("afk").setExecutor(new CommandAfk(this));
 		getCommand("break").setExecutor(new CommandBreak(this));
 		getCommand("feed").setExecutor(new CommandFeed(this));
@@ -207,11 +213,17 @@ public class Komplex extends JavaPlugin {
 		getCommand("checkban").setExecutor(new CommandCheckban(this));
 		getCommand("itemid").setExecutor(new CommandItemid(this));
 		getCommand("jump").setExecutor(new CommandJump(this));
+		getCommand("tpa").setExecutor(new CommandTpa(this));
+		getCommand("tpaall").setExecutor(new CommandTpaall(this));
+		getCommand("tpaccept").setExecutor(new CommandTpaccept(this));
+		getCommand("tpahere").setExecutor(new CommandTpahere(this));
+		getCommand("tpdeny").setExecutor(new CommandTpdeny(this));
 	}
 	
 	private void registerListeners(){
 		Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new EntityListener(this), this);
+		Bukkit.getPluginManager().registerEvents(new BlockListener(this), this);
 	}
 	
 	public void addUser(User user){

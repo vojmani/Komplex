@@ -30,7 +30,7 @@ public class CommandList extends ICommand {
 		if(sb.length() != 0)
 			sb.replace(sb.length() - 2, sb.length(), "");
 		
-		sm(sender, "LIST", "%NUMBEROFPLAYERS%", Integer.toString(Bukkit.getOnlinePlayers().length), "%MAXPLAYERS%", Integer.toString(Bukkit.getMaxPlayers()), "%PLAYERS%", sb.toString());
+		sm(sender, "LIST", "%NUMBEROFPLAYERS%", Integer.toString(Bukkit.getOnlinePlayers().size()), "%MAXPLAYERS%", Integer.toString(Bukkit.getMaxPlayers()), "%PLAYERS%", sb.toString());
 		return true;
 	}
 

@@ -182,6 +182,13 @@ public class MessageManager {
 		check("CHECKBAN_LINE_TB", "&4%TYPE%: &e%REASON% &aod: &f%TIME% &ado: &f%TEMPTIME% &aAdmin: &f%ADMIN%");
 		check("CHECKBAN_LINE_WARN", "&4%TYPE%: &e%REASON% &aDatum: &f%TIME% &aAdmin: &f%ADMIN%");
 		check("ITEMID", "&aId itemu, ktery drzis: &f%ID%&a.");
+		check("TPA_REQUEST_SENT", "&aZadost o teleport byla odeslana!");
+		check("TPA_REQUEST", "&f%NICK% &7se chce k tobe teleportovat.\n&7Napis &f/tpaccept &7pro prijeti a nebo &f/tpdeny &7pro zamitnuti.\n&7Tato zadost vyprsi za &f2 minuty&7.");
+		check("TPACCEPT_REQUEST_EXPIRED", "&cTato zadost o teleport jiz vyprsela.");
+		check("TPACCEPT_TARGET_OFFLINE", "&cTento hrac uz neni pripojen.");
+		check("TPACCEPT_ACCEPTED", "&aZadost o teleportaci byla prijata.");
+		check("TPACCEPT_DENIED", "&cZadost o teleportaci byla zamitnuta.");
+		check("TPAHERE_REQUEST", "&f%NICK% &7chce, aby jsi se k nemu teleportoval.\n&7Napis &f/tpaccept &7pro prijeti a nebo &f/tpdeny &7pro zamitnuti.\n&7Tato zadost vyprsi za &f2 minuty&7.");
 		
 		if(!allOk){
 			log.info("repairing or creating new messages.yml file.");
@@ -195,7 +202,7 @@ public class MessageManager {
 	
 	private String format(String message){
 		//Change "and" character with selection sign 
-		return message.replaceAll("&", "ยง");
+		return message.replaceAll("&", "ง");
 	}
 	
 	private void check(String key, String message){

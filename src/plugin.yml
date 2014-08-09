@@ -152,6 +152,21 @@ commands:
   jump:
     usage: /jump
     description: skoci
+  tpa:
+    usage: /tpa <nick>
+    description: Vyzada teleportaci ke hraci
+  tpaccept:
+    usage: /tpaccept
+    description: Prijme teleportaci
+  tpaall:
+    usage: /tpaall
+    description: Vyzada teleportaci k sobe od vsech hracu
+  tpahere:
+    usage: /tpahere <nick>
+    description: Vyzada teleportaci k sobe od hrace
+  tpdeny:
+    usage: /tpdeny
+    description: Zamitne teleportaci
 permissions:
   komplex.*:
     description: Prava na vsechny prikazy pluginu Komplex

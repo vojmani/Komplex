@@ -345,7 +345,7 @@ public class KomplexAPI {
 	public void setVanish(Player player, boolean vanish){
 		if(vanish){
 			for(Player p : Bukkit.getOnlinePlayers()){
-				if(p.hasPermission("komplex.vanish.bypass")){
+				if(!p.hasPermission("komplex.vanish.bypass")){
 					p.hidePlayer(player);
 				}
 			}
@@ -523,5 +523,13 @@ public class KomplexAPI {
 
 	public List<BanInfo> getPlayersBanRecords(String name) {
 		return database.getPlayersBanRecords(name);
+	}
+	
+	public TpaInfo getLastTpaInfo(String name){
+		return getUser(name).getLastTpaInfo();
+	}
+	
+	public void setLastTpaInfo(String name, TpaInfo info){
+		getUser(name).setLastTpaInfo(info);
 	}
 }

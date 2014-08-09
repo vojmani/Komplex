@@ -1,7 +1,11 @@
 package cz.vojtamaniak.komplex;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import org.bukkit.Material;
 
 public class Utils {
 	
@@ -26,6 +30,15 @@ public class Utils {
 		}catch(NumberFormatException e){
 			return false;
 		}
+	}
+	
+	public static boolean isBlockSign(Material mat){
+		List<Material> signs = new ArrayList<Material>();
+		signs.add(Material.SIGN);
+		signs.add(Material.SIGN_POST);
+		signs.add(Material.WALL_SIGN);
+		
+		return signs.contains(mat);
 	}
 	
 	public static long toMillis(int amount, String type){

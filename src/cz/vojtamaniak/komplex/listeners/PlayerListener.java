@@ -188,8 +188,9 @@ public class PlayerListener extends IListener {
 			format = format.replace("%PREFIX%", prefix);
 			format = format.replace("%SUFFIX%", suffix);
 			format = format.replace("%NAME%", pName);
-			format = format.replace("%MESSAGE%", e.getMessage());
-			e.setFormat(format.replaceAll("&", "ยง"));
+			format = format.replaceAll("&", "ง");
+			format = format.replace("%MESSAGE%", e.getPlayer().hasPermission("komplex.chat.format") ? e.getMessage().replaceAll("&", "ง") : e.getMessage());
+			e.setFormat(format);
 		}
 	}
 	
